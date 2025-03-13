@@ -1,6 +1,8 @@
 # EchoShare
 
-![just-logo.png](https://i.postimg.cc/G24gq7Gj/just-logo.png)
+<p align="center">
+  <img src="https://i.postimg.cc/G24gq7Gj/just-logo.png" width="200" alt="just-logo">
+</p>
 
 A WebRTC-based online screen sharing tool that allows you to share your screen, camera, and audio with others in real-time.
 
