@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     build: .
-    container_name: echoshare
+    container_name: echoshare-webapp
     restart: always
     ports:
-      - "80:80"
+      - "6556:80"
