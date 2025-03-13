@@ -1,0 +1,22 @@
+@import "vuestic-ui/styles/grid";
+
+:root {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body,
+#app {
+    width: 100% !important;
+    height: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.toast-success-msg p {
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+}
+
+.va-layout {
+    min-height: 100vh !important;
+}
