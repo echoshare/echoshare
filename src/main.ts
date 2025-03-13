@@ -21,16 +21,7 @@ const versionTypeID = "C8264F";
 const app = createApp(App)
     .use(router)
     .use(createPinia().use(autoStorageState))
-    .use(
-        createVuestic({
-            config: {
-                i18n: {
-                    search: "搜索",
-                    select: "选择",
-                },
-            },
-        })
-    );
+    .use(createVuestic({}));
 
 app.mount("#app");
 

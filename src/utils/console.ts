@@ -46,7 +46,7 @@ const prettyLog = () => {
         success,
     };
 };
-// 创建打印对象
+
 export const log = prettyLog();
 
 export function debug(...args: any) {

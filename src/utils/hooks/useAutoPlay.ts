@@ -6,7 +6,7 @@ import { log } from "../console";
 
 export function useAutoPlay(
     videoRef: Ref<HTMLVideoElement | null>,
-    name: "Receiver" | "Sender" | "全屏Receiver",
+    name: "Receiver" | "Sender" | "Fullscreen Receiver",
     time = 2000
 ) {
     const route = useRoute();

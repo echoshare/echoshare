@@ -9,7 +9,7 @@ import Welcome from "../components/welcome.vue";
 </template>
 
 <style>
-/* .page-404 .hajimi-logo {
-    animation: hajimi-gogogo 0.5s ease-in-out 0s alternate-reverse infinite;
+/* .page-404 .echoshare-logo {
+    animation: echoshare-gogogo 0.5s ease-in-out 0s alternate-reverse infinite;
 } */
 </style>

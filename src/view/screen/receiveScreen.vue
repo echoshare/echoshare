@@ -27,11 +27,11 @@ const route = useRoute();
 const router = useRouter();
 const PeerStore = usePeer();
 const { width } = useWindow();
-const isFindStream = ref(false); // 是否找到流
-const isLoadingQuery = ref(false); // 是否正在加载
-const isLoadingStream = ref(false); // 是否正在加载
-const videoIsFitscreen = ref(false); // 视频是否网页全屏
-const screenVideo = ref(null as HTMLVideoElement | null); // 屏幕分享 DOM
+const isFindStream = ref(false);
+const isLoadingStream = ref(false); 
+const isLoadingQuery = ref(false); 
+const videoIsFitscreen = ref(false); 
+const screenVideo = ref(null as HTMLVideoElement | null); 
 
 const receiveModeOptions = [
     {

@@ -9,7 +9,7 @@ import Welcome from "../components/welcome.vue";
 </template>
 
 <style>
-.app-home .hajimi-logo {
-    animation: hajimi-gogogo 2s ease-in-out 0s alternate-reverse infinite;
+.app-home .echoshare-logo {
+    animation: echoshare-gogogo 2s ease-in-out 0s alternate-reverse infinite;
 }
 </style>

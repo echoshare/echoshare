@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../view/home.vue";
 import Page404 from "../view/page404.vue";
 //import ScreenView from "../view/screen.vue";
@@ -13,8 +13,8 @@ const routes = [
     { path: "/", component: HomeView, name: "首页" },
     { path: "/~share", component: ScreenView, name: "Sender" },
     { path: "/~receive", component: ReceiveView, name: "Receiver" },
-    { path: "/~settings", component: SettingsView, name: "设置" },
-    { path: "/~view", component: FullView, name: "全屏Receiver" },
+    { path: "/~settings", component: SettingsView, name: "Settings" },
+    { path: "/~view", component: FullView, name: "FullscreenReceiver" },
     { path: '/:pathMatch(.*)*', component: Page404, name: "404" },
 ];
 

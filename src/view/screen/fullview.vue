@@ -34,7 +34,7 @@ watch(
     }
 );
 
-useAutoPlay(screenVideo, "全屏Receiver");
+useAutoPlay(screenVideo, "Fullscreen Receiver");
 const { clearAutoReceive, restartAutoReceive } = useAutoReceive(
     screenVideo,
     receiveStream,
@@ -92,7 +92,7 @@ function receiveStream() {
                     clearPeer();
                     isLoadingStream.value = false;
                 }
-            }, PeerStore.maxOutOfTime);
+            }, PeerStore.maxOutOfTime) as any as number;
 
             currentPeer.value = peerInstance.value!.call(
                 PeerStore.targetUID,

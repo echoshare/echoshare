@@ -13,7 +13,7 @@ const props = defineProps<{
                     <img
                         :src="logo"
                         alt="web-logo"
-                        class="max-w-full max-h-full m-auto hajimi-logo w-64"
+                        class="max-w-full max-h-full m-auto echoshare-logo w-64"
                     />
                 </VaCardTitle>
                 <VaCardContent>
@@ -33,7 +33,7 @@ const props = defineProps<{
 </template>
 
 <style>
-/* @keyframes hajimi-gogogo {
+/* @keyframes echoshare-gogogo {
     0% {
         transform: rotate(10deg) scale(0.9);
     }

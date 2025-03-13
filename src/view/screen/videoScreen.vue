@@ -21,9 +21,9 @@ let currentPeer: Ref<null | MediaConnection> = ref(null);
 
 const peerUID = ref("");
 const PeerStore = usePeer();
-const isFindStream = ref(false); // 是否找到流
-const videoIsFitscreen = ref(false); // 视频是否网页全屏
-const screenVideo = ref(null as HTMLVideoElement | null); // 屏幕分享 DOM
+const isFindStream = ref(false); 
+const videoIsFitscreen = ref(false); 
+const screenVideo = ref(null as HTMLVideoElement | null); 
 
 function clearPeer() {
     // peerUID.value = "";
