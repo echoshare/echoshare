@@ -16,7 +16,13 @@ export default defineConfig(({ mode }) => {
         plugins: [
             vue(),
             basicSsl(),
+            
             VitePWA({
+                injectRegister: 'script',
+                registerType: "autoUpdate",
+                devOptions: {
+                    enabled: true,
+                },
                 includeAssets: ["logo.png", "assets/*"],
                 manifest: {
                     name: "EchoShare online sharing",

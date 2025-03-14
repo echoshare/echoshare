@@ -13,12 +13,12 @@ const props = defineProps<{
                     <img
                         :src="logo"
                         alt="web-logo"
-                        class="max-w-full max-h-full m-auto echoshare-logo w-64"
+                        class="max-w-full max-h-full m-auto echoshare-logo w-72"
                     />
                 </VaCardTitle>
                 <VaCardContent>
                     <h2 class="text-center">{{ props.title }}</h2>
-                    <div class="flex justify-around mt-5 max-sm:pt-2">
+                    <div class="flex justify-around mt-5 max-sm:pt-2 pb-4">
                         <VaButton class="grow-0" to="/~share">
                             Sharing
                         </VaButton>

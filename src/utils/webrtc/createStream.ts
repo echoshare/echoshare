@@ -11,7 +11,7 @@ function createConstraints(allowUsingDevice: boolean, deviceId: string) {
         : false;
 }
 
-export async function requestDevicePermissions() {
+export async function requestDevicePermissions(sendMsg = true) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         toastErr("Browser does not support device access");
         return false;
@@ -22,25 +22,28 @@ export async function requestDevicePermissions() {
             audio: {
                 echoCancellation: true,
                 noiseSuppression: true,
-                sampleRate: 44100
+                sampleRate: 44100,
             },
             video: {
                 width: { ideal: 1280 },
-                height: { ideal: 720 }
-            }
+                height: { ideal: 720 },
+            },
         };
 
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
         return true;
     } catch (e: any) {
-        consoleError('Device permission error:', e.name, e.message);
-        if (e.name === 'NotAllowedError') {
-            toastErr("Please allow access to camera and microphone");
-        } else if (e.name === 'NotFoundError') {
-            toastErr("No camera or microphone device found");
-        } else {
-            toastErr(`Device access failed: ${e.message}`);
+        consoleError("Device permission error:", e.name, e.message);
+
+        if (sendMsg) {
+            if (e.name === "NotAllowedError") {
+                toastErr("Please allow access to camera and microphone");
+            } else if (e.name === "NotFoundError") {
+                toastErr("No camera or microphone device found");
+            } else {
+                toastErr(`Device access failed: ${e.message}`);
+            }
         }
         return false;
     }

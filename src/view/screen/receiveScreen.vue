@@ -258,7 +258,7 @@ onMounted(() => {
     <div>
         <div class="mt-4">
             <VaCard class="m-auto flex flex-col w-5/6 mb-4">
-                <VaCardTitle class="text-lg"> 接收 Receive Panel </VaCardTitle>
+                <VaCardTitle class="text-lg"> Receive Panel </VaCardTitle>
                 <VaCardContent>
                     <div class="flex flex-1 items-end flex-wrap">
                         <VaInput

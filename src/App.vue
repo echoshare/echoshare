@@ -18,7 +18,7 @@ autoMatchRoute(page);
 const PeerStore = usePeer();
 PeerStore.findDevices().then(async () => {
     log.success("DEVICE FOUND", "Available device information for the current device has been obtained");
-    await requestDevicePermissions();
+    await requestDevicePermissions(false);
     debug("Please check devices", [
         ...PeerStore.audioDevices,
         ...PeerStore.videoDevices,
@@ -103,5 +103,9 @@ PeerStore.findDevices().then(async () => {
 .va-sidebar-trans-enter-from,
 .va-sidebar-trans-leave-to {
     transform: translateX(-100%);
+}
+
+:deep(.va-sidebar-item--active) {
+    background-color: #117783 !important;
 }
 </style>

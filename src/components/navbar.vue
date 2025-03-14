@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import logo from "../assets/navlogo.png"
+import titleimg from "../assets/title.png"
 import { defineModel } from "vue"
 
 const navColor = "#fff";
@@ -12,7 +13,8 @@ const showSidebar = defineModel<number>({ default: 0 });
     <template #left>
       <VaButton :color="navColor" :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = (showSidebar+1)%2" />
       <VaNavbarItem>
-        <p class="ml-2.5 w-full whitespace-nowrap">EchoShare</p>
+          <img :src="titleimg" alt="web-logo" class="w-40 max-w-full max-h-full ml-3" />
+       
       </VaNavbarItem>
     </template>
     <template #right>
