@@ -21,6 +21,7 @@
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "clipboardy": "^4.0.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "dotenv-expand": "^11.0.6",
     "idb": "^8.0.0",

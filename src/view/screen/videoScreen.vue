@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { Ref, ref } from "vue";
+import { Ref, ref, watch } from "vue";
+import dayjs from "dayjs";
 import Peer, { MediaConnection } from "peerjs";
 import ClipBoard from "clipboardy";
 import { usePeer } from "../../store/peer";
@@ -14,16 +15,43 @@ import { toastErr, toastTip } from "../../utils/toast";
 import { addItem } from "../../leancloud/query";
 import { supportClipboard, supportWebRTC } from "../../utils/device";
 import { consoleError, debug, log } from "../../utils/console";
+import { useHistoryStore } from "../../store/history";
+import { useRoute, useRouter } from "vue-router";
 
 let peerInstance: Ref<null | Peer> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
 let currentPeer: Ref<null | MediaConnection> = ref(null);
+const route = useRoute();
+const router = useRouter();
+const HistoryStore = useHistoryStore();
+
+const historyItem = ref({
+    uid: "",
+    time: "",
+    timestamp: new Date().getTime(),
+    result: "fail" as "fail" | "success",
+    action: "share" as "share" | "receive",
+});
 
 const peerUID = ref("");
 const PeerStore = usePeer();
-const isFindStream = ref(false); 
-const videoIsFitscreen = ref(false); 
-const screenVideo = ref(null as HTMLVideoElement | null); 
+const isFindStream = ref(false);
+const videoIsFitscreen = ref(false);
+const screenVideo = ref(null as HTMLVideoElement | null);
+
+(function matchUID() {
+    if (route.query.uid) {
+        peerUID.value = route.query.uid as string;
+        return;
+    }
+})();
+
+watch(
+    () => peerUID.value,
+    (value) => {
+        router.push({ query: { uid: value } });
+    }
+);
 
 function clearPeer() {
     // peerUID.value = "";
@@ -58,6 +86,8 @@ function findScreenStream() {
 
             // set peer UID
             peerUID.value = peerInstance.value!.id;
+            historyItem.value.uid = peerUID.value;
+            historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
 
             // play video
             if (screenVideo.value !== null) {
@@ -84,6 +114,7 @@ function findScreenStream() {
                 currentPeer.value = call;
                 log.info("Acceptad requests", call.peer);
             });
+            historyItem.value.result = "success";
             return stream;
         })
         .catch((e) => {
@@ -98,10 +129,15 @@ function findScreenStream() {
                 return;
             }
             if (e.toString().includes("At least one")) {
-                toastErr("You don't seem to have selected the equipment you need to use 🤔");
+                toastErr(
+                    "You don't seem to have selected the equipment you need to use 🤔"
+                );
                 return;
             }
             toastErr("Unable to get media streaming 😭");
+        })
+        .finally(() => {
+            HistoryStore.history.push(historyItem.value);
         });
 
     window.addEventListener("beforeunload", () => {
@@ -141,7 +177,7 @@ function changeMediaMode() {
             <VaCardContent>
                 <div class="flex items-end">
                     <VaInput
-                        readonly
+                        clearable
                         label="Current UID"
                         class="grow w-24 md:w-auto"
                         v-model="peerUID"

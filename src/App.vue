@@ -67,9 +67,22 @@ PeerStore.findDevices().then(async () => {
                             <VaSidebarItemTitle>Receive</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
+
                     <VaSidebarItem
                         :active="page === 3"
                         @click="closeSideBar(3)"
+                        to="/~history"
+                    >
+                        <VaSidebarItemContent>
+                            <VaIcon name="history" />
+                            <VaSidebarItemTitle>History</VaSidebarItemTitle>
+                        </VaSidebarItemContent>
+                    </VaSidebarItem>
+
+
+                    <VaSidebarItem
+                        :active="page === 4"
+                        @click="closeSideBar(4)"
                         to="/~settings"
                     >
                         <VaSidebarItemContent>
@@ -77,6 +90,7 @@ PeerStore.findDevices().then(async () => {
                             <VaSidebarItemTitle>Settings</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
+                    
                 </VaSidebar>
             </Transition>
         </template>

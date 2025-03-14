@@ -8,14 +8,16 @@ const ScreenView = () => import("../view/screen.vue");
 const FullView = () => import("../view/screen/fullview.vue");
 const ReceiveView = () => import("../view/screen/receiveScreen.vue");
 const SettingsView = () => import("../view/settings.vue");
+const HistoryView = () => import("../view/history.vue");
 
 const routes = [
-    { path: "/", component: HomeView, name: "首页" },
+    { path: "/", component: HomeView, name: "Home" },
     { path: "/~share", component: ScreenView, name: "Sender" },
     { path: "/~receive", component: ReceiveView, name: "Receiver" },
+    { path: "/~history", component: HistoryView, name: "History" },
     { path: "/~settings", component: SettingsView, name: "Settings" },
     { path: "/~view", component: FullView, name: "FullscreenReceiver" },
-    { path: '/:pathMatch(.*)*', component: Page404, name: "404" },
+    { path: "/:pathMatch(.*)*", component: Page404, name: "404" },
 ];
 
 export const routePaths = routes.map((e) => e.path);

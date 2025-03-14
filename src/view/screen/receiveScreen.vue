@@ -17,21 +17,33 @@ import { toastErr, toastTip } from "../../utils/toast";
 import { querySenderUID } from "../../leancloud/query";
 import { supportClipboard } from "../../utils/device";
 import { consoleError, debug, log } from "../../utils/console";
+import { useHistoryStore } from "../../store/history";
+import dayjs from "dayjs";
 
 let peerInstance: Ref<null | Peer> = ref(null);
 let receiveTimer: Ref<number | null> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
 let currentPeer: Ref<null | MediaConnection> = ref(null);
 
+const HistoryStore = useHistoryStore();
+
+const historyItem = ref({
+    uid: "",
+    time: "",
+    timestamp: new Date().getTime(),
+    result: "fail" as "fail" | "success",
+    action: "receive" as "share" | "receive",
+});
+
 const route = useRoute();
 const router = useRouter();
 const PeerStore = usePeer();
 const { width } = useWindow();
 const isFindStream = ref(false);
-const isLoadingStream = ref(false); 
-const isLoadingQuery = ref(false); 
-const videoIsFitscreen = ref(false); 
-const screenVideo = ref(null as HTMLVideoElement | null); 
+const isLoadingStream = ref(false);
+const isLoadingQuery = ref(false);
+const videoIsFitscreen = ref(false);
+const screenVideo = ref(null as HTMLVideoElement | null);
 
 const receiveModeOptions = [
     {
@@ -142,6 +154,8 @@ function receiveStream() {
 
     try {
         isLoadingStream.value = true;
+        historyItem.value.uid = PeerStore.targetUID;
+        historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
         peerInstance.value = createPeerInstanceByMode();
         peerInstance.value.on("open", () => {
             log.success("Peer 实例已创建", peerInstance.value?.id);
@@ -149,11 +163,15 @@ function receiveStream() {
 
             log.warning(
                 "Timeout check",
-                "Timer has been activated, Threshold:" + PeerStore.maxOutOfTime + "ms"
+                "Timer has been activated, Threshold:" +
+                    PeerStore.maxOutOfTime +
+                    "ms"
             );
             receiveTimer.value = setTimeout(() => {
                 if (!isFindStream.value) {
-                    toastErr("Request timed out, unable to capture media stream 😭");
+                    toastErr(
+                        "Request timed out, unable to capture media stream 😭"
+                    );
                     log.error(
                         "Timeout " + PeerStore.maxOutOfTime + "ms",
                         "unable to capture media stream"
@@ -169,14 +187,22 @@ function receiveStream() {
             );
 
             if (!currentPeer) {
-                toastErr("Unable to connect to Peer node, check Peer configuration!");
+                toastErr(
+                    "Unable to connect to Peer node, check Peer configuration!"
+                );
                 return;
             }
             currentPeer.value.on("stream", (stream) => {
                 if (isFindStream.value) {
                     receiveTimer.value && clearTimeout(receiveTimer.value);
-                    log.success("Media stream loading complete", PeerStore.targetUID);
-                    log.success("Timeout check", "Below threshold, check passed");
+                    log.success(
+                        "Media stream loading complete",
+                        PeerStore.targetUID
+                    );
+                    log.success(
+                        "Timeout check",
+                        "Below threshold, check passed"
+                    );
                     debug("Please check the media stream data", stream);
                 }
                 localStream.value = stream;
@@ -184,6 +210,7 @@ function receiveStream() {
                 isFindStream.value = true;
                 isLoadingStream.value = false;
                 screenVideo.value!.muted = true;
+                historyItem.value.result = "success";
                 restartAutoReceive();
             });
         });
@@ -193,6 +220,7 @@ function receiveStream() {
         toastErr("Unable to capture media stream 😭");
         consoleError(e);
     } finally {
+        HistoryStore.history.push(historyItem.value);
         window.addEventListener("beforeunload", () => {
             clearPeer();
         });
@@ -234,6 +262,7 @@ const { clearAutoReceive, restartAutoReceive } = useAutoReceive(
     screenVideo,
     receiveStream
 );
+
 const autoFetchStream = ref(PeerStore.autoRequireStream);
 
 onMounted(() => {
@@ -250,7 +279,6 @@ onMounted(() => {
         }
         receiveStream();
     }
-
 });
 </script>
 
@@ -265,6 +293,7 @@ onMounted(() => {
                             label="目标 UID"
                             class="grow w-24 md:w-auto"
                             v-model="PeerStore.targetUID"
+                            clearable
                             :placeholder="
                                 PeerStore.enableQuery
                                     ? 'Click to check available target UID'

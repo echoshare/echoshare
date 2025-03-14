@@ -30,3 +30,8 @@ log.tip(`VERSION(${versionTypeID})`, "ECHOSHARE WEBRTC SHARE SCREEN STARTED");
 window.__DEBUG_LOG = import.meta.env.DEV;
 window.__DEBUG_ERROR = import.meta.env.DEV;
 window.__HANDLER_IS_INIT = import.meta.env.DEV;
+
+
+// window.localStorage.setItem("WEBRTC_STATE_META", "")
+// window.localStorage.setItem("WEBRTC_STATE_PEER", "")
+ 
