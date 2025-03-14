@@ -8,7 +8,7 @@ const props = defineProps<{
 <template>
     <div class="mt-5">
         <div class="mt-5 flex">
-            <VaCard class="m-auto flex flex-col grow-0 w-5/6 sm:w-1/2 lg:w-1/3">
+            <VaCard class="m-auto flex flex-col grow-0 w-5/6 sm:w-1/2 lg:w-2/5">
                 <VaCardTitle class="text-lg">
                     <img
                         :src="logo"

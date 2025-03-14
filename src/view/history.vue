@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHistoryStore } from "../store/history";
 import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useWindow } from "../utils/hooks/useDOM";
 import { useGlobalConfig } from "vuestic-ui";
 import { useModal } from "vuestic-ui";
 
@@ -21,7 +21,7 @@ mergeGlobalConfig({
     },
 });
 
-const router = useRouter();
+const { width } = useWindow();
 const HistoryStore = useHistoryStore();
 
 const historyList = computed(() => {
@@ -69,13 +69,20 @@ const columns = [
     },
 ];
 
-function deleteSelected() {
+function deleteSelected(all = false) {
+    if (all) {
+        HistoryStore.history = [];
+        selectedItemsEmitted.value = [];
+        return;
+    }
     const size = selectedItemsEmitted.value.length;
     let asktext =
         size === 1 ? "one selected record" : `${size} selected records`;
+
     confirm(`There will be ${asktext} to be deleted, are you sure?`).then(
         (ok) => {
             if (!ok) return;
+
             const timestamps = selectedItemsEmitted.value.map(
                 (item: any) => item.timestamp
             );
@@ -93,15 +100,18 @@ function deleteSelected() {
     <div class="mt-4">
         <VaCard class="m-auto flex flex-col w-5/6 mb-4">
             <VaCardTitle class="text-lg flex items-center w-full">
-                <div class="flex-1 text-left">History PANEL</div>
+                <div class="flex-1 text-left">
+                    History <span class="max-sm:hidden">Panel</span>
+                </div>
                 <VaButton
                     color="danger"
                     icon="delete_sweep"
                     class="flex-none"
-                    @click="deleteSelected"
-                    :disabled="selectedItemsEmitted.length === 0"
+                    @click="deleteSelected(width < 640)"
+                    :disabled="(selectedItemsEmitted.length === 0 && width > 640)"
                 >
-                    Delete Selected
+                    Delete&nbsp; <span class="max-sm:hidden">Selected</span
+                    ><span class="sm:hidden">All</span>
                 </VaButton>
             </VaCardTitle>
             <VaCardContent>
@@ -113,7 +123,7 @@ function deleteSelected() {
                 </div>
                 <div v-else>
                     <VaDataTable
-                        selectable
+                        :selectable="width>640"
                         :items="historyList"
                         :per-page="perPage"
                         :current-page="currentPage"
