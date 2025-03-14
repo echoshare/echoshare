@@ -33,23 +33,24 @@ const historyItem = ref({
     action: "share" as "share" | "receive",
 });
 
-const peerUID = ref("");
+const peerUID = ref(route.query.uid as string || "");
 const PeerStore = usePeer();
 const isFindStream = ref(false);
 const videoIsFitscreen = ref(false);
 const screenVideo = ref(null as HTMLVideoElement | null);
 
-(function matchUID() {
-    if (route.query.uid) {
-        peerUID.value = route.query.uid as string;
-        return;
-    }
-})();
 
 watch(
     () => peerUID.value,
     (value) => {
         router.push({ query: { uid: value } });
+    }
+);
+
+watch(
+    () => route.query.uid,
+    (value) => {
+        peerUID.value = value as string;
     }
 );
 

@@ -18,7 +18,8 @@ const props = defineProps<{
                 </VaCardTitle>
                 <VaCardContent>
                     <h2 class="text-center">{{ props.title }}</h2>
-                    <div class="flex justify-around mt-5 max-sm:pt-2 pb-4">
+                    <p class="text-center pt-3">When using this application for the first time in the browser,<br />please enable microphone, camera, and clipboard permissions</p>
+                    <div class="flex justify-around mt-4 max-sm:pt-2 pb-4">
                         <VaButton class="grow-0" to="/~share">
                             Sharing
                         </VaButton>

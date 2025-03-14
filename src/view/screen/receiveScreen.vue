@@ -290,7 +290,7 @@ onMounted(() => {
                 <VaCardContent>
                     <div class="flex flex-1 items-end flex-wrap">
                         <VaInput
-                            label="目标 UID"
+                            label="Target UID"
                             class="grow w-24 md:w-auto"
                             v-model="PeerStore.targetUID"
                             clearable
