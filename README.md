@@ -15,6 +15,7 @@ A WebRTC-based online screen sharing tool that allows you to share your screen, 
 - 🖥️ Screen Sharing
 - 📹 Camera Sharing
 - 🎤 Audio Sharing
+- ⌛ Local History Records
 - 💫 PWA Support
 - 🔒 Secure HTTPS Connection
 - 📱 Responsive Design
