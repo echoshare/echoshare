@@ -11,9 +11,6 @@ importers:
       leancloud-storage:
         specifier: ^4.15.2
         version: 4.15.2(bufferutil@4.0.9)(utf-8-validate@6.0.5)
-      short-url:
-        specifier: 'file:'
-        version: file:(bufferutil@4.0.9)(typescript@5.8.2)(utf-8-validate@6.0.5)
       vue:
         specifier: ^3.4.29
         version: 3.5.13(typescript@5.8.2)
@@ -2473,9 +2470,6 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
-
-  'short-url@file:':
-    resolution: {directory: '', type: directory}
 
   side-channel-list@1.0.0:
     resolution: {integrity: sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==}
@@ -5519,16 +5513,6 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
-
-  short-url@file:(bufferutil@4.0.9)(typescript@5.8.2)(utf-8-validate@6.0.5):
-    dependencies:
-      leancloud-storage: 4.15.2(bufferutil@4.0.9)(utf-8-validate@6.0.5)
-      vue: 3.5.13(typescript@5.8.2)
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - typescript
-      - utf-8-validate
 
   side-channel-list@1.0.0:
     dependencies:
