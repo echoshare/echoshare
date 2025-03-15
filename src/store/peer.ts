@@ -56,31 +56,52 @@ export const usePeer = defineStore("peer", {
             mediaModeIndex: 0,
             autoTryPlay: false,
             autoRequireStream: false,
-            serverURL: "0.peerjs.com:443",
+            serverURL: "https://0.peerjs.com",
         }),
         getServerConf: (state) => {
             if (state.peerModeIndex === 0) {
-                return { url: "0.peerjs.com", port: 443, path: "/" };
+                return {
+                    host: "0.peerjs.com",
+                    port: 443,
+                    path: "/",
+                    secure: true,
+                };
             }
 
-            let serverURL = state.serverURL;
-            if (serverURL.startsWith("http://")) {
-                serverURL = serverURL.slice(7);
-            } else if (serverURL.startsWith("https://")) {
-                serverURL = serverURL.slice(8);
+            const urlObj = new URL(state.serverURL);
+            let port = parseInt(urlObj.port);
+            const { host, protocol, pathname: path } = urlObj;
+            if (!port || isNaN(port)) {
+                port = protocol === "https:" ? 443 : 80;
             }
 
-            const firstColon = serverURL.indexOf(":");
+            return { host, port, path, secure: protocol === "https:" };
 
-            const url = serverURL.slice(0, firstColon);
-            const rest = serverURL.slice(firstColon + 1);
-            const secondColon = rest.indexOf("/");
-            if (secondColon === -1) {
-                return { url, port: parseInt(rest), path: "/" };
-            }
-            const port = parseInt(rest.slice(0, secondColon));
-            const path = rest.slice(secondColon);
-            return { url, port, path };
+            // let secure = true,
+            //     serverURL = state.serverURL;
+            // if (serverURL.startsWith("http://")) {
+            //     secure = false;
+            //     serverURL = serverURL.slice(7);
+            // } else if (serverURL.startsWith("https://")) {
+            //     serverURL = serverURL.slice(8);
+            // }
+
+            // const firstColon = serverURL.indexOf(":");
+            // if(firstColon === -1) {
+            //     if(!secure) {
+            //         return { host: serverURL, port: 80, path: "/", secure };
+            //     }
+            //     return { host: serverURL, port: 443, path: "/", secure };
+            // }
+            // const host = serverURL.slice(0, firstColon);
+            // const rest = serverURL.slice(firstColon + 1);
+            // const secondColon = rest.indexOf("/");
+            // if (secondColon === -1) {
+            //     return { host, port: parseInt(rest), path: "/", secure };
+            // }
+            // const port = parseInt(rest.slice(0, secondColon));
+            // const path = rest.slice(secondColon);
+            // return { host, port, path, secure };
         },
 
         getIceServers(state): Array<{

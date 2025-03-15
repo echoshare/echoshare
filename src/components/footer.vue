@@ -9,7 +9,7 @@
             <img :src="githubSvg" alt="github" class="w-8 h-8" />
         </a>
 
-        <p class="mt-3.5 mb-1">{{ anthor }} &copy; {{ year }}</p>
+        <p class="mt-3.5 mb-2">{{ anthor }} &copy; {{ year }}</p>
 
         
     </div>

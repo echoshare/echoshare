@@ -45,7 +45,7 @@ watch(peerMode, (value) => {
         v-if="PeerStore.peerModeIndex === 1"
         class="w-full mt-4 mb-3"
         label="Server URL"
-        placeholder="Example: 0.peerjs.com:443"
+        placeholder='Example "https://0.peerjs.com"'
         v-model="PeerStore.serverURL"
     />
 </template>

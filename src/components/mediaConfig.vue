@@ -1,7 +1,7 @@
 <template>
     <h1 class="mt-6" v-show="props.showTitle">Media Capture Mode Configuration</h1>
 
-    <div class="mt-6 sm:mt-4 max-sm:mb-4 flex flex-wrap w-full md:w-1/2">
+    <div class="mt-6 sm:mt-4 max-sm:mb-4 flex flex-wrap w-full xl:w-1/2">
         <div class="basis-1/2 sm:basis-1/4 grow">
             <VaCheckbox v-model="PeerStore.mediaMode.useScreen" label="Screen" />
         </div>

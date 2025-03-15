@@ -14,7 +14,7 @@ function deleteIceServers(index: number) {
 <template>
     <div class="flex flex-row items-baseline">
         <h1 class="grow-0 sm:block hidden">STUN/TURN Server Configuration</h1>
-        <h1 class="grow-0 sm:hidden block">STUN/TURN Server Configuration</h1>
+        <h1 class="grow-0 sm:hidden block">STUN/TURN Configuration</h1>
         <VaButton
             @click="addIceServers"
             round
@@ -25,7 +25,7 @@ function deleteIceServers(index: number) {
 
     <p
         v-if="!PeerStore.iceServers || PeerStore.iceServers.length === 0"
-        class="max-sm:pt-2 mt-2 font-mono"
+        class="max-sm:pt-2 mt-3.5 font-mono"
     >
         😊 No STUN/TURN server
     </p>
@@ -35,7 +35,7 @@ function deleteIceServers(index: number) {
             <VaInput
                 class="mt-3 pr-4"
                 style="width:calc(100% - 48px)"
-                placeholder="Example: turn:example.com^username:password"
+                placeholder='Example "turn:example.com^username:password"'
                 v-model="PeerStore.iceServers[index]"
             />
 

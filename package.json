@@ -1,7 +1,6 @@
 {
-  "name": "short-url",
-  "private": true,
-  "version": "0.0.0",
+  "name": "echoshare",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +10,6 @@
   },
   "dependencies": {
     "leancloud-storage": "^4.15.2",
-    "short-url": "file:",
     "vue": "^3.4.29"
   },
   "devDependencies": {
