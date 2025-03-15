@@ -33,12 +33,11 @@ const historyItem = ref({
     action: "share" as "share" | "receive",
 });
 
-const peerUID = ref(route.query.uid as string || "");
+const peerUID = ref((route.query.uid as string) || "");
 const PeerStore = usePeer();
 const isFindStream = ref(false);
 const videoIsFitscreen = ref(false);
 const screenVideo = ref(null as HTMLVideoElement | null);
-
 
 watch(
     () => peerUID.value,
@@ -175,6 +174,10 @@ function changeMediaMode() {
     <div class="mt-4">
         <VaCard class="m-auto flex flex-col w-5/6 mb-4">
             <VaCardTitle class="text-lg">Sharing Panel </VaCardTitle>
+            <p class="sm:pl-5 max-sm:pl-6">
+                When using this application for the first time in the browser,
+                please enable microphone, camera, and clipboard permissions.
+            </p>
             <VaCardContent>
                 <div class="flex items-end">
                     <VaInput
@@ -183,6 +186,9 @@ function changeMediaMode() {
                         class="grow w-24 md:w-auto"
                         v-model="peerUID"
                         placeholder="Share to get UID"
+                        @clear="
+                            (peerUID = ''), $router.push({ query: { uid: '' } })
+                        "
                     />
                     <div class="flex grow-0 flex-row justify-end ml-4">
                         <VaButton

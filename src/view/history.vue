@@ -2,7 +2,7 @@
 import { useHistoryStore } from "../store/history";
 import { computed, ref } from "vue";
 import { useWindow } from "../utils/hooks/useDOM";
-import { useGlobalConfig } from "vuestic-ui";
+import { DataTableColumnSource, useGlobalConfig } from "vuestic-ui";
 import { useModal } from "vuestic-ui";
 
 const { confirm } = useModal();
@@ -37,7 +37,7 @@ const pages = computed(() => {
 
 const selectedItemsEmitted = ref([]);
 
-const columns = [
+const columns: DataTableColumnSource<string>[] = [
     {
         key: "time",
         thAlign: "center",

@@ -8,7 +8,7 @@ const props = defineProps<{
 <template>
     <div class="mt-5">
         <div class="mt-5 flex">
-            <VaCard class="m-auto flex flex-col grow-0 w-5/6 sm:w-1/2 lg:w-2/5">
+            <VaCard class="m-auto flex flex-col grow-0 w-5/6 sm:w-1/2 lg:w-1/3">
                 <VaCardTitle class="text-lg">
                     <img
                         :src="logo"
@@ -18,7 +18,7 @@ const props = defineProps<{
                 </VaCardTitle>
                 <VaCardContent>
                     <h2 class="text-center">{{ props.title }}</h2>
-                    <p class="text-center pt-3">When using this application for the first time in the browser,<br />please enable microphone, camera, and clipboard permissions</p>
+                    
                     <div class="flex justify-around mt-4 max-sm:pt-2 pb-4">
                         <VaButton class="grow-0" to="/~share">
                             Sharing

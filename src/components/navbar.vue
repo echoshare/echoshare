@@ -18,7 +18,7 @@ const showSidebar = defineModel<number>({ default: 0 });
       </VaNavbarItem>
     </template>
     <template #right>
-      <VaNavbarItem class="hidden sm:block">
+      <VaNavbarItem class="hidden flex-none sm:block">
         <img :src="logo" alt="web-logo" class="w-16 max-w-full max-h-full" />
       </VaNavbarItem>
     </template>
