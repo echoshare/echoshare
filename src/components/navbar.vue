@@ -6,7 +6,6 @@ import { useMetaStore } from "../store/meta";
 import titleimg from "../assets/title.png";
 
 
-
 const navColor = "#fff";
 const { locale } = useI18n();
 const metaStore = useMetaStore();

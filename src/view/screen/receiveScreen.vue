@@ -21,7 +21,7 @@ import { useHistoryStore } from "../../store/history";
 import dayjs from "dayjs";
 
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let receiveTimer: Ref<number | null> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
@@ -63,6 +63,10 @@ const receiveModeOptions = () => [
 ];
 
 const receiveMode = ref(receiveModeOptions()[PeerStore.receiveModeIndex]);
+
+watch(locale, () => {
+    receiveMode.value = receiveModeOptions()[PeerStore.receiveModeIndex];
+});
 
 watch(receiveMode, (value) => {
     changeMediaMode();

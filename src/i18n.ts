@@ -289,10 +289,165 @@ export const i18n = createI18n({
                 noUIDAndQuery: "目标 UID 为空，可尝试查询可用目标 UID",
             },
         },
+
+        "ja-JP": {
+            home: {
+                title: "WebRT Cベースのオンライン画面共有",
+                share: "メディア共有",
+                receive: "メディア受信",
+            },
+            sidebar: {
+                home: "ホームページ",
+                share: "共有",
+                receive: "受信",
+                history: "履歴",
+                settings: "設定",
+            },
+            share: {
+                title: "メディア共有パネル",
+                input: "現在の UID",
+                placeholder: "共有して UID を取得",
+            },
+            media: {
+                title: "メディアキャプチャモード設定",
+                screen: "画面",
+                camera: "カメラ",
+                audio: "音声",
+                microphone: "マイク",
+                mediaModeLabel: "メディアキャプチャモード",
+                mediaModePlaceholder:
+                    "メディアキャプチャモードを選択してください",
+                videoDeviceIdLabel: "利用可能なカメラデバイス",
+                videoDeviceIdPlaceholder:
+                    "利用可能なカメラデバイスを選択してください",
+                audioDeviceIdLabel: "利用可能なマイクデバイス",
+                audioDeviceIdPlaceholder:
+                    "利用可能なマイクデバイスを選択してください",
+            },
+            mediaModeOptions: {
+                "0": "画面 + 音声 + マイク",
+                "1": "画面 + マイク",
+                "2": "画面 + 音声",
+                "3": "画面",
+                "4": "カメラ + 音声 + マイク",
+                "5": "カメラ + マイク",
+                "6": "カメラ + 音声",
+                "7": "カメラ",
+            },
+            receive: {
+                title: "メディア受信パネル",
+                inputLabel: "ターゲット UID",
+                queryPlaceholder: "クリックして利用可能なターゲット UID を照会",
+                noqueryPlaceholder: "ターゲット UID を入力してください",
+                selectLabel: "メディア受信モード",
+                selectPlaceholder: "メディア受信モードを選択してください",
+            },
+            receiveModeOptions: {
+                "0": "音声 + ビデオ",
+                "1": "ビデオのみ",
+                "2": "音声のみ",
+            },
+            settings: {
+                title: "設定パネル",
+                autoRequireStreamEnable: "自動メディア受信を有効にする",
+                autoRequireStreamDisable: "自動メディア受信を無効にする",
+                autoRefetchEnable: "切断後に再接続を有効にする",
+                autoRefetchDisable: "切断後に再接続を無効にする",
+                autoTryPlayEnable: "定期的な再生チェックを有効にする",
+                autoTryPlayDisable: "定期的な再生チェックを無効にする",
+                queryEnable: "UIDリモートデータベースを有効にする",
+                queryDisable: "UIDリモートデータベースを無効にする",
+                remoteDatabaseTest: "リモートデータベースをテスト",
+                remoteAPP_ID: "APP_ID（現在、LeanCloud のみサポート）",
+                remoteAPP_KEY: "APP_KEY（現在、LeanCloud のみサポート）",
+                remoteSERVER_URL: "SERVER_URL（現在、LeanCloud のみサポート）",
+                timecheck:
+                    "すべてのネットワーク通信のグローバル最大タイムアウト閾値（ms）",
+                peerSettingsTitle: "Peer サーバー設定",
+                peerSelectLabel: "Pee rノードモード",
+                peerSelectPlaceholder: "Peer ノードモードを選択してください",
+                serverURLInputLabel: "サーバー URL",
+                serverURLInputExamplePlaceholder: '例："https://0.peerjs.com"',
+                stunSettingsTitle: "STUN/TURN サーバー設定",
+                stunSettingsShortTitle: "STUN/TURN 設定",
+                noServerTip: " STUN/TURN サーバーなし",
+                stunInputExamplePlaceholder:
+                    '例："turn:example.com^username:password"',
+            },
+            history: {
+                titleAlwaysShow: "履歴",
+                titleCanHide: "パネル",
+                deleteWhatPC: "選択した項目を削除",
+                deleteWhatPhone: "すべての項目を削除",
+                noRecordsTip: "履歴がありません ",
+                labelTime: "時間",
+                labelAction: "操作",
+                labelResult: "結果",
+                actionShare: "共有",
+                actionReceive: "受信",
+                resultSuccess: "成功",
+                resultFail: "失敗",
+                deleteRecordsTip:
+                    "選択したレコードを1件削除します。よろしいですか？ | 選択したレコードを{count}件削除します。よろしいですか？",
+            },
+            toast: {
+                sqlSuccess: "リモートUIDデータベースへの接続に成功しました ",
+                sqlFail: "リモートUIDデータベースへの接続に失敗しました ",
+                noDevicesAccess:
+                    "ブラウザはデバイスアクセスをサポートしていません",
+                noMediaDevicesFound:
+                    "カメラまたはマイクデバイスが見つかりませんでした",
+                mediaDevicesFailed: "デバイスアクセスに失敗しました：",
+                tipBothUse:
+                    "カメラとシステム音声が同時に使用されます。全画面でシステム音声を共有する必要がありますが、全画面の画像情報は読み取られません",
+                badMediaStream: "音声ストリームを取得できません ",
+                mediaErr: "メディアストリームを取得できません ",
+                autoQueryUID: "利用可能なターゲットUIDを自動的に照会",
+                timeoutCapture:
+                    "リクエストがタイムアウトし、メディアストリームをキャプチャできません ",
+                addItemToDatabase: "リモートUIDデータベースに追加されました",
+                addItemToDatabaseFailed:
+                    "リモートUIDデータベースへの追加に失敗しました",
+                NotAllowedError: "メディアデバイスの使用を許可してください ",
+                NoMethodError:
+                    "このデバイスはこのWebRTCメソッドをサポートしていません ",
+                NoSelectedError:
+                    "使用する必要があるデバイスを選択していないようです ",
+                noUIDToShare: "メディアを共有してUIDを取得してください",
+                copySuccess: "コピーに成功しました：",
+                autoFetchUID: "利用可能なターゲットUIDを自動的に照会",
+                noInitLeanCloud: "リモートサーバー情報を設定してください！",
+                notHttpsWebRTC:
+                    "localhost環境以外では、HTTPSプロトコルを使用してWebRTC APIを有効にしてください",
+                notHttpsClipboard:
+                    "localhost環境以外では、HTTPSプロトコルを使用してClipboard APIを有効にしてください",
+                noClipboard:
+                    "このデバイスはClipboard APIをサポートしていません",
+                tryRefetch:
+                    "ビデオストリームが中断されました。再取得を試みます",
+                noQuery:
+                    "ターゲットUIDが空です。利用可能なターゲットUIDの照会を試みてください",
+                emptyUID: "ターゲットUIDが空です",
+                loadingErr: "現在のページは読み込みが完了していません",
+                timeoutErr:
+                    "リクエストがタイムアウトし、メディアストリームをキャプチャできません ",
+                badPeer:
+                    "Peerノードに接続できません。Peer設定を確認してください",
+                queryUIDSuccess: "利用可能なUIDの照会に成功しました",
+                queryUIDFail:
+                    "照会に失敗しました：利用可能なUIDが見つかりませんでした",
+                queryDatabaseFail:
+                    "UIDデータベースへのリクエストに失敗しました",
+                noUID: "ターゲットUIDが空です",
+                noUIDAndQuery:
+                    "ターゲットUIDが空です。利用可能なターゲットUIDの照会を試みてください",
+            },
+        },
     },
 });
 
 export const languages = [
     { value: "en-US", text: "English (US)" },
     { value: "zh-CN", text: "简体中文" },
+    { value: "ja-JP", text: "日本語" },
 ];

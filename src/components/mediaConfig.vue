@@ -54,11 +54,11 @@
 </template>
 
 <script lang="ts" setup>
-import {  watch, defineEmits } from "vue";
+import { watch, defineEmits } from "vue";
 import { usePeer } from "../store/peer";
 import { useI18n } from "vue-i18n"
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const PeerStore = usePeer();
 const emit = defineEmits(["changeMediaMode"]);
 const props = defineProps({
@@ -160,12 +160,16 @@ function findSelectedOption() {
     );
 }
 
+PeerStore.mediaMode.text = findSelectedOption()?.text ?? "";
+PeerStore.mediaMode.value = findSelectedOption()?.value ?? 0;
+
 watch(
     [
         PeerStore.mediaMode,
         () => PeerStore.audioDeviceId,
         () => PeerStore.videoDeviceId,
         () => PeerStore.audioutDeviceId,
+        () => locale.value
     ],
     () => {
         PeerStore.mediaMode.text = findSelectedOption()?.text ?? "";
