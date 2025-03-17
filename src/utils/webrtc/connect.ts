@@ -4,8 +4,11 @@ import Peer, { MediaConnection, PeerOptions } from "peerjs";
 
 export function createPeerInstanceByMode(uid?: string) {
     const PeerStore = usePeer();
-    const iceServers = PeerStore.getIceServers;
+    const iceServers = PeerStore.iceServerConf; // PeerStore.getIceServers;
     const hasIceServer = iceServers && iceServers.length > 0;
+
+    debug("Peer mode", PeerStore.peerModeIndex);
+    debug("Peer server", {...iceServers});
 
     switch (PeerStore.peerModeIndex) {
         case 0:

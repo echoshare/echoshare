@@ -30,6 +30,7 @@ export const usePeer = defineStore("peer", {
             autoRequireStream: false,
             serverURL: "0.peerjs.com:443",
             iceServers: [] as string[], // "stun:stun.l.google.com:19302", "turn:homeo@turn.bistri.com:80^homeo",
+            iceServerConf: [],
         };
     },
     actions: {
@@ -69,40 +70,26 @@ export const usePeer = defineStore("peer", {
             }
 
             const urlObj = new URL(state.serverURL);
+            const searchParams = urlObj.searchParams
+                .toString()
+                .split("&")
+                .reduce((previous, current) => {
+                    const [key, value] = current.split("=");
+                    (previous as Record<string, string>)[key] = value;
+                    return previous;
+                }, {});
             let port = parseInt(urlObj.port);
             const { host, protocol, pathname: path } = urlObj;
             if (!port || isNaN(port)) {
                 port = protocol === "https:" ? 443 : 80;
             }
 
-            return { host, port, path, secure: protocol === "https:" };
+            const key =
+                (searchParams as Record<string, string>)?.key || "peerjs";
 
-            // let secure = true,
-            //     serverURL = state.serverURL;
-            // if (serverURL.startsWith("http://")) {
-            //     secure = false;
-            //     serverURL = serverURL.slice(7);
-            // } else if (serverURL.startsWith("https://")) {
-            //     serverURL = serverURL.slice(8);
-            // }
-
-            // const firstColon = serverURL.indexOf(":");
-            // if(firstColon === -1) {
-            //     if(!secure) {
-            //         return { host: serverURL, port: 80, path: "/", secure };
-            //     }
-            //     return { host: serverURL, port: 443, path: "/", secure };
-            // }
-            // const host = serverURL.slice(0, firstColon);
-            // const rest = serverURL.slice(firstColon + 1);
-            // const secondColon = rest.indexOf("/");
-            // if (secondColon === -1) {
-            //     return { host, port: parseInt(rest), path: "/", secure };
-            // }
-            // const port = parseInt(rest.slice(0, secondColon));
-            // const path = rest.slice(secondColon);
-            // return { host, port, path, secure };
+            return { host, port, path, secure: protocol === "https:", key };
         },
+
 
         getIceServers(state): Array<{
             urls: string;

@@ -16,9 +16,9 @@ export default defineConfig(({ mode }) => {
         plugins: [
             vue(),
             basicSsl(),
-            
+
             VitePWA({
-                injectRegister: 'script',
+                injectRegister: "script",
                 registerType: "autoUpdate",
                 // devOptions: {
                 //     enabled: true,
@@ -50,6 +50,17 @@ export default defineConfig(({ mode }) => {
         ],
         define: {
             __TITLE__: '"Online Screen Sharing"',
+        },
+
+        build: {
+            sourcemap: false,
+            rollupOptions: {
+                output: {
+                    chunkFileNames: `static/js/[name].[hash].js`,
+                    entryFileNames: `static/js/[name].[hash].js`,
+                    assetFileNames: `static/[ext]/[name].[hash].[ext]`,
+                },
+            },
         },
     };
 });

@@ -2,24 +2,30 @@
 import { ref, watch } from "vue";
 import { usePeer } from "../../store/peer";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const PeerStore = usePeer();
-const peerModeOptions = [
+const peerModeOptions = () => [
     {
         value: 0,
-        text: "Using Public Peer Node",
+        text: t("settings.peerMode0"),
     },
     {
         value: 1,
-        text: "Using Custom Peer Node",
+        text: t("settings.peerMode1"),
     },
 ];
 
-const peerMode = ref(peerModeOptions[PeerStore.peerModeIndex]);
+const peerMode = ref(peerModeOptions()[PeerStore.peerModeIndex]);
 
 watch(peerMode, (value) => {
     PeerStore.peerModeIndex = value.value;
 });
+
+watch(locale, () => {
+    peerMode.value = peerModeOptions()[PeerStore.peerModeIndex];
+});
+
+
 </script>
 
 <template>
@@ -30,7 +36,7 @@ watch(peerMode, (value) => {
         v-model="peerMode"
         class="w-full mt-6 sm:mt-4"
         :label="$t('settings.peerSelectLabel')"
-        :options="peerModeOptions"
+        :options="peerModeOptions()"
         :placeholder="$t('settings.peerSelectPlaceholder')"
     />
 

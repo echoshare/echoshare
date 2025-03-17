@@ -12,7 +12,8 @@ body,
     overflow-x: hidden !important;
 }
 
-.toast-success-msg p {
+.toast-success-msg p,
+.va-toast__group p {
     word-wrap: break-word !important;
     word-break: break-all !important;
 }

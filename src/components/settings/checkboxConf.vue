@@ -75,6 +75,8 @@ function checkSqlConnect() {
         "
     />
 
+    
+
     <div v-if="PeerStore.enableQuery" class="mb-4">
         <VaButton class="ml-2" @click="checkSqlConnect" :loading="isLoading">
             {{ $t("settings.remoteDatabaseTest") }}

@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { usePeer } from "../../store/peer";
-import { useI18n } from "vue-i18n";
-const { t } = useI18n();
-
 const PeerStore = usePeer();
 function addIceServers() {
     PeerStore.iceServers = [...PeerStore.iceServers, ""];
