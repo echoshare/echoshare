@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref, Transition } from "vue";
+import { ref } from "vue";
 import navBar from "./components/navbar.vue";
 import footerApp from "./components/footer.vue";
 import { autoMatchRoute } from "./router/automatch";
 import { usePeer } from "./store/peer";
+import { BasicDatabase } from "./database";
 import { debug, log } from "./utils/console";
+import { useDatabase } from "./store/database";
+import { LeanCloudBase } from "./database/leancloud";
 import { requestDevicePermissions } from "./utils/webrtc/createStream";
 
 const page = ref(0);
@@ -17,7 +20,10 @@ function closeSideBar(activePage: number) {
 autoMatchRoute(page);
 const PeerStore = usePeer();
 PeerStore.findDevices().then(async () => {
-    log.success("DEVICE FOUND", "Available device information for the current device has been obtained");
+    log.success(
+        "DEVICE FOUND",
+        "Available device information for the current device has been obtained"
+    );
     await requestDevicePermissions(false);
     debug("Please check devices", [
         ...PeerStore.audioDevices,
@@ -25,7 +31,8 @@ PeerStore.findDevices().then(async () => {
     ]);
 });
 
-
+const databaseStore = useDatabase();
+databaseStore.loadDataBase([new BasicDatabase(), new LeanCloudBase()]);
 </script>
 
 <template>
@@ -44,7 +51,9 @@ PeerStore.findDevices().then(async () => {
                     >
                         <VaSidebarItemContent>
                             <VaIcon name="home" />
-                            <VaSidebarItemTitle>{{ $t("sidebar.home") }}</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{
+                                $t("sidebar.home")
+                            }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
                     <VaSidebarItem
@@ -54,9 +63,12 @@ PeerStore.findDevices().then(async () => {
                     >
                         <VaSidebarItemContent>
                             <VaIcon class="material-icons">cast</VaIcon>
-                            <VaSidebarItemTitle>{{ $t("sidebar.share") }}</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{
+                                $t("sidebar.share")
+                            }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
+
                     <VaSidebarItem
                         :active="page === 2"
                         @click="closeSideBar(2)"
@@ -64,33 +76,50 @@ PeerStore.findDevices().then(async () => {
                     >
                         <VaSidebarItemContent>
                             <VaIcon class="material-icons"> preview </VaIcon>
-                            <VaSidebarItemTitle>{{ $t("sidebar.receive") }}</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{
+                                $t("sidebar.receive")
+                            }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
 
                     <VaSidebarItem
                         :active="page === 3"
                         @click="closeSideBar(3)"
-                        to="/~history"
+                        to="/~database"
                     >
                         <VaSidebarItemContent>
-                            <VaIcon name="history" />
-                            <VaSidebarItemTitle>{{ $t("sidebar.history") }}</VaSidebarItemTitle>
+                            <VaIcon class="material-icons"> backup </VaIcon>
+                            <VaSidebarItemTitle>{{
+                                $t("sidebar.database")
+                            }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
-
 
                     <VaSidebarItem
                         :active="page === 4"
                         @click="closeSideBar(4)"
+                        to="/~history"
+                    >
+                        <VaSidebarItemContent>
+                            <VaIcon name="history" />
+                            <VaSidebarItemTitle>{{
+                                $t("sidebar.history")
+                            }}</VaSidebarItemTitle>
+                        </VaSidebarItemContent>
+                    </VaSidebarItem>
+
+                    <VaSidebarItem
+                        :active="page === 5"
+                        @click="closeSideBar(5)"
                         to="/~settings"
                     >
                         <VaSidebarItemContent>
                             <VaIcon name="settings" />
-                            <VaSidebarItemTitle>{{ $t("sidebar.settings") }}</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{
+                                $t("sidebar.settings")
+                            }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
-                    
                 </VaSidebar>
             </Transition>
         </template>

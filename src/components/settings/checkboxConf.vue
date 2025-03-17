@@ -65,7 +65,7 @@ function checkSqlConnect() {
 
     <br />
 
-    <VaCheckbox
+    <!-- <VaCheckbox
         v-model="PeerStore.enableQuery"
         class="w-full ml-3 mb-6 sm:mb-4"
         :label="
@@ -99,7 +99,7 @@ function checkSqlConnect() {
             v-model="PeerStore.remoteSERVER_URL"
             :label="$t('settings.remoteSERVER_URL')"
         />
-    </div>
+    </div> -->
 
     <div class="w-full mt-2 mb-6">
         <VaInput

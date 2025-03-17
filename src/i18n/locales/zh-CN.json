@@ -102,6 +102,7 @@
             "actionReceive": "接收",
             "resultSuccess": "成功",
             "resultFail": "失败",
+            "NO_UID_LABLE": "UID 未定义",
             "deleteRecordsTip": "将删除一条选中记录，是否确认？ | 将删除 {count} 条选中记录，是否确认？"
         },
         "toast": {

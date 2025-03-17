@@ -7,7 +7,10 @@ import { toastErr, toastTip } from "../../utils/toast";
 
 const { t } = useI18n();
 const PeerStore = usePeer();
-const iceServerConfText = ref(JSON.stringify(PeerStore.iceServerConf));
+const serverConfText = JSON.stringify(PeerStore.iceServerConf);
+const iceServerConfText = ref(
+    PeerStore.iceServerConf.length === 0 ? "" : serverConfText
+);
 
 function parseOrFetch() {
     if (iceServerConfText.value.startsWith("http")) {
@@ -31,8 +34,7 @@ function parseOrFetch() {
 }
 
 function parseJSON(json: string) {
-
-    if(!json){
+    if (!json) {
         PeerStore.iceServerConf = [];
         toastTip(t("settings.iceServerReset"));
         return;
@@ -54,7 +56,7 @@ function parseJSON(json: string) {
 </script>
 
 <template>
-    <div class="flex flex-row items-baseline mt-6 pb-5">
+    <div class="w-full mt-3 mb-3 max-sm:pt-3">
         <h1 class="grow-0 sm:block hidden">
             {{ $t("settings.stunSettingsTitle") }}
         </h1>
@@ -62,15 +64,14 @@ function parseJSON(json: string) {
             {{ $t("settings.stunSettingsShortTitle") }}
         </h1>
     </div>
-    <div class="flex">
+    <div class="w-full">
         <VaTextarea
             v-model="iceServerConfText"
+            class="w-full font-mono max-sm:mb-1.5 sm:mb-2"
             :placeholder="$t('settings.iceServerTextAreaPlaceholder')"
         />
-    </div>
 
-    <div class="flex mt-4">
-        <VaButton @click="parseOrFetch">
+        <VaButton class="w-full" @click="parseOrFetch">
             {{
                 iceServerConfText && iceServerConfText.startsWith("http")
                     ? $t("settings.iceServerTextBtnTextForURL")

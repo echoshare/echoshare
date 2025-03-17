@@ -110,7 +110,7 @@ function deleteSelected(all = false) {
                     icon="delete_sweep"
                     class="flex-none"
                     @click="deleteSelected(width < 640)"
-                    :disabled="selectedItemsEmitted.length === 0 && width > 640"
+                    :disabled="(selectedItemsEmitted.length === 0 && width > 640) || historyList.length == 0"
                 >
                     <span class="max-sm:hidden">{{
                         $t("history.deleteWhatPC")
@@ -152,7 +152,7 @@ function deleteSelected(all = false) {
                                         })
                                 "
                             >
-                                {{ cell.rowData.uid || "UID_NOT_DEFINED" }}
+                                {{ cell.rowData.uid || $t("history.NO_UID_LABLE") }}
                             </VaButton>
                         </template>
                         <template #cell(ACTION)="cell">

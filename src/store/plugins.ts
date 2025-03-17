@@ -1,7 +1,7 @@
 import { PiniaPluginContext } from "pinia";
 import { log } from "../utils/console";
 
-const KEY_PREFIX = "WEBRTC_STATE_";
+const KEY_PREFIX = "ECHOSHARE_";
 
 // 自动存储状态
 export function autoStorageState(context: PiniaPluginContext) {
