@@ -20,9 +20,9 @@ export default defineConfig(({ mode }) => {
             VitePWA({
                 injectRegister: 'script',
                 registerType: "autoUpdate",
-                devOptions: {
-                    enabled: true,
-                },
+                // devOptions: {
+                //     enabled: true,
+                // },
                 includeAssets: ["logo.png", "assets/*"],
                 manifest: {
                     name: "EchoShare online sharing",

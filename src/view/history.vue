@@ -4,7 +4,8 @@ import { computed, ref } from "vue";
 import { useWindow } from "../utils/hooks/useDOM";
 import { DataTableColumnSource, useGlobalConfig } from "vuestic-ui";
 import { useModal } from "vuestic-ui";
-
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 const { confirm } = useModal();
 const { mergeGlobalConfig } = useGlobalConfig();
 
@@ -37,9 +38,10 @@ const pages = computed(() => {
 
 const selectedItemsEmitted = ref([]);
 
-const columns: DataTableColumnSource<string>[] = [
+const columns: () => DataTableColumnSource<string>[] = () => [
     {
         key: "time",
+        label: t("history.labelTime"),
         thAlign: "center",
         tdAlign: "center",
         sortable: true,
@@ -55,6 +57,7 @@ const columns: DataTableColumnSource<string>[] = [
     },
     {
         key: "ACTION",
+        label: t("history.labelAction"),
         thAlign: "center",
         tdAlign: "center",
         sortable: true,
@@ -62,6 +65,7 @@ const columns: DataTableColumnSource<string>[] = [
     },
     {
         key: "RESULT",
+        label: t("history.labelResult"),
         thAlign: "center",
         tdAlign: "center",
         sortable: true,
@@ -75,24 +79,19 @@ function deleteSelected(all = false) {
         selectedItemsEmitted.value = [];
         return;
     }
-    const size = selectedItemsEmitted.value.length;
-    let asktext =
-        size === 1 ? "one selected record" : `${size} selected records`;
+    const count = selectedItemsEmitted.value.length;
+    confirm(t("history.deleteRecordsTip", { count })).then((ok) => {
+        if (!ok) return;
 
-    confirm(`There will be ${asktext} to be deleted, are you sure?`).then(
-        (ok) => {
-            if (!ok) return;
+        const timestamps = selectedItemsEmitted.value.map(
+            (item: any) => item.timestamp
+        );
+        HistoryStore.history = HistoryStore.history.filter(
+            (item: any) => !timestamps.includes(item.timestamp)
+        );
 
-            const timestamps = selectedItemsEmitted.value.map(
-                (item: any) => item.timestamp
-            );
-            HistoryStore.history = HistoryStore.history.filter(
-                (item: any) => !timestamps.includes(item.timestamp)
-            );
-
-            selectedItemsEmitted.value = [];
-        }
-    );
+        selectedItemsEmitted.value = [];
+    });
 }
 </script>
 
@@ -101,17 +100,24 @@ function deleteSelected(all = false) {
         <VaCard class="m-auto flex flex-col w-5/6 mb-4">
             <VaCardTitle class="text-lg flex items-center w-full">
                 <div class="flex-1 text-left">
-                    History <span class="max-sm:hidden">Panel</span>
+                    {{ $t("history.titleAlwaysShow") }}
+                    <span class="max-sm:hidden">{{
+                        $t("history.titleCanHide")
+                    }}</span>
                 </div>
                 <VaButton
                     color="danger"
                     icon="delete_sweep"
                     class="flex-none"
                     @click="deleteSelected(width < 640)"
-                    :disabled="(selectedItemsEmitted.length === 0 && width > 640)"
+                    :disabled="selectedItemsEmitted.length === 0 && width > 640"
                 >
-                    Delete&nbsp; <span class="max-sm:hidden">Selected</span
-                    ><span class="sm:hidden">All</span>
+                    <span class="max-sm:hidden">{{
+                        $t("history.deleteWhatPC")
+                    }}</span
+                    ><span class="sm:hidden">{{
+                        $t("history.deleteWhatPhone")
+                    }}</span>
                 </VaButton>
             </VaCardTitle>
             <VaCardContent>
@@ -119,15 +125,15 @@ function deleteSelected(all = false) {
                     v-if="historyList.length === 0"
                     class="text-center py-4 text-gray-500"
                 >
-                    No history records
+                    {{ $t("history.noRecordsTip") }}
                 </div>
                 <div v-else>
                     <VaDataTable
-                        :selectable="width>640"
+                        :selectable="width > 640"
                         :items="historyList"
                         :per-page="perPage"
                         :current-page="currentPage"
-                        :columns="columns"
+                        :columns="columns()"
                         @selection-change="
                             selectedItemsEmitted = $event.currentSelectedItems
                         "
@@ -171,8 +177,8 @@ function deleteSelected(all = false) {
                             >
                                 {{
                                     cell.rowData.action === "share"
-                                        ? "Sharing"
-                                        : "Receive"
+                                        ? $t("history.actionShare")
+                                        : $t("history.actionReceive")
                                 }}
                             </VaButton>
                         </template>
@@ -192,7 +198,11 @@ function deleteSelected(all = false) {
                                         : 'clear'
                                 "
                             >
-                                {{ cell.rowData.result }}
+                                {{
+                                    cell.rowData.result === "success"
+                                        ? $t("history.resultSuccess")
+                                        : $t("history.resultFail")
+                                }}
                             </VaButton>
                         </template>
                     </VaDataTable>

@@ -7,7 +7,7 @@ import PeerServerConf from "./settings/peerServerConf.vue";
 <template>
     <div class="mt-4">
         <VaCard class="m-auto flex flex-col xl6 sm10 xs11">
-            <VaCardTitle class="text-lg"> Settings Panel </VaCardTitle>
+            <VaCardTitle class="text-lg"> {{ $t("settings.title") }} </VaCardTitle>
             <VaCardContent>
                 <CheckboxConf></CheckboxConf>
                 <PeerServerConf></PeerServerConf>

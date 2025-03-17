@@ -1,4 +1,7 @@
 import { toastErr } from "../toast";
+import { i18n } from "../../i18n";
+const t = i18n.global.t;
+
 
 export function supportWebRTC() {
     const href = new URL(window.location.href);
@@ -7,7 +10,7 @@ export function supportWebRTC() {
         href.hostname !== "localhost" &&
         href.hostname !== "127.0.0.1"
     ) {
-        toastErr("非 localhost 环境请使用 HTTPS 协议，以启用 WebRTC API");
+        toastErr(t("toast.notHttpsWebRTC"));
         return false;
     }
 
@@ -21,12 +24,12 @@ export function supportClipboard() {
         href.hostname !== "localhost" &&
         href.hostname !== "127.0.0.1"
     ) {
-        toastErr("非 localhost 环境请使用 HTTPS 协议，以启用 Clipboard API");
+        toastErr(t("toast.notHttpsClipboard"));
         return false;
     }
 
     if (!window.navigator?.clipboard) {
-        toastErr("此设备不支持 Clipboard API");
+        toastErr(t("toast.noClipboard"));
         return false;
     }
     return true;

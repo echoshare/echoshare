@@ -2,6 +2,8 @@ import { toastErr, toastTip } from "../toast";
 import { usePeer } from "../../store/peer";
 import { combineAudioStream } from "./combine";
 import { consoleError } from "../console";
+import { i18n } from "../../i18n";
+const t = i18n.global.t;
 
 function createConstraints(allowUsingDevice: boolean, deviceId: string) {
     return allowUsingDevice && deviceId && deviceId.length > 0
@@ -13,7 +15,8 @@ function createConstraints(allowUsingDevice: boolean, deviceId: string) {
 
 export async function requestDevicePermissions(sendMsg = true) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        toastErr("Browser does not support device access");
+        toastErr(t("toast.noDevicesAccess"));
+        
         return false;
     }
 
@@ -38,11 +41,11 @@ export async function requestDevicePermissions(sendMsg = true) {
 
         if (sendMsg) {
             if (e.name === "NotAllowedError") {
-                toastErr("Please allow access to camera and microphone");
+                toastErr(t("toast.noMediaDevicesAccess"));
             } else if (e.name === "NotFoundError") {
-                toastErr("No camera or microphone device found");
+                toastErr(t("toast.noMediaDevicesFound"));
             } else {
-                toastErr(`Device access failed: ${e.message}`);
+                toastErr(t("toast.mediaDevicesFailed") + `${e.message}`);
             }
         }
         return false;
@@ -123,9 +126,7 @@ export async function createStreamNew() {
     const isUsingScreen = mediaMode.useScreen;
 
     if (mediaMode.useCamera && mediaMode.useAudio) {
-        toastTip(
-            "Camera and system audio are used together, you need to manually share the system audio in the whole screen, but will not read the whole screen image information"
-        );
+        toastTip(t("toast.tipBothUse"));
     }
 
     try {
@@ -133,7 +134,7 @@ export async function createStreamNew() {
             ? createScreenStream(mediaMode)
             : createCameraStream(mediaMode);
     } catch (e) {
-        toastErr("Unable to get audio stream 😭");
+        toastErr(t("toast.badMediaStream"));
         consoleError(e);
         throw e;
     }

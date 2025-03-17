@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { usePeer } from "../../store/peer";
-
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 const PeerStore = usePeer();
 const peerModeOptions = [
     {
@@ -22,21 +23,21 @@ watch(peerMode, (value) => {
 </script>
 
 <template>
-    <h1>Peer Server Configuration</h1>
+    <h1>{{ $t("settings.peerSettingsTitle") }}</h1>
 
     <VaSelect
         text-by="text"
         v-model="peerMode"
         class="w-full mt-6 sm:mt-4"
-        label="Peer Node Mode"
+        :label="$t('settings.peerSelectLabel')"
         :options="peerModeOptions"
-        placeholder="Please choose a peer node mode"
+        :placeholder="$t('settings.peerSelectPlaceholder')"
     />
 
     <VaInput
         v-if="PeerStore.peerModeIndex === 0"
         class="w-full text-gray-400 mt-3 mb-3 max-sm:pt-3"
-        label="Server URL"
+        :label="$t('settings.serverURLInputLabel')"
         readonly
         v-model="PeerStore.defaultParams.serverURL"
     />
@@ -44,8 +45,8 @@ watch(peerMode, (value) => {
     <VaInput
         v-if="PeerStore.peerModeIndex === 1"
         class="w-full mt-4 mb-3"
-        label="Server URL"
-        placeholder='Example "https://0.peerjs.com"'
+        :label="$t('settings.serverURLInputLabel')"
+        :placeholder="$t('settings.serverURLInputExamplePlaceholder')"
         v-model="PeerStore.serverURL"
     />
 </template>

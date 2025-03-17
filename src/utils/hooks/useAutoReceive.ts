@@ -3,6 +3,8 @@ import { useInterval } from "vue-hooks-plus";
 import { toastTip } from "../toast";
 import { log } from "../console";
 import { usePeer } from "../../store/peer";
+import { i18n } from "../../i18n";
+const t = i18n.global.t;
 
 export function useAutoReceive(
     videoRef: Ref<HTMLVideoElement | null>,
@@ -18,7 +20,7 @@ export function useAutoReceive(
         const mediaStream = videoRef.value.srcObject as MediaStream;
         if (mediaStream.active) return;
         if (mediaStream.active) return;
-        toastTip("视频流中断, 尝试重新获取");
+        toastTip(t("toast.tryRefetch"));
         log.error("Video stream interrupted", "Trying to recapture");
         reFetchAction();
     }

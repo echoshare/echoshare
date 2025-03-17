@@ -5,6 +5,9 @@ import { AxiosResponse } from "axios";
 import { handler, initLeanCloud } from "./handler";
 import { toastErr } from "../utils/toast";
 
+import { i18n } from "../i18n";
+const t = i18n.global.t;
+
 function checkEnabled<T extends any[], R extends any>(
     fn: (...args: T) => R
 ): (...args: T) => R | undefined {
@@ -12,7 +15,7 @@ function checkEnabled<T extends any[], R extends any>(
     return (...args: T) => {
         if (!PeerStore.enableQuery) return;
         if (!initLeanCloud()) {
-            toastErr("请配置远程服务器信息！");
+            toastErr(t("toast.noInitLeanCloud"));
             return;
         }
         return fn(...args);

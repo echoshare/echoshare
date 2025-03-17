@@ -3,7 +3,8 @@ import { usePeer } from "../../store/peer";
 import { tryConnect } from "../../leancloud/query";
 import { toastErr, toastTip } from "../../utils/toast";
 import { ref } from "vue";
-
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 const PeerStore = usePeer();
 const isLoading = ref(false);
 
@@ -16,33 +17,25 @@ function checkSqlConnect() {
                 throw new Error();
             }
             isLoading.value = false;
-            toastTip("Connect to remote UID database successfully 👍");
+            toastTip(t("toast.sqlSuccess"));
         }).catch(() => {
             isLoading.value = false;
-            toastErr("Connection failed 😭");
+            toastErr(t("toast.sqlFail"));
         });
     }
 }
 </script>
 
 <template>
-    <!-- <VaCheckbox
-        v-model="MetaStore.debug"
-        class="w-full ml-3 mb-4"
-        :label="
-            MetaStore.debug
-                ? '启用详细 debug'
-                : '关闭详细 debug'
-        "
-    /> -->
+   
 
     <VaCheckbox
         v-model="PeerStore.autoRequireStream"
         class="w-full ml-3 mb-6 sm:mb-4"
         :label="
             PeerStore.autoRequireStream
-                ? 'Enable automatic media reception'
-                : 'Disable automatic media reception'
+                ? $t('settings.autoRequireStreamEnable')
+                : $t('settings.autoRequireStreamDisable')
         "
     />
 
@@ -53,8 +46,8 @@ function checkSqlConnect() {
         class="w-full ml-3 mb-6 sm:mb-4"
         :label="
             PeerStore.enableAutoRefetch
-                ? 'Enable automatic disconnect and reconnect'
-                : 'Disable automatic disconnect and reconnect'
+                ? $t('settings.autoRefetchEnable')
+                : $t('settings.autoRefetchDisable')
         "
     />
 
@@ -63,48 +56,46 @@ function checkSqlConnect() {
     <VaCheckbox
         v-model="PeerStore.autoTryPlay"
         class="w-full ml-3 mb-6 sm:mb-4"
-        :label="PeerStore.autoTryPlay ? 'Enable timed playback check' : 'Disable timed playback check'"
-    />
-
-    <!-- <VaCheckbox
-        class="w-full ml-3 mb-4"
-        v-model="PeerStore.enableSmartSTUN"
         :label="
-            PeerStore.enableSmartSTUN
-                ? '启用自动 STUN/TURN'
-                : '关闭自动 STUN/TURN'
+            PeerStore.autoTryPlay
+                ? $t('settings.autoTryPlayEnable')
+                : $t('settings.autoTryPlayDisable')
         "
-    /> -->
+    />
 
     <br />
 
     <VaCheckbox
         v-model="PeerStore.enableQuery"
         class="w-full ml-3 mb-6 sm:mb-4"
-        :label="PeerStore.enableQuery ? 'Enable UID Remote Database' : 'Disable UID Remote Database'"
+        :label="
+            PeerStore.enableQuery
+                ? $t('settings.queryEnable')
+                : $t('settings.queryDisable')
+        "
     />
 
     <div v-if="PeerStore.enableQuery" class="mb-4">
         <VaButton class="ml-2" @click="checkSqlConnect" :loading="isLoading">
-            测试远程数据库</VaButton
-        >
+            {{ $t("settings.remoteDatabaseTest") }}
+        </VaButton>
 
         <VaInput
             class="w-full mt-6"
             v-model="PeerStore.remoteAPP_ID"
-            label="APP_ID (Only leanCloud is currently supported)"
+            :label="$t('settings.remoteAPP_ID')"
         />
 
         <VaInput
             class="w-full mt-4"
             v-model="PeerStore.remoteAPP_KEY"
-            label="APP_KEY (Only leanCloud is currently supported)"
+            :label="$t('settings.remoteAPP_KEY')"
         />
 
         <VaInput
             class="w-full mt-4"
             v-model="PeerStore.remoteSERVER_URL"
-            label="SERVER_URL (Only leanCloud is currently supported)"
+            :label="$t('settings.remoteSERVER_URL')"
         />
     </div>
 
@@ -112,7 +103,7 @@ function checkSqlConnect() {
         <VaInput
             class="w-full"
             v-model="PeerStore.maxOutOfTime"
-            label="Global maximum timeout threshold for all network communications (ms)"
+            :label="$t('settings.timecheck')"
             type="number"
         />
     </div>

@@ -17,7 +17,8 @@ import { supportClipboard, supportWebRTC } from "../../utils/device";
 import { consoleError, debug, log } from "../../utils/console";
 import { useHistoryStore } from "../../store/history";
 import { useRoute, useRouter } from "vue-router";
-
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
 let currentPeer: Ref<null | MediaConnection> = ref(null);
@@ -99,10 +100,10 @@ function findScreenStream() {
             // add to remote UID database
             addItem(peerUID.value, true)
                 ?.then(() => {
-                    toastTip("Added to remote UID database");
+                    toastTip(t("toast.addItemToDatabase"));
                 })
                 .catch((e) => {
-                    toastErr("Failed to add to remote UID database");
+                    toastErr(t("toast.addItemToDatabaseFailed"));
                     consoleError(e);
                 });
 
@@ -120,21 +121,20 @@ function findScreenStream() {
         .catch((e) => {
             consoleError(e);
             if (e.name === "NotAllowedError") {
-                toastErr("Please allow the use of media devices 🎥");
+                toastErr(t("toast.NotAllowedError"));
                 return;
             }
 
             if (e.toString().includes("not a function")) {
-                toastErr("The device does not support this WebRTC method 😥");
+                toastErr(t("toast.NoMethodError"));
                 return;
             }
             if (e.toString().includes("At least one")) {
-                toastErr(
-                    "You don't seem to have selected the equipment you need to use 🤔"
-                );
+                
+                toastErr(t("toast.NoSelectedError"));
                 return;
             }
-            toastErr("Unable to get media streaming 😭");
+            toastErr(t("toast.mediaErr"));
         })
         .finally(() => {
             HistoryStore.history.push(historyItem.value);
@@ -150,7 +150,7 @@ function copyUID() {
         return;
     }
     if (!peerUID.value) {
-        toastErr("Please share the media to get UID");
+        toastErr(t("toast.noUIDToShare"));
         return;
     }
 
@@ -160,7 +160,7 @@ function copyUID() {
         url += "&autoplay";
     }
     ClipBoard.write(url).then(() => {
-        toastTip("Copy successfully: " + url);
+        toastTip(t("toast.copySuccess") + url);
     });
 }
 

@@ -13,7 +13,8 @@ import { useAutoPlay } from "../../utils/hooks/useAutoPlay";
 import { toastErr, toastTip } from "../../utils/toast";
 import { consoleError, debug, log } from "../../utils/console";
 import { useAutoReceive } from "../../utils/hooks/useAutoReceive";
-
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let receiveTimer: Ref<number | null> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
@@ -54,15 +55,15 @@ function receiveStream() {
 
     if (!PeerStore.targetUID) {
         if (PeerStore.enableQuery) {
-            toastTip("目标 UID 为空，可尝试查询可用目标 UID");
+            toastTip(t("toast.noQuery"));
         } else {
-            toastErr("目标 UID 为空");
+            toastTip(t("toast.emptyUID"));
         }
         return;
     }
 
     if (!screenVideo.value) {
-        toastErr("当前页面未加载完成");
+        toastErr(t("toast.loadingErr"));
         return;
     }
 
@@ -89,10 +90,10 @@ function receiveStream() {
             );
             receiveTimer.value = setTimeout(() => {
                 if (!isFindStream.value) {
-                    toastErr("请求超时，无法捕获媒体流 😭");
+                    toastErr(t("toast.timeoutErr"));
                     log.error(
-                        "超时 " + PeerStore.maxOutOfTime + "ms",
-                        "无法捕获媒体流"
+                        "Timeout " + PeerStore.maxOutOfTime + "ms",
+                        "unable to capture media stream"
                     );
                     clearPeer();
                     isLoadingStream.value = false;
@@ -105,7 +106,7 @@ function receiveStream() {
             );
 
             if (!currentPeer) {
-                toastErr("无法连接到 Peer 节点，请检查 Peer 配置！");
+                toastErr(t("toast.badPeer"));
             } else {
                 currentPeer.value.on("stream", (stream) => {
                     log.success(
@@ -131,7 +132,7 @@ function receiveStream() {
     } catch (e) {
         isLoadingStream.value = false;
         isFindStream.value = false;
-        toastErr("无法获取媒体流 😭");
+        toastErr(t("toast.mediaErr"));
         consoleError(e);
     } finally {
         window.addEventListener("beforeunload", () => {

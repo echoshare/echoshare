@@ -20,6 +20,8 @@ import { consoleError, debug, log } from "../../utils/console";
 import { useHistoryStore } from "../../store/history";
 import dayjs from "dayjs";
 
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let receiveTimer: Ref<number | null> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
@@ -45,22 +47,22 @@ const isLoadingQuery = ref(false);
 const videoIsFitscreen = ref(false);
 const screenVideo = ref(null as HTMLVideoElement | null);
 
-const receiveModeOptions = [
+const receiveModeOptions = () => [
     {
         value: 0,
-        text: "Audio + Video",
+        text: t("receiveModeOptions.0"),
     },
     {
         value: 1,
-        text: "Only Video",
+        text: t("receiveModeOptions.1"),
     },
     {
         value: 2,
-        text: "Only Audio",
+        text: t("receiveModeOptions.2"),
     },
 ];
 
-const receiveMode = ref(receiveModeOptions[PeerStore.receiveModeIndex]);
+const receiveMode = ref(receiveModeOptions()[PeerStore.receiveModeIndex]);
 
 watch(receiveMode, (value) => {
     changeMediaMode();
@@ -91,7 +93,7 @@ function queryUID() {
                     find = true;
                     PeerStore.targetUID = uid;
                     router.push({ query: { uid: PeerStore.targetUID } });
-                    toastTip("可用 UID 查询成功");
+                    toastTip(t("toast.queryUIDSuccess"));
                     if (autoFetchStream.value) {
                         receiveStream();
                     }
@@ -99,12 +101,12 @@ function queryUID() {
             }
 
             if (!find) {
-                toastErr("查询失败: 未找到可用 UID");
-                throw new Error("未找到可用 UID");
+                toastErr(t("toast.queryUIDFail"));
+                throw new Error("available UID not found");
             }
         })
         .catch((e) => {
-            toastErr("请求 UID 数据库失败");
+            toastErr(t("toast.queryDatabaseFail"));
             consoleError(e);
         })
         .finally(() => {
@@ -135,15 +137,15 @@ function receiveStream() {
 
     if (!PeerStore.targetUID) {
         if (PeerStore.enableQuery) {
-            toastTip("目标 UID 为空，可尝试查询可用目标 UID");
+            toastTip(t("toast.noUIDAndQuery"));
         } else {
-            toastErr("目标 UID 为空");
+            toastErr(t("toast.noUID"));
         }
         return;
     }
 
     if (!screenVideo.value) {
-        toastErr("当前页面未加载完成");
+        toastErr(t("toast.loadingErr"));
         return;
     }
 
@@ -169,9 +171,7 @@ function receiveStream() {
             );
             receiveTimer.value = setTimeout(() => {
                 if (!isFindStream.value) {
-                    toastErr(
-                        "Request timed out, unable to capture media stream 😭"
-                    );
+                    toastErr(t("toast.timeoutCapture"));
                     log.error(
                         "Timeout " + PeerStore.maxOutOfTime + "ms",
                         "unable to capture media stream"
@@ -187,9 +187,8 @@ function receiveStream() {
             );
 
             if (!currentPeer) {
-                toastErr(
-                    "Unable to connect to Peer node, check Peer configuration!"
-                );
+               
+                toastErr(t("toast.badPeer"));
                 return;
             }
             currentPeer.value.on("stream", (stream) => {
@@ -217,7 +216,7 @@ function receiveStream() {
     } catch (e) {
         isFindStream.value = false;
         isLoadingStream.value = false;
-        toastErr("Unable to capture media stream 😭");
+        toastErr(t("toast.mediaErr"));
         consoleError(e);
     } finally {
         HistoryStore.history.push(historyItem.value);
@@ -273,7 +272,7 @@ onMounted(() => {
         (PeerStore.autoRequireStream || route.query.autoplay !== undefined)
     ) {
         if (PeerStore.enableQuery) {
-            toastTip("Automatically query available target UID");
+            toastTip(t("toast.autoFetchUID"));
             queryUID();
             return;
         }
@@ -286,18 +285,20 @@ onMounted(() => {
     <div>
         <div class="mt-4">
             <VaCard class="m-auto flex flex-col w-5/6 mb-4">
-                <VaCardTitle class="text-lg"> Receive Panel </VaCardTitle>
+                <VaCardTitle class="text-lg">
+                    {{ $t("receive.title") }}
+                </VaCardTitle>
                 <VaCardContent>
                     <div class="flex flex-1 items-end flex-wrap">
                         <VaInput
-                            label="Target UID"
+                            :label="$t('receive.inputLabel')"
                             class="grow w-24 md:w-auto"
                             v-model="PeerStore.targetUID"
                             clearable
                             :placeholder="
                                 PeerStore.enableQuery
-                                    ? 'Click to check available target UID'
-                                    : 'Please enter the target UID'
+                                    ? $t('receive.queryPlaceholder')
+                                    : $t('receive.noqueryPlaceholder')
                             "
                         />
                         <div class="flex flex-none flex-row justify-end ml-4">
@@ -332,9 +333,9 @@ onMounted(() => {
                         text-by="text"
                         v-model="receiveMode"
                         class="w-full mt-4 mb-3"
-                        label="Media Reception Mode"
-                        :options="receiveModeOptions"
-                        placeholder="Please select media reception mode"
+                        :label="$t('receive.selectLabel')"
+                        :options="receiveModeOptions()"
+                        :placeholder="$t('receive.selectPlaceholder')"
                     />
                 </VaCardContent>
             </VaCard>
