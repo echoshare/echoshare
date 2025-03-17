@@ -1,21 +1,21 @@
 <template>
-    <h1 class="mt-6" v-show="props.showTitle">Media Capture Mode Configuration</h1>
+    <h1 class="mt-6" v-show="props.showTitle">{{ $t("media.title") }}</h1>
 
     <div class="mt-6 sm:mt-4 max-sm:mb-4 flex flex-wrap w-full xl:w-1/2">
         <div class="basis-1/2 sm:basis-1/4 grow">
-            <VaCheckbox v-model="PeerStore.mediaMode.useScreen" label="Screen" />
+            <VaCheckbox v-model="PeerStore.mediaMode.useScreen" :label="$t('media.screen')" />
         </div>
         <div class="basis-1/2 sm:basis-1/4 grow">
-            <VaCheckbox v-model="PeerStore.mediaMode.useCamera" label="Camera" />
+            <VaCheckbox v-model="PeerStore.mediaMode.useCamera" :label="$t('media.camera')" />
         </div>
 
         <div class="basis-1/2 sm:basis-1/4 grow max-sm:mt-4">
-            <VaCheckbox v-model="PeerStore.mediaMode.useAudio" label="Audio" />
+            <VaCheckbox v-model="PeerStore.mediaMode.useAudio" :label="$t('media.audio')" />
         </div>
         <div class="basis-1/2 sm:basis-1/4 grow max-sm:mt-4">
             <VaCheckbox
                 v-model="PeerStore.mediaMode.useMircophone"
-                label="Microphone"
+                :label="$t('media.microphone')"
             />
         </div>
     </div>
@@ -23,9 +23,9 @@
         text-by="text"
         v-model="PeerStore.mediaMode"
         class="w-full mt-4"
-        label="Media Capture Mode"
-        :options="mediaModeOptions"
-        placeholder="Please select the media capture mode"
+        :label="$t('media.mediaModeLabel')"
+        :options="mediaModeOptions()"
+        :placeholder="$t('media.mediaModePlaceholder')"
     />
 
     <VaSelect
@@ -34,9 +34,9 @@
         v-model="PeerStore.videoDeviceId"
         value-by="deviceId"
         class="w-full mt-4"
-        label="Available Camera Devices"
+        :label="$t('media.videoDeviceIdLabel')"
         :options="PeerStore.videoDevices"
-        placeholder="Please select an available camera device"
+        :placeholder="$t('media.videoDeviceIdPlaceholder')"
     />
 
     <VaSelect
@@ -45,27 +45,20 @@
         v-model="PeerStore.audioDeviceId"
         value-by="deviceId"
         class="w-full mt-4"
-        label="Available Microphone device"
+        :label="$t('media.audioDeviceIdLabel')"
         :options="PeerStore.audioDevices"
-        placeholder="Please select an available microphone device"
+        :placeholder="$t('media.audioDeviceIdPlaceholder')"
     />
 
-    <!-- <VaSelect
-        text-by="label"
-        v-if="PeerStore.mediaMode.useAudio"
-        v-model="PeerStore.audioutDeviceId"
-        value-by="deviceId"
-        class="w-full mt-4"
-        label="可用扬声器设备"
-        :options="PeerStore.audioutDevices"
-        placeholder="请选择可用扬声器设备"
-    /> -->
+   
 </template>
 
 <script lang="ts" setup>
 import {  watch, defineEmits } from "vue";
 import { usePeer } from "../store/peer";
+import { useI18n } from "vue-i18n"
 
+const { t } = useI18n();
 const PeerStore = usePeer();
 const emit = defineEmits(["changeMediaMode"]);
 const props = defineProps({
@@ -75,10 +68,10 @@ const props = defineProps({
     },
 });
 
-const mediaModeOptions = [
+const mediaModeOptions = () => [
     {
         value: 0,
-        text: "Screen + Audio + Microphone",
+        text: t("mediaModeOptions.0"),
         useScreen: true,
         useCamera: false,
         useAudio: true,
@@ -86,7 +79,7 @@ const mediaModeOptions = [
     },
     {
         value: 1,
-        text: "Screen + Microphone",
+        text: t("mediaModeOptions.1"),
         useScreen: true,
         useCamera: false,
         useAudio: false,
@@ -94,7 +87,7 @@ const mediaModeOptions = [
     },
     {
         value: 2,
-        text: "Screen + Audio",
+        text: t("mediaModeOptions.2"),
         useScreen: true,
         useCamera: false,
         useAudio: true,
@@ -102,7 +95,7 @@ const mediaModeOptions = [
     },
     {
         value: 3,
-        text: "Screen",
+        text: t("mediaModeOptions.3"),
         useScreen: true,
         useCamera: false,
         useAudio: false,
@@ -110,7 +103,7 @@ const mediaModeOptions = [
     },
     {
         value: 4,
-        text: "Camera + Audio + Microphone",
+        text: t("mediaModeOptions.4"),
         useCamera: true,
         useMircophone: true,
         useScreen: false,
@@ -118,7 +111,7 @@ const mediaModeOptions = [
     },
     {
         value: 5,
-        text: "Camera + Microphone",
+        text: t("mediaModeOptions.5"),
         useCamera: true,
         useMircophone: true,
         useScreen: false,
@@ -126,7 +119,7 @@ const mediaModeOptions = [
     },
     {
         value: 6,
-        text: "Camera + Audio",
+        text: t("mediaModeOptions.6"),
         useCamera: true,
         useMircophone: false,
         useScreen: false,
@@ -134,7 +127,7 @@ const mediaModeOptions = [
     },
     {
         value: 7,
-        text: "Camera",
+        text: t("mediaModeOptions.7"),
         useCamera: true,
         useMircophone: false,
         useScreen: false,
@@ -158,7 +151,7 @@ watch(
 );
 
 function findSelectedOption() {
-    return mediaModeOptions.find(
+    return mediaModeOptions().find(
         (item) =>
             item.useAudio === PeerStore.mediaMode.useAudio &&
             item.useCamera === PeerStore.mediaMode.useCamera &&

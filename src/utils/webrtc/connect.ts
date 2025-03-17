@@ -147,38 +147,3 @@ export function closePeer(
     stream = null;
 }
 
-// export function createPeerInstance(uid?: string, failedTimes = 0) {
-//     const PeerStore = usePeer();
-//     const iceServers = PeerStore.getIceServers;
-//     const hasIceServer = iceServers && iceServers.length > 0;
-
-//     if (!PeerStore.enableSmartSTUN) {
-//         log.info("智能 STUN/TURN", "已禁用");
-//         return createPeerInstanceByMode(uid);
-//     }
-
-//     if (!hasIceServer) {
-//         log.info("智能 STUN/TURN", "未配置 STUN/TURN 服务器，自动禁用");
-//         return createPeerInstanceByMode(uid);
-//     }
-
-//     log.info("智能 STUN/TURN", "已启用");
-//     if (failedTimes === 0) {
-//         log.info("智能 STUN/TURN", "首次连接不使用 STUN/TURN 服务器");
-//         return PeerStore.peerModeIndex === 0
-//             ? createPeerInstanceByDefault(uid)
-//             : createPeerInstanceOnlyPeerServer(PeerStore.getServerConf, uid);
-//     } else {
-//         log.info(
-//             "智能 STUN/TURN",
-//             "第 " + failedTimes + " 次尝试使用 STUN/TURN 服务器"
-//         );
-//         return PeerStore.peerModeIndex === 0
-//             ? createPeerInstanceOnlySTUN(iceServers, uid)
-//             : createPeerInstanceBothPeerServerAndSTUN(
-//                   PeerStore.getServerConf,
-//                   iceServers,
-//                   uid
-//               );
-//     }
-// }

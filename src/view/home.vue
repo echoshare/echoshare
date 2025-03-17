@@ -4,7 +4,7 @@ import Welcome from "../components/welcome.vue";
 
 <template>
     <div class="app-home">
-        <Welcome title="WebRTC-based online screen casting"></Welcome>
+        <Welcome :title="$t('home.title')"></Welcome>
     </div>
 </template>
 

@@ -44,7 +44,7 @@ PeerStore.findDevices().then(async () => {
                     >
                         <VaSidebarItemContent>
                             <VaIcon name="home" />
-                            <VaSidebarItemTitle>Home</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{ $t("sidebar.home") }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
                     <VaSidebarItem
@@ -53,8 +53,8 @@ PeerStore.findDevices().then(async () => {
                         to="/~share"
                     >
                         <VaSidebarItemContent>
-                            <VaIcon class="material-icons"> cast</VaIcon>
-                            <VaSidebarItemTitle>Share</VaSidebarItemTitle>
+                            <VaIcon class="material-icons">cast</VaIcon>
+                            <VaSidebarItemTitle>{{ $t("sidebar.share") }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
                     <VaSidebarItem
@@ -64,7 +64,7 @@ PeerStore.findDevices().then(async () => {
                     >
                         <VaSidebarItemContent>
                             <VaIcon class="material-icons"> preview </VaIcon>
-                            <VaSidebarItemTitle>Receive</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{ $t("sidebar.receive") }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
 
@@ -75,7 +75,7 @@ PeerStore.findDevices().then(async () => {
                     >
                         <VaSidebarItemContent>
                             <VaIcon name="history" />
-                            <VaSidebarItemTitle>History</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{ $t("sidebar.history") }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
 
@@ -87,7 +87,7 @@ PeerStore.findDevices().then(async () => {
                     >
                         <VaSidebarItemContent>
                             <VaIcon name="settings" />
-                            <VaSidebarItemTitle>Settings</VaSidebarItemTitle>
+                            <VaSidebarItemTitle>{{ $t("sidebar.settings") }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
                     

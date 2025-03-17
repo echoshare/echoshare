@@ -21,10 +21,10 @@ const props = defineProps<{
                     
                     <div class="flex justify-around mt-4 max-sm:pt-2 pb-4">
                         <VaButton class="grow-0" to="/~share">
-                            Sharing
+                            {{ $t("home.share") }}
                         </VaButton>
                         <VaButton class="grow-0" to="/~receive">
-                            Receive
+                            {{ $t("home.receive") }}
                         </VaButton>
                     </div>
                 </VaCardContent>

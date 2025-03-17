@@ -6,7 +6,8 @@ export const useMetaStore = defineStore("meta", {
             title: __TITLE__,
             anthor: "EchoShare",
             year: "2025",
-            debug: true
+            debug: true,
+            language: "en-US",
         };
     },
 });

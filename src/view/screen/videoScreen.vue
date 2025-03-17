@@ -57,7 +57,7 @@ function clearPeer() {
     // peerUID.value = "";
     isFindStream.value = false;
     if (peerInstance.value && peerInstance.value.id) {
-        log.warning("即将清理 Peer 实例", peerInstance.value.id);
+        log.warning("Peer instance will be cleaned", peerInstance.value.id);
         closePeer(peerInstance.value, currentPeer.value, localStream.value);
     }
 }
@@ -173,19 +173,16 @@ function changeMediaMode() {
 <template>
     <div class="mt-4">
         <VaCard class="m-auto flex flex-col w-5/6 mb-4">
-            <VaCardTitle class="text-lg">Sharing Panel </VaCardTitle>
-            <p class="sm:pl-5 max-sm:pl-6">
-                When using this application for the first time in the browser,
-                please enable microphone, camera, and clipboard permissions.
-            </p>
+            <VaCardTitle class="text-lg">{{ $t("share.title") }}</VaCardTitle>
+           
             <VaCardContent>
                 <div class="flex items-end">
                     <VaInput
                         clearable
-                        label="Current UID"
+                        :label="$t('share.input')"
                         class="grow w-24 md:w-auto"
                         v-model="peerUID"
-                        placeholder="Share to get UID"
+                        :placeholder="$t('share.placeholder')"
                         @clear="
                             (peerUID = ''), $router.push({ query: { uid: '' } })
                         "

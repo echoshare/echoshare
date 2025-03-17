@@ -16,25 +16,25 @@ export function useAutoPlay(
     );
 
     if (PeerStore.autoTryPlay) {
-        log.success("自动播放", "启用");
+        log.success("autoplay", "enable");
     } else if (isReallyAutoPlay.value) {
-        log.info("自动播放", "根据传入 autoplay URL 参数启用");
+        log.info("autoplay", "Enabled based on passing in the autoplay URL parameter");
     } else {
-        log.error("自动播放", "关闭");
+        log.error("autoplay", "disable");
     }
 
     function autoPlay() {
         if (isReallyAutoPlay.value && videoRef.value) {
             if (route.name !== name) {
-                log.error("无法自动播放", name + "没有加载到当前页面");
+                log.error("Unable to autoplay", name + "Not loaded on current page");
                 return;
             }
             if (videoRef.value.srcObject === null) {
-                log.error("无法自动播放", name + "媒体流未捕获");
+                log.error("Unable to autoplay", name + "Media stream not captured");
                 return;
             }
             videoRef.value.play();
-            log.info(name + "尝试自动播放", new Date().toLocaleString());
+            log.info(name + "Try autoplay", new Date().toLocaleString());
         }
     }
 
@@ -45,10 +45,10 @@ export function useAutoPlay(
 
     watch(isReallyAutoPlay, (isAutoTryPlay) => {
         if (isAutoTryPlay) {
-            log.success("自动播放", "启用");
+            log.success("autoplay", "enable");
             restartAutoPlay();
         } else {
-            log.error("自动播放", "关闭");
+            log.error("autoplay", "disable");
             clearAutoPlay();
         }
     });

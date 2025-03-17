@@ -33,13 +33,13 @@ const createEmptyVideoTrack = (
 
 export const createMediaStreamFake = (mode: number = 0) => {
     if (mode === 1) {
-        log.info("接收模式", "仅视频");
+        log.info("Receive Mode", "Video Only");
         return new MediaStream([createEmptyVideoTrack()]);
     } else if (mode === 2) {
-        log.info("接收模式", "仅音频");
+        log.info("Receive Mode", "Audio Only");
         return new MediaStream([createEmptyAudioTrack()]);
     } else {
-        log.info("接收模式", "视频 + 音频");
+        log.info("Receive Mode", "Video + Audio");
         
         return new MediaStream([
             createEmptyAudioTrack(),

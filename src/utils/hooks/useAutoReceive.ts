@@ -19,7 +19,7 @@ export function useAutoReceive(
         if (mediaStream.active) return;
         if (mediaStream.active) return;
         toastTip("视频流中断, 尝试重新获取");
-        log.error("视频流中断", "尝试重新获取");
+        log.error("Video stream interrupted", "Trying to recapture");
         reFetchAction();
     }
 

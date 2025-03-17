@@ -115,7 +115,7 @@ function queryUID() {
 function clearPeer() {
     clearAutoReceive();
     if (peerInstance.value && peerInstance.value.id) {
-        log.warning("即将清理 Peer 实例", peerInstance.value.id);
+        log.warning("Cleaning up Peer instance soon", peerInstance.value.id);
         closePeer(peerInstance.value, currentPeer.value, localStream.value);
     }
     isFindStream.value = false;
@@ -149,7 +149,7 @@ function receiveStream() {
 
     if (receiveTimer.value !== null) {
         clearTimeout(receiveTimer.value);
-        log.info("超时检查", "已清除上一次检查");
+        log.info("Timeout check", "Last check cleared");
     }
 
     try {
@@ -158,7 +158,7 @@ function receiveStream() {
         historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
         peerInstance.value = createPeerInstanceByMode();
         peerInstance.value.on("open", () => {
-            log.success("Peer 实例已创建", peerInstance.value?.id);
+            log.success("Peer instance is created", peerInstance.value?.id);
             const fakeStream = createMediaStreamFake(receiveMode.value.value);
 
             log.warning(

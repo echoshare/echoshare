@@ -35,6 +35,7 @@
     "vite": "^5.3.1",
     "vite-plugin-pwa": "^0.20.1",
     "vue-hooks-plus": "^2.2.1",
+    "vue-i18n": "10",
     "vue-router": "4",
     "vue-tsc": "^2.0.21",
     "vuestic-ui": "^1.9.11"

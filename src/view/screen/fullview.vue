@@ -43,7 +43,7 @@ const { clearAutoReceive, restartAutoReceive } = useAutoReceive(
 function clearPeer() {
     clearAutoReceive();
     if (peerInstance.value && peerInstance.value.id) {
-        log.warning("即将清理 Peer 实例", peerInstance.value.id);
+        log.warning("Cleaning up Peer instance soon", peerInstance.value.id);
         closePeer(peerInstance.value, currentPeer.value, localStream.value);
     }
 }
@@ -68,19 +68,24 @@ function receiveStream() {
 
     if (receiveTimer.value !== null) {
         clearTimeout(receiveTimer.value);
-        log.info("超时检查", "已清除上一次检查");
+        log.info("Timeout check", "Last check cleared");
     }
 
     try {
         isLoadingStream.value = true;
         peerInstance.value = createPeerInstanceByMode();
         peerInstance.value.on("open", () => {
-            log.success("Peer 实例已创建", peerInstance.value?.id);
+            log.success(
+                "Peer instance has been created",
+                peerInstance.value?.id
+            );
             const fakeStream = createMediaStreamFake(0);
 
             log.warning(
-                "超时检查",
-                "计时器已启动，阈值：" + PeerStore.maxOutOfTime + "ms"
+                "Timeout check",
+                "The timer has started, threshold:" +
+                    PeerStore.maxOutOfTime +
+                    "ms"
             );
             receiveTimer.value = setTimeout(() => {
                 if (!isFindStream.value) {
@@ -103,10 +108,16 @@ function receiveStream() {
                 toastErr("无法连接到 Peer 节点，请检查 Peer 配置！");
             } else {
                 currentPeer.value.on("stream", (stream) => {
-                    log.success("媒体流加载完成", PeerStore.targetUID);
+                    log.success(
+                        "Media stream loading complete",
+                        PeerStore.targetUID
+                    );
                     receiveTimer.value && clearTimeout(receiveTimer.value);
-                    log.success("超时检查", "低于阈值，检查通过");
-                    debug("请检查媒体流数据", stream);
+                    log.success(
+                        "Timeout check",
+                        "Below threshold, check passed"
+                    );
+                    debug("Please check the media stream data", stream);
                     localStream.value = stream;
                     isFindStream.value = true;
                     failedTimes.value = 0;
