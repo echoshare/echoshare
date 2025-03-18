@@ -21,7 +21,7 @@ export const usePeer = defineStore("peer", {
             },
             receiveModeIndex: 0,
             autoTryPlay: false,
-            enableQuery: false,
+            enableQuery: true,
             enableAutoRefetch: false,
             remoteAPP_ID: "",
             remoteAPP_KEY: "",

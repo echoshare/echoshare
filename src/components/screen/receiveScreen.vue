@@ -131,7 +131,7 @@ function receiveStream() {
 
 
     if (!PeerStore.targetUID) {
-        if (PeerStore.enableQuery) {
+        if (WebhookStore.getURL.length > 0) {
             toastTip(t("toast.noUIDAndQuery"));
         } else {
             toastErr(t("toast.noUID"));
@@ -299,7 +299,7 @@ onMounted(() => {
         PeerStore.targetUID.length > 0 &&
         (PeerStore.autoRequireStream || route.query.autoplay !== undefined)
     ) {
-        if (PeerStore.enableQuery && PeerStore.targetUID.length === 0) {
+        if (WebhookStore.getURL.length > 0 && PeerStore.targetUID.length === 0) {
             toastTip(t("toast.autoFetchUID"));
             queryUID();
             return;
@@ -324,7 +324,7 @@ onMounted(() => {
                             v-model="PeerStore.targetUID"
                             clearable
                             :placeholder="
-                                PeerStore.enableQuery
+                                WebhookStore.getURL.length > 0
                                     ? $t('receive.queryPlaceholder')
                                     : $t('receive.noqueryPlaceholder')
                             "
@@ -342,7 +342,7 @@ onMounted(() => {
                                 style="height: 34px"
                                 round
                                 :loading="isLoadingQuery"
-                                v-if="PeerStore.enableQuery"
+                                v-if="WebhookStore.getURL.length > 0"
                                 class="flex-none ml-2"
                                 icon="autorenew"
                             />

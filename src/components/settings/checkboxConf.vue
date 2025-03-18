@@ -38,18 +38,6 @@ const PeerStore = usePeer();
         "
     />
 
-    <br />
-
-    <VaCheckbox
-        v-model="PeerStore.enableQuery"
-        class="w-full ml-3 mb-6 sm:mb-4"
-        :label="
-            PeerStore.enableQuery
-                ? $t('settings.queryEnable')
-                : $t('settings.queryDisable')
-        "
-    />
-
     <div class="w-full mt-2 mb-6">
         <VaInput
             class="w-full"
