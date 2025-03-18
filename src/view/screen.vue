@@ -102,7 +102,8 @@ function findScreenStream() {
                 action: "share",
                 uid: historyItem.value.uid ,
                 time: historyItem.value.time,
-                timestamp: historyItem.value.timestamp
+                timestamp: historyItem.value.timestamp,
+                hook: "on-post"
             }, () => {
                 toastTip(t("webhook.postURLWebhookSuccess"));
             }, () => {
@@ -124,7 +125,8 @@ function findScreenStream() {
                 uid: historyItem.value.uid ,
                 time: historyItem.value.time,
                 timestamp: historyItem.value.timestamp,
-                result: "success"
+                result: "success",
+                hook: "on-success"
             }, () => {
                 toastTip(t("webhook.successURLWebhookSuccess"));
             }, () => {
@@ -154,7 +156,8 @@ function findScreenStream() {
                 uid: historyItem.value.uid ,
                 time: historyItem.value.time,
                 timestamp: historyItem.value.timestamp,
-                result: "success"
+                result: "fail",
+                hook: "on-fail"
             }, () => {
                 toastTip(t("webhook.failURLWebhookSuccess"));
             }, () => {

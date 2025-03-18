@@ -84,7 +84,7 @@ watch(
 function queryUID() {
     isLoadingQuery.value = true;
 
-    if(WebhookStore.getURL.length === 0) {
+    if (WebhookStore.getURL.length === 0) {
         toastErr(t("webhook.getURLNotSet"));
         isLoadingQuery.value = false;
         return;
@@ -95,6 +95,7 @@ function queryUID() {
         {
             timestamp: historyItem.value,
             action: "receive",
+            hook: "on-get",
         },
         (response) => {
             toastTip(t("webhook.getURLWebhookSuccess"));
@@ -128,7 +129,6 @@ function videoFitscreen() {
 function receiveStream() {
     clearPeer();
     isFindStream.value = false;
-
 
     if (!PeerStore.targetUID) {
         if (WebhookStore.getURL.length > 0) {
@@ -213,6 +213,7 @@ function receiveStream() {
                         time: historyItem.value.time,
                         timestamp: historyItem.value.timestamp,
                         result: "success",
+                        hook: "on-success",
                     },
                     () => {
                         toastTip(t("webhook.successURLWebhookSuccess"));
@@ -236,7 +237,8 @@ function receiveStream() {
                 uid: historyItem.value.uid,
                 time: historyItem.value.time,
                 timestamp: historyItem.value.timestamp,
-                result: "success",
+                result: "fail",
+                hook: "on-fail",
             },
             () => {
                 toastTip(t("webhook.failURLWebhookSuccess"));
@@ -299,7 +301,10 @@ onMounted(() => {
         PeerStore.targetUID.length > 0 &&
         (PeerStore.autoRequireStream || route.query.autoplay !== undefined)
     ) {
-        if (WebhookStore.getURL.length > 0 && PeerStore.targetUID.length === 0) {
+        if (
+            WebhookStore.getURL.length > 0 &&
+            PeerStore.targetUID.length === 0
+        ) {
             toastTip(t("toast.autoFetchUID"));
             queryUID();
             return;

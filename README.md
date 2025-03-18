@@ -1,58 +1,40 @@
 # EchoShare
 
-[中文文档](./README_CN.md)
+[中文说明](./README_CN.md)
 
 <p align="center">
-  <img src="https://i.postimg.cc/G24gq7Gj/just-logo.png" width="200" alt="just-logo">
+  <img src="https://i.postimg.cc/d0M9TjZW/echoshare-mobile-left.png" width="200" alt="just-logo">
 </p>
 
-A WebRTC-based online screen sharing tool that allows you to share your screen, camera, and audio with others in real-time.
+Echoshare is an out-of-the-box, highly customizable online media sharing application.
+
+Powered by WebRTC technology, Echoshare delivers efficient, low-latency online screen sharing capabilities. It supports simultaneous transmission of screen content, camera video streams, microphone audio streams, and system audio, fully meeting diverse remote collaboration needs.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/echoshare/echoshare)
 
-## Features
+# Document
 
-- 🖥️ Screen Sharing
-- 📹 Camera Sharing
-- 🎤 Audio Sharing
-- ⌛ Local History Records
-- 💫 PWA Support
-- 🔒 Secure HTTPS Connection
-- 📱 Responsive Design
+The document is available at [http://docs.echoshare.site](https://docs.echoshare.site).
 
-## Quick Start
+# Features
 
-### Development
+## Core Features
 
-```bash
-# Install dependencies
-npm install
-```
+* 🖥️ **Screen Sharing**: Share your screen in real-time for more intuitive communication.
+* 📹 **Camera Sharing**: Enable face-to-face interaction to enhance the sense of presence in remote collaboration.
+* 🔊 **Audio Sharing**: Deliver system audio clearly to ensure a complete audio experience.
+* 🎙️ **Microphone Sharing**: Communicate seamlessly with real-time voice sharing.
 
-```bash
-# Start development server
-npm run dev
-```
-### Production
+## ✨ Enhanced Features
 
-Using Docker:
+* ⏳ **Local History Records**: Easily review shared content history for quick access.
+* 🔗 **Custom Webhooks**: Flexibly integrate with other systems to enable automated workflows.
+* 🔄 **Auto Recovery After Interruption**: Automatically reconnect after network interruptions to ensure continuous sharing.
+* 📱 **PWA Support**: Use it like a native app for a smoother experience.
+* 🌍 **Multi-language Support**: Cater to global users with seamless communication across languages.
+* 📐 **Responsive Design**: Adapt to various devices, enabling efficient work anytime, anywhere.
 
-```bash
-# Build and run with docker-compose
-docker-compose up -d
- ```
-
-Or traditional deployment:
-
-```bash
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
- ```
-
-## Tech Stack
+# Tech Stack
 - Vue 3
 - TypeScript
 - Vite
@@ -60,11 +42,5 @@ npm run preview
 - Vuestic UI
 - Tailwind CSS
 
-## Browser Support
-- Chrome (recommended)
-- Firefox
-- Edge
-- Safari
-
-## License
+# License
 MIT License
