@@ -11,7 +11,7 @@
             "home": "Home",
             "share": "Share",
             "receive": "Receive",
-            "database": "Database",
+            "webhook": "Webhook",
             "history": "History",
             "settings": "Settings"
         },
@@ -141,17 +141,11 @@
             "noUID": "Target UID is null",
             "noUIDAndQuery": "Target UID is null, try querying for available target UIDs"
         },
-        "database": {
-            "panel": {
-                "title": "Database Panel",
-                "selectLabel": "Select the database mode",
-                "confirm": "Confirm"
-            },
-            "LeanCloud": {
-                "APP_ID": "Please input LeanCloud APP_ID",
-                "APP_KEY": "Please input LeanCloud APP_KEY",
-                "SERVER_URL": "Please input LeanCloud SERVER_URL"
-            }
+        "webhook": {
+                "title": "Webhook Panel",
+                "getURLLabel": "api to query uid",
+                "getURLPlaceholder": "api to query uid"
+           
         }
     }
 }

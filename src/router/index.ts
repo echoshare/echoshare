@@ -9,13 +9,13 @@ const FullView = () => import("../view/screen/fullview.vue");
 const ReceiveView = () => import("../view/screen/receiveScreen.vue");
 const SettingsView = () => import("../view/settings.vue");
 const HistoryView = () => import("../view/history.vue");
-const DatabaseView = () => import("../view/database.vue");
+const WebhookView = () => import("../view/webhook.vue");
 
 const routes = [
     { path: "/", component: HomeView, name: "Home" },
     { path: "/~share", component: ScreenView, name: "Sender" },
     { path: "/~receive", component: ReceiveView, name: "Receiver" },
-    { path: "/~database", component: DatabaseView, name: "Database" },
+    { path: "/~webhook", component: WebhookView, name: "Webhook" },
     { path: "/~history", component: HistoryView, name: "History" },
     { path: "/~settings", component: SettingsView, name: "Settings" },
     { path: "/~view", component: FullView, name: "FullscreenReceiver" },

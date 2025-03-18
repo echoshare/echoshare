@@ -14,7 +14,6 @@ import { useRouteChange } from "../../router/automatch";
 import { useAutoPlay } from "../../utils/hooks/useAutoPlay";
 import { useAutoReceive } from "../../utils/hooks/useAutoReceive";
 import { toastErr, toastTip } from "../../utils/toast";
-import { querySenderUID } from "../../leancloud/query";
 import { supportClipboard } from "../../utils/device";
 import { consoleError, debug, log } from "../../utils/console";
 import { useHistoryStore } from "../../store/history";
@@ -82,40 +81,13 @@ watch(
 
 function queryUID() {
     isLoadingQuery.value = true;
-    const promise = querySenderUID();
+    const promise = null;
     if (!promise) {
         isLoadingQuery.value = false;
         return;
     }
 
-    promise
-        .then((res) => {
-            let find = false;
-            if (res) {
-                const uid = (res as any)?._serverData?.peer_id;
-                if (uid) {
-                    find = true;
-                    PeerStore.targetUID = uid;
-                    router.push({ query: { uid: PeerStore.targetUID } });
-                    toastTip(t("toast.queryUIDSuccess"));
-                    if (autoFetchStream.value) {
-                        receiveStream();
-                    }
-                }
-            }
-
-            if (!find) {
-                toastErr(t("toast.queryUIDFail"));
-                throw new Error("available UID not found");
-            }
-        })
-        .catch((e) => {
-            toastErr(t("toast.queryDatabaseFail"));
-            consoleError(e);
-        })
-        .finally(() => {
-            isLoadingQuery.value = false;
-        });
+    
 }
 
 function clearPeer() {

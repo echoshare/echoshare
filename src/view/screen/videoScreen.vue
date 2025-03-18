@@ -12,12 +12,12 @@ import {
 } from "../../utils/webrtc/connect";
 import { useAutoPlay } from "../../utils/hooks/useAutoPlay";
 import { toastErr, toastTip } from "../../utils/toast";
-import { addItem } from "../../leancloud/query";
 import { supportClipboard, supportWebRTC } from "../../utils/device";
 import { consoleError, debug, log } from "../../utils/console";
 import { useHistoryStore } from "../../store/history";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+
 const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
@@ -97,15 +97,7 @@ function findScreenStream() {
                 screenVideo.value.muted = true;
             }
 
-            // add to remote UID database
-            addItem(peerUID.value, true)
-                ?.then(() => {
-                    toastTip(t("toast.addItemToDatabase"));
-                })
-                .catch((e) => {
-                    toastErr(t("toast.addItemToDatabaseFailed"));
-                    consoleError(e);
-                });
+            
 
             return stream;
         })

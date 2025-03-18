@@ -4,10 +4,7 @@ import navBar from "./components/navbar.vue";
 import footerApp from "./components/footer.vue";
 import { autoMatchRoute } from "./router/automatch";
 import { usePeer } from "./store/peer";
-import { BasicDatabase } from "./database";
 import { debug, log } from "./utils/console";
-import { useDatabase } from "./store/database";
-import { LeanCloudBase } from "./database/leancloud";
 import { requestDevicePermissions } from "./utils/webrtc/createStream";
 
 const page = ref(0);
@@ -31,8 +28,6 @@ PeerStore.findDevices().then(async () => {
     ]);
 });
 
-const databaseStore = useDatabase();
-databaseStore.loadDataBase([new BasicDatabase(), new LeanCloudBase()]);
 </script>
 
 <template>
@@ -85,12 +80,12 @@ databaseStore.loadDataBase([new BasicDatabase(), new LeanCloudBase()]);
                     <VaSidebarItem
                         :active="page === 3"
                         @click="closeSideBar(3)"
-                        to="/~database"
+                        to="/~webhook"
                     >
                         <VaSidebarItemContent>
-                            <VaIcon class="material-icons"> backup </VaIcon>
+                            <VaIcon class="material-icons"> webhook </VaIcon>
                             <VaSidebarItemTitle>{{
-                                $t("sidebar.database")
+                                $t("sidebar.webhook")
                             }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>
