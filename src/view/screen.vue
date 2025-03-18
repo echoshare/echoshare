@@ -104,9 +104,9 @@ function findScreenStream() {
                 time: historyItem.value.time,
                 timestamp: historyItem.value.timestamp
             }, () => {
-                toastTip(t("webhook.getURLWebhookSuccess"));
+                toastTip(t("webhook.postURLWebhookSuccess"));
             }, () => {
-                toastErr(t("webhook.getURLWebhookFail"));
+                toastErr(t("webhook.postURLWebhookFail"));
             });
 
             return stream;
