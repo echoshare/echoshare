@@ -11,6 +11,7 @@
             "home": "主页",
             "share": "共享",
             "receive": "接收",
+            "webhook": "网络钩子",
             "history": "历史",
             "settings": "设置"
         },
@@ -63,8 +64,8 @@
             "autoRefetchDisable": "禁用断开后重连",
             "autoTryPlayEnable": "启用定时播放检查",
             "autoTryPlayDisable": "禁用定时播放检查",
-            "queryEnable": "启用 UID 远程数据库",
-            "queryDisable": "禁用 UID 远程数据库",
+            "queryEnable": "启用 webhook 功能",
+            "queryDisable": "禁用 webhook 功能",
             "remoteDatabaseTest": "测试远程数据库",
             "remoteAPP_ID": "APP_ID (目前仅支持 LeanCloud )",
             "remoteAPP_KEY": "APP_KEY (目前仅支持 LeanCloud )",
@@ -139,6 +140,28 @@
             "queryDatabaseFail": "请求 UID 数据库失败",
             "noUID": "目标 UID 为空",
             "noUIDAndQuery": "目标 UID 为空，可尝试查询可用目标 UID"
+        },
+        "webhook": {
+            "title": "Webhook 面板",
+            "customPlayloadLabel": "自定义数据",
+            "customPlayloadPlaceholder": "KEY1=VALUE1\nKEY2=VALUE2\nKEY3=VALUE3",
+            "getURLLabel": "用于获取查询 UID 的 API",
+            "getURLNotSet": "查询 URL 未设置",
+            "getURLPlaceholder": "请输入用于查询 UID 的 API [GET]",
+            "postURLLabel": "用于推送当前查询 UID 的 API",
+            "postURLPlaceholder": "请输入用于推送当前查询 UID 的 API [POST]",
+            "successURLLabel": "onsuccess Webhook",
+            "successURLPlaceholder": "成功生成 UID 时的 Webhook [POST]",
+            "failURLLabel": "onfail Webhook",
+            "failURLPlaceholder": "生成 UID 失败时的 Webhook [POST]",
+            "getURLWebhookSuccess": "成功获取 UID",
+            "getURLWebhookFail": "获取 UID 失败",
+            "postURLWebhookSuccess": "成功推送 UID",
+            "postURLWebhookFail": "推送 UID 失败",
+            "successURLWebhookSuccess": "[onsuccess webhook] 运行成功",
+            "successURLWebhookFail": "[onsuccess webhook] 运行失败",
+            "failURLWebhookSuccess": "[onfailed webhook ]运行成功",
+            "failURLWebhookFail": "[onfailed webhook] 运行失败"
         }
     }
 }

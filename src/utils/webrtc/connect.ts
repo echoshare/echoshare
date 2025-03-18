@@ -7,8 +7,8 @@ export function createPeerInstanceByMode(uid?: string) {
     const iceServers = PeerStore.iceServerConf; // PeerStore.getIceServers;
     const hasIceServer = iceServers && iceServers.length > 0;
 
-    debug("Peer mode", PeerStore.peerModeIndex);
-    debug("Peer server", {...iceServers});
+    debug(["Peer mode", PeerStore.peerModeIndex]);
+    debug(["Peer server", iceServers]);
 
     switch (PeerStore.peerModeIndex) {
         case 0:
@@ -54,7 +54,7 @@ function createPeerInstanceOnlySTUN(
     uid?: string
 ) {
     log.info("Prepare to create Peer", "Enable custom STUN/TURN server");
-    debug("Please check configuration", iceServers);
+    debug(["Please check configuration", iceServers]);
     return smartCreatePeer({
         uid,
         options: {
@@ -68,7 +68,7 @@ function createPeerInstanceOnlyPeerServer(
     uid?: string
 ) {
     log.info("Prepare to create Peer", "Enable custom node server");
-    debug("Please check configuration", serverConf);
+    debug(["Please check configuration", serverConf]);
     return smartCreatePeer({
         uid,
         options: serverConf,
@@ -85,7 +85,7 @@ function createPeerInstanceBothPeerServerAndSTUN(
         "Enable custom node server + STUN/TURN server"
     );
 
-    debug("Please check configuration", serverConf, iceServers);
+    debug(["Please check configuration", serverConf, iceServers]);
     return smartCreatePeer({
         uid,
         options: {

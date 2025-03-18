@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useWebhook } from "../store/webhook";
 const webhook = useWebhook();
 
@@ -19,27 +18,42 @@ const webhook = useWebhook();
                         v-model="webhook.getURL"
                         :placeholder="$t('webhook.getURLPlaceholder')"
                         class="w-full mb-4"
+                        clearable
                     />
 
                     <VaInput
-                        :label="$t('webhook.getURLLabel')"
+                        :label="$t('webhook.postURLLabel')"
                         v-model="webhook.postURL"
-                        :placeholder="$t('webhook.getURLPlaceholder')"
-                        class="w-full mb-4"
+                        :placeholder="$t('webhook.postURLPlaceholder')"
+                        class="w-full mb-6"
+                        clearable
                     />
 
                     <VaInput
-                        :label="$t('webhook.getURLLabel')"
+                        :label="$t('webhook.successURLLabel')"
                         v-model="webhook.successURL"
-                        :placeholder="$t('webhook.getURLPlaceholder')"
-                        class="w-full mb-4"
+                        :placeholder="$t('webhook.successURLPlaceholder')"
+                        class="w-full mb-6"
+                        clearable
                     />
 
                     <VaInput
                         :label="$t('webhook.failURLLabel')"
                         v-model="webhook.failURL"
                         :placeholder="$t('webhook.failURLPlaceholder')"
-                        class="w-full mb-4"
+                        class="w-full mb-6"
+                        clearable
+                    />
+
+                    <VaTextarea
+                        :label="$t('webhook.customPlayloadLabel')"
+                        v-model="webhook.custompayload"
+                        style="min-height: 3em;"
+                        :placeholder="$t('webhook.customPlayloadPlaceholder')"
+                        class="w-full mb-6"
+                        minRows="2"
+                        clearable
+                        autosize
                     />
                
             </VaCardContent>

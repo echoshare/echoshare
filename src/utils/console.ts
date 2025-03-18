@@ -50,13 +50,14 @@ const prettyLog = () => {
 export const log = prettyLog();
 
 export function debug(...args: any) {
-    if (window.__DEBUG_LOG) {
+   
+    if (true) {
         console.log(...args);
     }
 }
 
 export function consoleError(...args: any) {
-    if (window.__DEBUG_ERROR) {
+    if (true) {
         console.error(...args);
     }
 }

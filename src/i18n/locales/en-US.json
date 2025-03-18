@@ -64,8 +64,8 @@
             "autoRefetchDisable": "Disable reconnection after disconnection",
             "autoTryPlayEnable": "Enable timed playback check",
             "autoTryPlayDisable": "Disable timed playback check",
-            "queryEnable": "Enable UID Remote Database",
-            "queryDisable": "Disable UID Remote Database",
+            "queryEnable": "Enable webhook feature",
+            "queryDisable": "Disable webhook feature",
             "remoteDatabaseTest": "Test remote database",
             "remoteAPP_ID": "APP_ID (Only leanCloud is currently supported)",
             "remoteAPP_KEY": "APP_KEY (Only leanCloud is currently supported)",
@@ -142,10 +142,26 @@
             "noUIDAndQuery": "Target UID is null, try querying for available target UIDs"
         },
         "webhook": {
-                "title": "Webhook Panel",
-                "getURLLabel": "api to query uid",
-                "getURLPlaceholder": "api to query uid"
-           
+            "title": "Webhook Panel",
+            "customPlayloadLabel": "Custom Payload",
+            "customPlayloadPlaceholder": "KEY1=VALUE1\nKEY2=VALUE2\nKEY3=VALUE3",
+            "getURLLabel": "api to get query uid",
+            "getURLNotSet": "Query url is not set",
+            "getURLPlaceholder": "Please input the api to query uid [GET]",
+            "postURLLabel": "api to push current query uid",
+            "postURLPlaceholder": "Please input the api to push current query uid [POST]",
+            "successURLLabel": "onsuccess webhook",
+            "successURLPlaceholder": "webhook when generating the uid successfully [POST]",
+            "failURLLabel": "onfail webhook",
+            "failURLPlaceholder": "webhook when generating the uid failed [POST]",
+            "getURLWebhookSuccess": "get the uid successfully",
+            "getURLWebhookFail": "get the uid failed",
+            "postURLWebhookSuccess": "push the uid successfully",
+            "postURLWebhookFail": "push the uid failed",
+            "successURLWebhookSuccess": "[onsuccess webhook] worked successfully",
+            "successURLWebhookFail": "[onsuccess webhook] worked failed",
+            "failURLWebhookSuccess": "[onfail webhook] worked successfully",
+            "failURLWebhookFail": "[onfail webhook] worked failed"
         }
     }
 }

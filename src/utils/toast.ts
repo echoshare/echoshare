@@ -6,11 +6,8 @@ export function toastErr(message: string) {
         message,
         color: "danger",
         position: "bottom-right",
-        duration:90000000
-
     });
 }
-
 
 export function toastTip(message: string) {
     const { notify } = useToast();

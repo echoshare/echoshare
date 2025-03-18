@@ -22,10 +22,10 @@ PeerStore.findDevices().then(async () => {
         "Available device information for the current device has been obtained"
     );
     await requestDevicePermissions(false);
-    debug("Please check devices", [
+    debug(["Please check devices", [
         ...PeerStore.audioDevices,
         ...PeerStore.videoDevices,
-    ]);
+    ]]);
 });
 
 </script>

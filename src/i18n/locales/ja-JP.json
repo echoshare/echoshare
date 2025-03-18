@@ -11,6 +11,7 @@
             "home": "ホームページ",
             "share": "共有",
             "receive": "受信",
+            "webhook": "ウェブフック",
             "history": "履歴",
             "settings": "設定"
         },
@@ -63,8 +64,8 @@
             "autoRefetchDisable": "切断後に再接続を無効にする",
             "autoTryPlayEnable": "定期的な再生チェックを有効にする",
             "autoTryPlayDisable": "定期的な再生チェックを無効にする",
-            "queryEnable": "UIDリモートデータベースを有効にする",
-            "queryDisable": "UIDリモートデータベースを無効にする",
+            "queryEnable": "ウェブフック機能の有効化",
+            "queryDisable": "ウェブフック機能を無効にする",
             "remoteDatabaseTest": "リモートデータベースをテスト",
             "remoteAPP_ID": "APP_ID（現在、LeanCloud のみサポート）",
             "remoteAPP_KEY": "APP_KEY（現在、LeanCloud のみサポート）",
@@ -139,6 +140,28 @@
             "queryDatabaseFail": "UID データベースへのリクエストに失敗しました",
             "noUID": "ターゲット UID が空です",
             "noUIDAndQuery": "ターゲット UID が空です。利用可能なターゲット UID の照会を試みてください"
+        },
+        "webhook": {
+            "title": "Webhookパネル",
+            "customPlayloadLabel": "カスタムペイロード",
+            "customPlayloadPlaceholder": "KEY1=VALUE1\nKEY2=VALUE2\nKEY3=VALUE3",
+            "getURLLabel": "UID 照会を取得する API",
+            "getURLNotSet": "照会 URL が設定されていません",
+            "getURLPlaceholder": "UID 照会を取得するAPIを入力してください [GET]",
+            "postURLLabel": "現在の照会 UID をプッシュするAPI",
+            "postURLPlaceholder": "現在の照会 UID をプッシュするA PI を入力してください [POST]",
+            "successURLLabel": "onsuccess Webhook",
+            "successURLPlaceholder": "UID が正常に生成されたときの Webhook [POST]",
+            "failURLLabel": "onfail Webhook",
+            "failURLPlaceholder": "UID 生成に失敗したときのW ebhook [POST]",
+            "getURLWebhookSuccess": "UID の取得に成功しました",
+            "getURLWebhookFail": "UID の取得に失敗しました",
+            "postURLWebhookSuccess": "UID のプッシュに成功しました",
+            "postURLWebhookFail": "UID のプッシュに失敗しました",
+            "successURLWebhookSuccess": "[onsuccess webhook] の実行に成功しました",
+            "successURLWebhookFail": "[onsuccess webhook] の実行に失敗しました",
+            "failURLWebhookSuccess": "[onfail webhook] の実行に成功しました",
+            "failURLWebhookFail": "[onfail webhook] の実行に失敗しました"
         }
     }
 }

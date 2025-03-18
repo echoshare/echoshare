@@ -10,7 +10,7 @@ import {
 } from "../../utils/webrtc/connect";
 import { useRouteChange } from "../../router/automatch";
 import { useAutoPlay } from "../../utils/hooks/useAutoPlay";
-import { toastErr, toastTip } from "../../utils/toast";
+import { toastErr } from "../../utils/toast";
 import { consoleError, debug, log } from "../../utils/console";
 import { useAutoReceive } from "../../utils/hooks/useAutoReceive";
 import { useI18n } from "vue-i18n";
@@ -52,15 +52,6 @@ function clearPeer() {
 function receiveStream() {
     clearPeer();
     isFindStream.value = false;
-
-    if (!PeerStore.targetUID) {
-        if (PeerStore.enableQuery) {
-            toastTip(t("toast.noQuery"));
-        } else {
-            toastTip(t("toast.emptyUID"));
-        }
-        return;
-    }
 
     if (!screenVideo.value) {
         toastErr(t("toast.loadingErr"));
@@ -118,7 +109,7 @@ function receiveStream() {
                         "Timeout check",
                         "Below threshold, check passed"
                     );
-                    debug("Please check the media stream data", stream);
+                    debug(["Please check the media stream data", stream]);
                     localStream.value = stream;
                     isFindStream.value = true;
                     failedTimes.value = 0;
@@ -158,8 +149,11 @@ useRouteChange(matchUID);
 
 onMounted(() => {
     clearAutoReceive();
+
     if (PeerStore.targetUID && PeerStore.targetUID.length > 0) {
         receiveStream();
+    } else {
+        alert(t("toast.emptyUID"));
     }
 });
 </script>

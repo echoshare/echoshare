@@ -20,6 +20,7 @@ import { useHistoryStore } from "../../store/history";
 import dayjs from "dayjs";
 
 import { useI18n } from "vue-i18n";
+import { useWebhook } from "../../store/webhook";
 const { t, locale } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let receiveTimer: Ref<number | null> = ref(null);
@@ -44,6 +45,7 @@ const isFindStream = ref(false);
 const isLoadingStream = ref(false);
 const isLoadingQuery = ref(false);
 const videoIsFitscreen = ref(false);
+const WebhookStore = useWebhook();
 const screenVideo = ref(null as HTMLVideoElement | null);
 
 const receiveModeOptions = () => [
@@ -81,13 +83,29 @@ watch(
 
 function queryUID() {
     isLoadingQuery.value = true;
-    const promise = null;
-    if (!promise) {
+
+    if(WebhookStore.getURL.length === 0) {
+        toastErr(t("webhook.getURLNotSet"));
         isLoadingQuery.value = false;
         return;
     }
 
-    
+    WebhookStore.sendRequest(
+        "get",
+        {
+            timestamp: historyItem.value,
+            action: "receive",
+        },
+        (response) => {
+            toastTip(t("webhook.getURLWebhookSuccess"));
+            PeerStore.targetUID = response.data?.uid || "";
+            isLoadingQuery.value = false;
+        },
+        () => {
+            toastErr(t("webhook.getURLWebhookFail"));
+            isLoadingQuery.value = false;
+        }
+    );
 }
 
 function clearPeer() {
@@ -110,6 +128,7 @@ function videoFitscreen() {
 function receiveStream() {
     clearPeer();
     isFindStream.value = false;
+
 
     if (!PeerStore.targetUID) {
         if (PeerStore.enableQuery) {
@@ -163,7 +182,6 @@ function receiveStream() {
             );
 
             if (!currentPeer) {
-               
                 toastErr(t("toast.badPeer"));
                 return;
             }
@@ -186,6 +204,23 @@ function receiveStream() {
                 isLoadingStream.value = false;
                 screenVideo.value!.muted = true;
                 historyItem.value.result = "success";
+
+                WebhookStore.sendRequest(
+                    "success",
+                    {
+                        action: "receive",
+                        uid: historyItem.value.uid,
+                        time: historyItem.value.time,
+                        timestamp: historyItem.value.timestamp,
+                        result: "success",
+                    },
+                    () => {
+                        toastTip(t("webhook.successURLWebhookSuccess"));
+                    },
+                    () => {
+                        toastErr(t("webhook.successURLWebhookFail"));
+                    }
+                );
                 restartAutoReceive();
             });
         });
@@ -193,6 +228,23 @@ function receiveStream() {
         isFindStream.value = false;
         isLoadingStream.value = false;
         toastErr(t("toast.mediaErr"));
+
+        WebhookStore.sendRequest(
+            "fail",
+            {
+                action: "share",
+                uid: historyItem.value.uid,
+                time: historyItem.value.time,
+                timestamp: historyItem.value.timestamp,
+                result: "success",
+            },
+            () => {
+                toastTip(t("webhook.failURLWebhookSuccess"));
+            },
+            () => {
+                toastErr(t("webhook.failURLWebhookFail"));
+            }
+        );
         consoleError(e);
     } finally {
         HistoryStore.history.push(historyItem.value);
@@ -238,7 +290,7 @@ const { clearAutoReceive, restartAutoReceive } = useAutoReceive(
     receiveStream
 );
 
-const autoFetchStream = ref(PeerStore.autoRequireStream);
+// const autoFetchStream = ref(PeerStore.autoRequireStream);
 
 onMounted(() => {
     clearAutoReceive();
@@ -247,7 +299,7 @@ onMounted(() => {
         PeerStore.targetUID.length > 0 &&
         (PeerStore.autoRequireStream || route.query.autoplay !== undefined)
     ) {
-        if (PeerStore.enableQuery) {
+        if (PeerStore.enableQuery && PeerStore.targetUID.length === 0) {
             toastTip(t("toast.autoFetchUID"));
             queryUID();
             return;
