@@ -22,12 +22,11 @@ PeerStore.findDevices().then(async () => {
         "Available device information for the current device has been obtained"
     );
     await requestDevicePermissions(false);
-    debug(["Please check devices", [
-        ...PeerStore.audioDevices,
-        ...PeerStore.videoDevices,
-    ]]);
+    debug([
+        "Please check devices",
+        [...PeerStore.audioDevices, ...PeerStore.videoDevices],
+    ]);
 });
-
 </script>
 
 <template>
@@ -112,6 +111,15 @@ PeerStore.findDevices().then(async () => {
                             <VaIcon name="settings" />
                             <VaSidebarItemTitle>{{
                                 $t("sidebar.settings")
+                            }}</VaSidebarItemTitle>
+                        </VaSidebarItemContent>
+                    </VaSidebarItem>
+
+                    <VaSidebarItem href="https://docs.echoshare.site">
+                        <VaSidebarItemContent>
+                            <VaIcon name="article" />
+                            <VaSidebarItemTitle>{{
+                                $t("sidebar.document")
                             }}</VaSidebarItemTitle>
                         </VaSidebarItemContent>
                     </VaSidebarItem>

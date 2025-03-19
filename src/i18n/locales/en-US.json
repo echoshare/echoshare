@@ -5,7 +5,8 @@
         "home": {
             "title": "WebRTC-based online sharing",
             "share": "Sharing",
-            "receive": "Receive"
+            "receive": "Receive",
+            "404": "Oops, this is actually a 404 page"
         },
         "sidebar": {
             "home": "Home",
@@ -13,7 +14,8 @@
             "receive": "Receive",
             "webhook": "Webhook",
             "history": "History",
-            "settings": "Settings"
+            "settings": "Settings",
+            "document": "Documents"
         },
         "share": {
             "title": "Sharing Panel",

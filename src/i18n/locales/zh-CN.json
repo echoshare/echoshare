@@ -5,7 +5,8 @@
         "home": {
             "title": "基于 WebRTC 的在线屏幕共享",
             "share": "媒体共享",
-            "receive": "媒体接收"
+            "receive": "媒体接收",
+            "404": "哎呀，这实际上是一个 404 页面"
         },
         "sidebar": {
             "home": "主页",
@@ -13,7 +14,8 @@
             "receive": "接收",
             "webhook": "网络钩子",
             "history": "历史",
-            "settings": "设置"
+            "settings": "设置",
+            "document": "文档"
         },
         "share": {
             "title": "媒体共享面板",

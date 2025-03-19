@@ -14,7 +14,7 @@ Powered by WebRTC technology, Echoshare delivers efficient, low-latency online s
 
 # Document
 
-The document is available at [http://docs.echoshare.site](https://docs.echoshare.site).
+The document is available at [https://docs.echoshare.site](https://docs.echoshare.site).
 
 # Features
 

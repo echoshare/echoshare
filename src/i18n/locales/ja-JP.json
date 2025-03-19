@@ -4,8 +4,9 @@
     "message": {
         "home": {
             "title": "WebRTC ベースのオンライン画面共有",
-            "share": "メディア共有",
-            "receive": "メディア受信"
+            "share": "共有",
+            "receive": "受信",
+            "404": "これは実際には 404 ページだ。"
         },
         "sidebar": {
             "home": "ホームページ",
@@ -13,7 +14,8 @@
             "receive": "受信",
             "webhook": "ウェブフック",
             "history": "履歴",
-            "settings": "設定"
+            "settings": "設定",
+            "document": "ドキュメント"
         },
         "share": {
             "title": "メディア共有パネル",
@@ -87,7 +89,7 @@
             "iceServerTextBtnTextForURL": "JSON を取得",
             "iceServerFetchErr": "JSON の取得に失敗しました",
             "iceServerParseErr": "JSON の解析に失敗しました",
-            "iceServerReset": "STUN/TURNサーバーをリセット",
+            "iceServerReset": "STUN/TURN サーバーをリセット",
             "iceServerParseSuccess": "STUN/TURN サーバーの解析に成功しました"
         },
         "history": {

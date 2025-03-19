@@ -12,7 +12,7 @@ Echoshare 是一款开箱即用且支持高度自定义配置的在线媒体共�
 
 # 说明文档
 
-本应用的说明文档参见于 [http://docs.echoshare.site](https://docs.echoshare.site)。
+本应用的说明文档参见于 [https://docs.echoshare.site](https://docs.echoshare.site)。
 
 # 功能特点
 
