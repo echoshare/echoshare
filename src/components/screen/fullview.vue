@@ -16,7 +16,6 @@ import { useAutoReceive } from "../../utils/hooks/useAutoReceive";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
-let receiveTimer: Ref<number | null> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
 let currentPeer: Ref<null | MediaConnection> = ref(null);
 
@@ -41,12 +40,44 @@ const { clearAutoReceive, restartAutoReceive } = useAutoReceive(
     receiveStream,
     true
 );
+
 function clearPeer() {
     clearAutoReceive();
     if (peerInstance.value && peerInstance.value.id) {
         log.warning("Cleaning up Peer instance soon", peerInstance.value.id);
-        closePeer(peerInstance.value, currentPeer.value, localStream.value);
+        closePeer(peerInstance, currentPeer, localStream);
     }
+}
+
+function createReceivePeerConn() {
+    peerInstance.value = createPeerInstanceByMode();
+    peerInstance.value.on("open", () => {
+        log.success("Peer instance has been created", peerInstance.value?.id);
+        const fakeStream = createMediaStreamFake(0);
+
+        currentPeer.value = peerInstance.value!.call(
+            PeerStore.targetUID,
+            fakeStream
+        );
+
+        if (null === currentPeer.value) {
+            toastErr(t("toast.badPeer"));
+            return;
+        }
+
+        currentPeer.value.on("stream", (stream) => {
+            log.success("Media stream loading complete", PeerStore.targetUID);
+            log.success("Timeout check", "Below threshold, check passed");
+            debug(["Please check the media stream data", stream]);
+            localStream.value = stream;
+            isFindStream.value = true;
+            failedTimes.value = 0;
+            isLoadingStream.value = false;
+            screenVideo.value!.srcObject = stream;
+            screenVideo.value!.muted = true;
+            restartAutoReceive();
+        });
+    });
 }
 
 function receiveStream() {
@@ -58,68 +89,9 @@ function receiveStream() {
         return;
     }
 
-    if (receiveTimer.value !== null) {
-        clearTimeout(receiveTimer.value);
-        log.info("Timeout check", "Last check cleared");
-    }
-
     try {
         isLoadingStream.value = true;
-        peerInstance.value = createPeerInstanceByMode();
-        peerInstance.value.on("open", () => {
-            log.success(
-                "Peer instance has been created",
-                peerInstance.value?.id
-            );
-            const fakeStream = createMediaStreamFake(0);
-
-            log.warning(
-                "Timeout check",
-                "The timer has started, threshold:" +
-                    PeerStore.maxOutOfTime +
-                    "ms"
-            );
-            receiveTimer.value = setTimeout(() => {
-                if (!isFindStream.value) {
-                    toastErr(t("toast.timeoutErr"));
-                    log.error(
-                        "Timeout " + PeerStore.maxOutOfTime + "ms",
-                        "unable to capture media stream"
-                    );
-                    clearPeer();
-                    isLoadingStream.value = false;
-                }
-            }, PeerStore.maxOutOfTime) as any as number;
-
-            currentPeer.value = peerInstance.value!.call(
-                PeerStore.targetUID,
-                fakeStream
-            );
-
-            if (!currentPeer) {
-                toastErr(t("toast.badPeer"));
-            } else {
-                currentPeer.value.on("stream", (stream) => {
-                    log.success(
-                        "Media stream loading complete",
-                        PeerStore.targetUID
-                    );
-                    receiveTimer.value && clearTimeout(receiveTimer.value);
-                    log.success(
-                        "Timeout check",
-                        "Below threshold, check passed"
-                    );
-                    debug(["Please check the media stream data", stream]);
-                    localStream.value = stream;
-                    isFindStream.value = true;
-                    failedTimes.value = 0;
-                    isLoadingStream.value = false;
-                    screenVideo.value!.srcObject = stream;
-                    screenVideo.value!.muted = true;
-                    restartAutoReceive();
-                });
-            }
-        });
+        createReceivePeerConn();
     } catch (e) {
         isLoadingStream.value = false;
         isFindStream.value = false;

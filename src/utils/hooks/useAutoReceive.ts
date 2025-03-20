@@ -10,7 +10,7 @@ export function useAutoReceive(
     videoRef: Ref<HTMLVideoElement | null>,
     reFetchAction: () => void,
     defaultEnabled = false,
-    time = 5000
+    time = 2000
 ) {
     const PeerStore = usePeer();
     function cb() {

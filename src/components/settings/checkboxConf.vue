@@ -38,12 +38,12 @@ const PeerStore = usePeer();
         "
     />
 
-    <div class="w-full mt-2 mb-6">
+    <!-- <div class="w-full mt-2 mb-6">
         <VaInput
             class="w-full"
             v-model="PeerStore.maxOutOfTime"
             :label="$t('settings.timecheck')"
             type="number"
         />
-    </div>
+    </div> -->
 </template>

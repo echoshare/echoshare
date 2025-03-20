@@ -26,15 +26,15 @@ export function useAutoPlay(
     function autoPlay() {
         if (isReallyAutoPlay.value && videoRef.value) {
             if (route.name !== name) {
-                log.error("Unable to autoplay", name + "Not loaded on current page");
+                log.error("Unable to autoplay", name + " Not loaded on current page");
                 return;
             }
             if (videoRef.value.srcObject === null) {
-                log.error("Unable to autoplay", name + "Media stream not captured");
+                log.error("Unable to autoplay", name + " Media stream not captured");
                 return;
             }
             videoRef.value.play();
-            log.info(name + "Try autoplay", new Date().toLocaleString());
+            log.info(name + " Try autoplay", new Date().toLocaleString());
         }
     }
 

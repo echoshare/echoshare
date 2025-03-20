@@ -1,3 +1,4 @@
+import { Ref } from "vue";
 import { usePeer } from "../../store/peer";
 import { debug, log } from "../console";
 import Peer, { MediaConnection, PeerOptions } from "peerjs";
@@ -29,10 +30,7 @@ export function createPeerInstanceByMode(uid?: string) {
     }
 }
 
-const smartCreatePeer = (params: {
-    uid?: string;
-    options?: PeerOptions
-}) => {
+const smartCreatePeer = (params: { uid?: string; options?: PeerOptions }) => {
     if (params.uid && params.options) {
         return new Peer(params.uid, params.options);
     } else if (params.options) {
@@ -98,55 +96,58 @@ function createPeerInstanceBothPeerServerAndSTUN(
 }
 
 export function closePeer(
-    peer: null | Peer,
-    media: null | MediaConnection,
-    stream: null | MediaStream
+    peer: Ref<null | Peer>,
+    media: Ref<null | MediaConnection>,
+    stream: Ref<null | MediaStream>
 ) {
-    if (media && media.peerConnection && stream) {
-        stream.getVideoTracks().forEach((track) => {
-            const sender = media?.peerConnection
+    if (media.value && media.value.peerConnection && stream.value) {
+        stream.value.getVideoTracks().forEach((track) => {
+            const sender = media.value?.peerConnection
                 .getSenders()
                 .find((s) => s && s.track && s.track.kind == track.kind);
 
             if (sender) {
-                media?.peerConnection.removeTrack(sender);
+                media.value?.peerConnection.removeTrack(sender);
                 sender.track?.id &&
                     log.warning("Destroyed", "video track " + sender.track?.id);
             }
         });
 
-        stream.getAudioTracks().forEach((track) => {
-            const sender = media?.peerConnection
+        stream.value.getAudioTracks().forEach((track) => {
+            const sender = media.value?.peerConnection
                 .getSenders()
                 .find((s) => s && s.track && s.track.kind == track.kind);
 
             if (sender) {
-                media?.peerConnection.removeTrack(sender);
+                media.value?.peerConnection.removeTrack(sender);
                 sender.track?.id &&
                     log.warning("Destory", "audio track " + sender.track?.id);
             }
         });
 
-        media.close();
+        media.value.removeAllListeners();
+        media.value.peerConnection.close();
+        media.value.dataChannel.close();
+        media.value.close();
         log.warning("Destroyed", "MediaConnection");
     }
 
-    if (stream) {
-        stream.getTracks().forEach((track) => {
+    if (stream.value) {
+        stream.value.getTracks().forEach((track) => {
             track.stop();
         });
 
         log.warning("Destroyed", "MediaStream");
     }
 
-    if (peer) {
-        peer.disconnect();
-        peer.destroy();
+    if (peer.value) {
+        peer.value.removeAllListeners();
+        peer.value.disconnect();
+        peer.value.destroy();
         log.warning("Destroyed", "Peer instance");
     }
 
-    peer = null;
-    media = null;
-    stream = null;
+    peer.value = null;
+    media.value = null;
+    stream.value = null;
 }
-

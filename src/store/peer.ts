@@ -26,7 +26,7 @@ export const usePeer = defineStore("peer", {
             remoteAPP_ID: "",
             remoteAPP_KEY: "",
             remoteSERVER_URL: "",
-            maxOutOfTime: 20000,
+            maxOutOfTime: 10000,
             autoRequireStream: false,
             serverURL: "0.peerjs.com:443",
             iceServers: [] as string[], // "stun:stun.l.google.com:19302", "turn:homeo@turn.bistri.com:80^homeo",

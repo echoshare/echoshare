@@ -20,7 +20,7 @@
         "share": {
             "title": "Sharing Panel",
             "input": "Current UID",
-            "placeholder": "Share to get UID"
+            "placeholder": "Please enter a custom UID or it will be generated automatically"
         },
         "media": {
             "title": "Media Capture Mode Configuration",
@@ -141,7 +141,13 @@
             "queryUIDFail": "Query Failed: No Available UID Found",
             "queryDatabaseFail": "Failed to request UID database",
             "noUID": "Target UID is null",
-            "noUIDAndQuery": "Target UID is null, try querying for available target UIDs"
+            "findConnect": "Discover connection",
+            "loseConnect": "Connection is lost",
+            "findMsg": "Discover Message",
+            "heartbeatcheck": "[TOAST_IN_CONSOLE]Heartbeat Check 💓",
+            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]Heartbeat Check from sender 💓",
+            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]Heartbeat Check from receiver 💓",
+            "noUIDAndQuery": "Target UID is null, try querying for available target UID"
         },
         "webhook": {
             "title": "Webhook Panel",

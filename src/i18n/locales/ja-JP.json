@@ -20,7 +20,7 @@
         "share": {
             "title": "メディア共有パネル",
             "input": "現在の UID",
-            "placeholder": "共有して UID を取得"
+            "placeholder": "カスタム UID を入力してください（しないと自動的に生成されます）"
         },
         "media": {
             "title": "メディアキャプチャモード設定",
@@ -141,7 +141,13 @@
             "queryUIDFail": "照会に失敗しました：利用可能な UID が見つかりませんでした",
             "queryDatabaseFail": "UID データベースへのリクエストに失敗しました",
             "noUID": "ターゲット UID が空です",
-            "noUIDAndQuery": "ターゲット UID が空です。利用可能なターゲット UID の照会を試みてください"
+            "noUIDAndQuery": "ターゲット UID が空です。利用可能なターゲット UID の照会を試みてください",
+            "findConnect": "接続を発見",
+            "loseConnect": "接続を喪失",
+            "findMsg": "メッセージを受信",
+            "heartbeatcheck": "[TOAST_IN_CONSOLE]ハートビートチェック ",
+            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]ハートビートチェック（送信側から）",
+            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]ハートビートチェック（受信側から）"
         },
         "webhook": {
             "title": "Webhookパネル",

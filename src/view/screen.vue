@@ -6,12 +6,14 @@ import ClipBoard from "clipboardy";
 import { usePeer } from "../store/peer";
 import MediaConfig from "../components/mediaConfig.vue";
 import { createStreamNew } from "../utils/webrtc/createStream";
-import {
-    closePeer,
-    createPeerInstanceByMode,
-} from "../utils/webrtc/connect";
+import { closePeer, createPeerInstanceByMode } from "../utils/webrtc/connect";
 import { useAutoPlay } from "../utils/hooks/useAutoPlay";
-import { toastErr, toastTip } from "../utils/toast";
+import {
+    toastBigError,
+    toastErr,
+    toastSuccess,
+    toastTip,
+} from "../utils/toast";
 import { supportClipboard, supportWebRTC } from "../utils/device";
 import { consoleError, debug, log } from "../utils/console";
 import { useHistoryStore } from "../store/history";
@@ -38,9 +40,20 @@ const historyItem = ref({
 
 const peerUID = ref((route.query.uid as string) || "");
 const PeerStore = usePeer();
+const finalID = ref("");
 const isFindStream = ref(false);
 const videoIsFitscreen = ref(false);
 const screenVideo = ref(null as HTMLVideoElement | null);
+const connectTimer = ref(null as null | NodeJS.Timeout);
+const heartbeatChecker = ref(null as null | NodeJS.Timeout);
+
+function clearConnectionTimer() {
+    if (connectTimer.value !== null) {
+        clearInterval(connectTimer.value);
+    }
+
+    connectTimer.value = null;
+}
 
 watch(
     () => peerUID.value,
@@ -56,120 +69,180 @@ watch(
     }
 );
 
-function clearPeer() {
+function safeClosePeer() {
     isFindStream.value = false;
-    if (peerInstance.value && peerInstance.value.id) {
-        log.warning("Peer instance will be cleaned", peerInstance.value.id);
-        closePeer(peerInstance.value, currentPeer.value, localStream.value);
+    if (peerInstance.value) {
+        log.warning("Peer instance will be cleaned", finalID.value);
+        closePeer(peerInstance, currentPeer, localStream);
     }
 }
 
 useAutoPlay(screenVideo, "Sender");
 
-function findScreenStream() {
+function createPeerConnection(stream: MediaStream, isFirstTime = true) {
+    if (!stream.active) {
+        debug(["share media check:", "stream is not active"]);
+        clearConnectionTimer();
+        safeClosePeer();
+        return;
+    }
+
+    if (isFirstTime) {
+        debug(["share media check:", "stream is active"]);
+        finalID.value = peerUID.value || stream.id;
+        peerInstance.value = createPeerInstanceByMode(finalID.value);
+
+        peerInstance.value!.on("call", (call) => {
+            call.answer(stream);
+            currentPeer.value = call;
+            log.info("Acceptad requests", call.peer);
+            toastSuccess(t("toast.findConnect") + "<br />" + call.peer);
+        });
+
+        peerInstance.value!.on("connection", (conn) => {
+            setInterval(() => {
+                conn.send(
+                    t("toast.senderheartbeatcheck") +
+                        "<br />" +
+                        dayjs().format("YYYY-MM-DD HH:mm:ss")
+                );
+            }, 2000);
+
+            conn.on("data", (data) => {
+                if (
+                    typeof data === "string" &&
+                    data.startsWith("[TOAST_IN_CONSOLE]")
+                ) {
+                    debug(["toast-in-console", data.slice(18)]);
+                } else {
+                    toastSuccess(t("toast.findMsg") + "<br />" + data);
+                }
+                if (heartbeatChecker.value) {
+                    clearTimeout(heartbeatChecker.value);
+                    heartbeatChecker.value = null;
+                }
+
+                heartbeatChecker.value = setTimeout(() => {
+                    toastBigError(
+                        t("toast.loseConnect") + "<br />" + conn.peer
+                    );
+                }, 4000);
+            });
+        });
+    }
+}
+
+async function findScreenStream() {
     if (!supportWebRTC()) {
         return;
     }
-    clearPeer();
-    createStreamNew()
-        .then((stream) => {
-            // find stream
-            isFindStream.value = true;
-            localStream.value = stream;
-            log.success("Media stream created", stream.id);
-            debug(["Please check the media information", stream]);
+    safeClosePeer();
+    clearConnectionTimer();
+    const stream = await createStreamNew();
 
-            // create peer instance
-            peerInstance.value = createPeerInstanceByMode(
-                peerUID.value || stream.id
-            );
-            log.success("Peer instance created", peerInstance.value?.id);
-            debug(["Please check Peer instance", { ...peerInstance.value }]);
+    try {
+        // find stream
+        isFindStream.value = true;
+        localStream.value = stream;
+        log.success("Media stream created", stream.id);
+        debug(["Please check the media information", stream]);
 
-            // set peer UID
-            peerUID.value = peerInstance.value!.id;
-            historyItem.value.uid = peerUID.value;
-            historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+        // create peer instance
+        createPeerConnection(stream, true);
 
-            // play video
-            if (screenVideo.value !== null) {
-                screenVideo.value.srcObject = stream;
-                screenVideo.value.play();
-                screenVideo.value.muted = true;
-            }
+        connectTimer.value = setInterval(() => {
+            createPeerConnection(stream, false);
+        }, 2000) as NodeJS.Timeout;
 
-            WebhookStore.sendRequest("post", {
+        log.success("Peer instance created", peerInstance.value?.id);
+        debug(["Please check Peer instance", { ...peerInstance.value }]);
+
+        // set peer UID
+        peerUID.value = peerInstance.value!.id;
+        historyItem.value.uid = peerUID.value;
+        historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+
+        // play video
+        if (screenVideo.value !== null) {
+            screenVideo.value.srcObject = stream;
+            screenVideo.value.play();
+            screenVideo.value.muted = true;
+        }
+
+        WebhookStore.sendRequest(
+            "post",
+            {
                 action: "share",
-                uid: historyItem.value.uid ,
+                uid: historyItem.value.uid,
                 time: historyItem.value.time,
                 timestamp: historyItem.value.timestamp,
-                hook: "on-post"
-            }, () => {
+                hook: "on-post",
+            },
+            () => {
                 toastTip(t("webhook.postURLWebhookSuccess"));
-            }, () => {
+            },
+            () => {
                 toastErr(t("webhook.postURLWebhookFail"));
-            });
+            }
+        );
 
-            return stream;
-        })
-        .then((stream) => {
-            peerInstance.value!.on("call", (call) => {
-                call.answer(stream);
-                currentPeer.value = call;
-                log.info("Acceptad requests", call.peer);
-            });
-            historyItem.value.result = "success";
+        historyItem.value.result = "success";
 
-            WebhookStore.sendRequest("success", {
+        WebhookStore.sendRequest(
+            "success",
+            {
                 action: "share",
-                uid: historyItem.value.uid ,
+                uid: historyItem.value.uid,
                 time: historyItem.value.time,
                 timestamp: historyItem.value.timestamp,
                 result: "success",
-                hook: "on-success"
-            }, () => {
+                hook: "on-success",
+            },
+            () => {
                 toastTip(t("webhook.successURLWebhookSuccess"));
-            }, () => {
+            },
+            () => {
                 toastErr(t("webhook.successURLWebhookFail"));
-            });
-            return stream;
-        })
-        .catch((e) => {
-            consoleError(e);
-            if (e.name === "NotAllowedError") {
-                toastErr(t("toast.NotAllowedError"));
-                return;
             }
+        );
+    } catch (e: any) {
+        consoleError(e);
+        if (e.name === "NotAllowedError") {
+            toastErr(t("toast.NotAllowedError"));
+            return;
+        }
 
-            if (e.toString().includes("not a function")) {
-                toastErr(t("toast.NoMethodError"));
-                return;
-            }
-            if (e.toString().includes("At least one")) {
-                
-                toastErr(t("toast.NoSelectedError"));
-                return;
-            }
-            toastErr(t("toast.mediaErr"));
-            WebhookStore.sendRequest("fail", {
+        if (e.toString().includes("not a function")) {
+            toastErr(t("toast.NoMethodError"));
+            return;
+        }
+        if (e.toString().includes("At least one")) {
+            toastErr(t("toast.NoSelectedError"));
+            return;
+        }
+        toastErr(t("toast.mediaErr"));
+        WebhookStore.sendRequest(
+            "fail",
+            {
                 action: "share",
-                uid: historyItem.value.uid ,
+                uid: historyItem.value.uid,
                 time: historyItem.value.time,
                 timestamp: historyItem.value.timestamp,
                 result: "fail",
-                hook: "on-fail"
-            }, () => {
+                hook: "on-fail",
+            },
+            () => {
                 toastTip(t("webhook.failURLWebhookSuccess"));
-            }, () => {
+            },
+            () => {
                 toastErr(t("webhook.failURLWebhookFail"));
-            });
-        })
-        .finally(() => {
-            HistoryStore.history.push(historyItem.value);
-        });
+            }
+        );
+    }
+    HistoryStore.history.push(historyItem.value);
 
     window.addEventListener("beforeunload", () => {
-        clearPeer();
+        safeClosePeer();
     });
 }
 
@@ -193,7 +266,7 @@ function copyUID() {
 }
 
 function changeMediaMode() {
-    clearPeer();
+    safeClosePeer();
     isFindStream.value = false;
 }
 </script>
@@ -202,7 +275,7 @@ function changeMediaMode() {
     <div class="mt-4">
         <VaCard class="m-auto flex flex-col w-5/6 mb-4">
             <VaCardTitle class="text-lg">{{ $t("share.title") }}</VaCardTitle>
-           
+
             <VaCardContent>
                 <div class="flex items-end">
                     <VaInput
@@ -229,6 +302,7 @@ function changeMediaMode() {
                             round
                             class="grow-0 ml-2"
                             icon="preview"
+                            :disabled="isFindStream"
                         />
                     </div>
                 </div>

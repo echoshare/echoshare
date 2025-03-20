@@ -20,7 +20,7 @@
         "share": {
             "title": "媒体共享面板",
             "input": "当前 UID",
-            "placeholder": "分享获取 UID"
+            "placeholder": "请输入自定义 UID （否则自动生成）"
         },
         "media": {
             "title": "媒体捕获模式配置",
@@ -141,6 +141,12 @@
             "queryUIDFail": "查询失败: 未找到可用 UID",
             "queryDatabaseFail": "请求 UID 数据库失败",
             "noUID": "目标 UID 为空",
+            "findConnect": "发现连接",
+            "loseConnect": "失去连接",
+            "findMsg": "收到消息",
+            "heartbeatcheck": "[TOAST_IN_CONSOLE]心跳检测 💓",
+            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]心跳检测（来自发送端）💓",
+            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]心跳检测（来自接收端）💓",
             "noUIDAndQuery": "目标 UID 为空，可尝试查询可用目标 UID"
         },
         "webhook": {

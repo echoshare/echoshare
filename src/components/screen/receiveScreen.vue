@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ClipBoard from "clipboardy";
 import { onMounted, Ref, ref, watch } from "vue";
-import Peer, { MediaConnection } from "peerjs";
+import Peer, { DataConnection, MediaConnection } from "peerjs";
 import { usePeer } from "../../store/peer";
 import { createMediaStreamFake } from "../../utils/webrtc/fakeStream";
 import { useRoute, useRouter } from "vue-router";
@@ -13,7 +13,7 @@ import { useWindow } from "../../utils/hooks/useDOM";
 import { useRouteChange } from "../../router/automatch";
 import { useAutoPlay } from "../../utils/hooks/useAutoPlay";
 import { useAutoReceive } from "../../utils/hooks/useAutoReceive";
-import { toastErr, toastTip } from "../../utils/toast";
+import { toastErr, toastSuccess, toastTip } from "../../utils/toast";
 import { supportClipboard } from "../../utils/device";
 import { consoleError, debug, log } from "../../utils/console";
 import { useHistoryStore } from "../../store/history";
@@ -23,7 +23,6 @@ import { useI18n } from "vue-i18n";
 import { useWebhook } from "../../store/webhook";
 const { t, locale } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
-let receiveTimer: Ref<number | null> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
 let currentPeer: Ref<null | MediaConnection> = ref(null);
 
@@ -47,6 +46,8 @@ const isLoadingQuery = ref(false);
 const videoIsFitscreen = ref(false);
 const WebhookStore = useWebhook();
 const screenVideo = ref(null as HTMLVideoElement | null);
+const heartbeatChecker = ref(null as null | NodeJS.Timeout);
+const peerDataConnection = ref(null as DataConnection | null);
 
 const receiveModeOptions = () => [
     {
@@ -78,6 +79,8 @@ watch(
     () => PeerStore.targetUID,
     (value) => {
         router.push({ query: { uid: value } });
+        isLoadingQuery.value = false;
+        clearPeer();
     }
 );
 
@@ -113,7 +116,7 @@ function clearPeer() {
     clearAutoReceive();
     if (peerInstance.value && peerInstance.value.id) {
         log.warning("Cleaning up Peer instance soon", peerInstance.value.id);
-        closePeer(peerInstance.value, currentPeer.value, localStream.value);
+        closePeer(peerInstance, currentPeer, localStream);
     }
     isFindStream.value = false;
     isLoadingStream.value = false;
@@ -124,6 +127,65 @@ function videoFitscreen() {
     videoIsFitscreen.value = !videoIsFitscreen.value;
     const app = document.getElementById("app");
     if (app) app.style.display = videoIsFitscreen.value ? "none" : "block";
+}
+
+function createReceivePeerConn() {
+    peerInstance.value = createPeerInstanceByMode();
+    peerInstance.value.on("open", () => {
+        log.success("Peer instance is created", peerInstance.value?.id);
+        const fakeStream = createMediaStreamFake(receiveMode.value.value);
+
+        currentPeer.value = peerInstance.value!.call(
+            PeerStore.targetUID,
+            fakeStream
+        );
+
+        if (null === currentPeer.value) {
+            toastErr(t("toast.badPeer"));
+            return;
+        }
+
+        peerDataConnection.value = peerInstance.value!.connect(
+            PeerStore.targetUID
+        );
+
+        peerDataConnection.value.on("data", (data) => {
+            if (
+                typeof data === "string" &&
+                data.startsWith("[TOAST_IN_CONSOLE]")
+            ) {
+                debug(["toast-in-console", data.slice(18)]);
+            } else {
+                toastSuccess(t("toast.findMsg") + "<br />" + data);
+            }
+            if (peerDataConnection.value) {
+                peerDataConnection.value.send(
+                    t("toast.receiverheartbeatcheck") +
+                        "<br />" +
+                        dayjs().format("YYYY-MM-DD HH:mm:ss")
+                );
+            }
+        });
+
+        currentPeer.value.on("stream", (stream) => {
+            debug(["find stream", stream]);
+            if (isFindStream.value) {
+                log.success(
+                    "Media stream loading complete",
+                    PeerStore.targetUID
+                );
+                debug("Please check the media stream data", stream);
+            }
+            localStream.value = stream;
+            screenVideo.value!.srcObject = stream;
+            isFindStream.value = true;
+            isLoadingStream.value = false;
+            screenVideo.value!.muted = true;
+            historyItem.value.result = "success";
+
+            restartAutoReceive();
+        });
+    });
 }
 
 function receiveStream() {
@@ -144,87 +206,30 @@ function receiveStream() {
         return;
     }
 
-    if (receiveTimer.value !== null) {
-        clearTimeout(receiveTimer.value);
-        log.info("Timeout check", "Last check cleared");
-    }
-
     try {
         isLoadingStream.value = true;
         historyItem.value.uid = PeerStore.targetUID;
         historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
-        peerInstance.value = createPeerInstanceByMode();
-        peerInstance.value.on("open", () => {
-            log.success("Peer instance is created", peerInstance.value?.id);
-            const fakeStream = createMediaStreamFake(receiveMode.value.value);
 
-            log.warning(
-                "Timeout check",
-                "Timer has been activated, Threshold:" +
-                    PeerStore.maxOutOfTime +
-                    "ms"
-            );
-            receiveTimer.value = setTimeout(() => {
-                if (!isFindStream.value) {
-                    toastErr(t("toast.timeoutCapture"));
-                    log.error(
-                        "Timeout " + PeerStore.maxOutOfTime + "ms",
-                        "unable to capture media stream"
-                    );
-                    clearPeer();
-                    isLoadingStream.value = false;
-                }
-            }, PeerStore.maxOutOfTime) as any as number;
+        createReceivePeerConn();
 
-            currentPeer.value = peerInstance.value!.call(
-                PeerStore.targetUID,
-                fakeStream
-            );
-
-            if (!currentPeer) {
-                toastErr(t("toast.badPeer"));
-                return;
+        WebhookStore.sendRequest(
+            "success",
+            {
+                action: "receive",
+                uid: historyItem.value.uid,
+                time: historyItem.value.time,
+                timestamp: historyItem.value.timestamp,
+                result: "success",
+                hook: "on-success",
+            },
+            () => {
+                toastTip(t("webhook.successURLWebhookSuccess"));
+            },
+            () => {
+                toastErr(t("webhook.successURLWebhookFail"));
             }
-            currentPeer.value.on("stream", (stream) => {
-                if (isFindStream.value) {
-                    receiveTimer.value && clearTimeout(receiveTimer.value);
-                    log.success(
-                        "Media stream loading complete",
-                        PeerStore.targetUID
-                    );
-                    log.success(
-                        "Timeout check",
-                        "Below threshold, check passed"
-                    );
-                    debug("Please check the media stream data", stream);
-                }
-                localStream.value = stream;
-                screenVideo.value!.srcObject = stream;
-                isFindStream.value = true;
-                isLoadingStream.value = false;
-                screenVideo.value!.muted = true;
-                historyItem.value.result = "success";
-
-                WebhookStore.sendRequest(
-                    "success",
-                    {
-                        action: "receive",
-                        uid: historyItem.value.uid,
-                        time: historyItem.value.time,
-                        timestamp: historyItem.value.timestamp,
-                        result: "success",
-                        hook: "on-success",
-                    },
-                    () => {
-                        toastTip(t("webhook.successURLWebhookSuccess"));
-                    },
-                    () => {
-                        toastErr(t("webhook.successURLWebhookFail"));
-                    }
-                );
-                restartAutoReceive();
-            });
-        });
+        );
     } catch (e) {
         isFindStream.value = false;
         isLoadingStream.value = false;
