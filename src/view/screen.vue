@@ -223,7 +223,7 @@ async function findScreenStream() {
             }
         );
     } catch (e: any) {
-        safeClosePeer(true);
+        safeClosePeer();
         consoleError([
             "sharing error",
             e,

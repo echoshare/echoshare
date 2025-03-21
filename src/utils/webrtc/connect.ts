@@ -100,14 +100,14 @@ export function closePeer(
     media: Ref<null | MediaConnection>,
     stream: Ref<null | MediaStream>
 ) {
-    if (media.value && media.value.peerConnection && stream.value) {
+    if (media.value && media.value?.peerConnection && stream.value) {
         stream.value.getVideoTracks().forEach((track) => {
             const sender = media.value?.peerConnection
-                .getSenders()
-                .find((s) => s && s.track && s.track.kind == track.kind);
+                ?.getSenders()
+                ?.find((s) => s && s.track && s.track?.kind == track?.kind);
 
             if (sender) {
-                media.value?.peerConnection.removeTrack(sender);
+                media.value?.peerConnection?.removeTrack(sender);
                 sender.track?.id &&
                     log.warning("Destroyed", "video track " + sender.track?.id);
             }
@@ -115,19 +115,21 @@ export function closePeer(
 
         stream.value.getAudioTracks().forEach((track) => {
             const sender = media.value?.peerConnection
-                .getSenders()
-                .find((s) => s && s.track && s.track.kind == track.kind);
+                ?.getSenders()
+                ?.find((s) => s && s?.track && s?.track?.kind == track.kind);
 
             if (sender) {
-                media.value?.peerConnection.removeTrack(sender);
+                media.value?.peerConnection?.removeTrack(sender);
                 sender.track?.id &&
                     log.warning("Destory", "audio track " + sender.track?.id);
             }
         });
+    }
 
+    if (media.value) {
         media.value.removeAllListeners();
-        media.value.peerConnection.close();
-        media.value.dataChannel.close();
+        media.value.peerConnection?.close();
+        media.value.dataChannel?.close();
         media.value.close();
         log.warning("Destroyed", "MediaConnection");
     }
