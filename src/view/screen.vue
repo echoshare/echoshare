@@ -293,9 +293,7 @@ function clearPeerUID() {
     router.push({ query: { uid: "" } });
 }
 
-function changePeerUID(args) {
-    console.log("changePeerUID");
-}
+
 </script>
 
 <template>
@@ -312,7 +310,6 @@ function changePeerUID(args) {
                         v-model="peerUID"
                         :placeholder="$t('share.placeholder')"
                         @clear="clearPeerUID"
-                        @change="changePeerUID"
                     />
                     <div
                         class="flex grow-0 flex-row justify-end max-sm:ml-4 sm:ml-2"
