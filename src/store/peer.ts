@@ -1,4 +1,6 @@
 import { defineStore } from "pinia";
+import { debug } from "../utils/console";
+import { resolvePeerServerURL } from "../utils";
 
 export const usePeer = defineStore("peer", {
     state() {
@@ -38,6 +40,8 @@ export const usePeer = defineStore("peer", {
         async findDevices() {
             const devices =
                 await window.navigator.mediaDevices.enumerateDevices();
+
+            debug(["find devices", devices]);
             this.audioDevices = devices.filter(
                 (device) => device.kind === "audioinput"
             );
@@ -70,6 +74,8 @@ export const usePeer = defineStore("peer", {
                 };
             }
 
+            return resolvePeerServerURL(state.serverURL);
+
             const urlObj = new URL(state.serverURL);
             const searchParams = urlObj.searchParams
                 .toString()
@@ -90,7 +96,6 @@ export const usePeer = defineStore("peer", {
 
             return { host, port, path, secure: protocol === "https:", key };
         },
-
 
         getIceServers(state): Array<{
             urls: string;

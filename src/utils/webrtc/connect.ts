@@ -2,16 +2,31 @@ import { Ref } from "vue";
 import { usePeer } from "../../store/peer";
 import { debug, log } from "../console";
 import Peer, { MediaConnection, PeerOptions } from "peerjs";
+import { resolvePeerServerURL } from "..";
 
-export function createPeerInstanceByMode(uid?: string) {
+export function createPeerInstanceByMode(uid?: string, peerServerURL?: string) {
+    debug(["createPeerInstanceByMode", uid, peerServerURL]);
     const PeerStore = usePeer();
     const iceServers = PeerStore.iceServerConf; // PeerStore.getIceServers;
     const hasIceServer = iceServers && iceServers.length > 0;
 
-    debug(["Peer mode", PeerStore.peerModeIndex]);
+    let peerServer = PeerStore.getServerConf;
+
+    let mode = PeerStore.peerModeIndex;
+
+    if (peerServerURL && peerServerURL.startsWith("http")) {
+        mode = 1;
+        debug(
+            "peer server url has been changed due to url params",
+            peerServerURL
+        );
+        peerServer = resolvePeerServerURL(peerServerURL);
+    }
+
+    debug(["Peer mode", mode]);
     debug(["Peer server", iceServers]);
 
-    switch (PeerStore.peerModeIndex) {
+    switch (mode) {
         case 0:
             return hasIceServer
                 ? createPeerInstanceOnlySTUN(iceServers, uid)
@@ -19,18 +34,15 @@ export function createPeerInstanceByMode(uid?: string) {
         default:
             return hasIceServer
                 ? createPeerInstanceBothPeerServerAndSTUN(
-                      PeerStore.getServerConf,
+                      peerServer,
                       iceServers,
                       uid
                   )
-                : createPeerInstanceOnlyPeerServer(
-                      PeerStore.getServerConf,
-                      uid
-                  );
+                : createPeerInstanceOnlyPeerServer(peerServer, uid);
     }
 }
 
-const smartCreatePeer = (params: { uid?: string; options?: PeerOptions }) => {
+const createSmartPeerInstance = (params: { uid?: string; options?: PeerOptions }) => {
     if (params.uid && params.options) {
         return new Peer(params.uid, params.options);
     } else if (params.options) {
@@ -44,7 +56,7 @@ const smartCreatePeer = (params: { uid?: string; options?: PeerOptions }) => {
 
 function createPeerInstanceByDefault(uid?: string) {
     log.info("Prepare to create Peer", "Enable public node server");
-    return smartCreatePeer({ uid });
+    return createSmartPeerInstance({ uid });
 }
 
 function createPeerInstanceOnlySTUN(
@@ -53,7 +65,7 @@ function createPeerInstanceOnlySTUN(
 ) {
     log.info("Prepare to create Peer", "Enable custom STUN/TURN server");
     debug(["Please check configuration", iceServers]);
-    return smartCreatePeer({
+    return createSmartPeerInstance({
         uid,
         options: {
             config: { iceServers },
@@ -66,8 +78,9 @@ function createPeerInstanceOnlyPeerServer(
     uid?: string
 ) {
     log.info("Prepare to create Peer", "Enable custom node server");
+
     debug(["Please check configuration", serverConf]);
-    return smartCreatePeer({
+    return createSmartPeerInstance({
         uid,
         options: serverConf,
     });
@@ -84,7 +97,7 @@ function createPeerInstanceBothPeerServerAndSTUN(
     );
 
     debug(["Please check configuration", serverConf, iceServers]);
-    return smartCreatePeer({
+    return createSmartPeerInstance({
         uid,
         options: {
             ...serverConf,

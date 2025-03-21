@@ -61,6 +61,14 @@
             :placeholder="$t('media.novideoDeviceIdLabel')"
             requiredMark
         />
+
+        <!-- <VaButton
+            @click="PeerStore.findDevices()"
+            style="height: 34px"
+            round
+            class="flex-none ml-2"
+            icon="autorenew"
+        /> -->
     </template>
 
     <template v-if="PeerStore.mediaMode.useMircophone">

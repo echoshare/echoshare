@@ -5,7 +5,7 @@ import Peer, { MediaConnection } from "peerjs";
 import ClipBoard from "clipboardy";
 import { usePeer } from "../store/peer";
 import MediaConfig from "../components/mediaConfig.vue";
-import { createStreamNew } from "../utils/webrtc/createStream";
+import { createStream } from "../utils/webrtc/createStream";
 import { closePeer, createPeerInstanceByMode } from "../utils/webrtc/connect";
 import { useAutoPlay } from "../utils/hooks/useAutoPlay";
 import {
@@ -157,7 +157,7 @@ async function findScreenStream() {
         // find stream
         isFindStream.value = false;
         changeByStream.value = true;
-        const stream = await createStreamNew();
+        const stream = await createStream();
         localStream.value = stream;
         log.success("Media stream created", stream.id);
         debug(["Please check the media information", stream]);

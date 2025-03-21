@@ -120,7 +120,7 @@ async function createCameraStream(mediaMode: {
     ]);
 }
 
-export async function createStreamNew() {
+export async function createStream() {
     const PeerStore = usePeer();
     const mediaMode = PeerStore.mediaMode;
     const isUsingScreen = mediaMode.useScreen;

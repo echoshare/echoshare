@@ -136,6 +136,7 @@
             "notHttpsClipboard": "For non-localhost environments, please use the HTTPS protocol to enable the Clipboard API",
             "noClipboard": "This device does not support the Clipboard API",
             "tryRefetch": "The video stream was interrupted, try refetching",
+            "tryRefetchAfterError": "Failed to fetch media, try refetching again",
             "noQuery": "Target UID is empty, try to query available target UIDs",
             "emptyUID": "The target UID is empty",
             "loadingErr": "The current page has not finished loading",
@@ -148,9 +149,9 @@
             "findConnect": "Discover connection",
             "loseConnect": "Connection is lost",
             "findMsg": "Discover Message",
-            "heartbeatcheck": "[TOAST_IN_CONSOLE]Heartbeat Check 💓",
-            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]Heartbeat Check from sender 💓",
-            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]Heartbeat Check from receiver 💓",
+            "heartbeatcheck": "[TOAST_IN_CONSOLE]💓Heartbeat Check💓 ",
+            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]💓Heartbeat Check 💓from sender 💓",
+            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]💓Heartbeat Check 💓from receiver 💓",
             "noUIDAndQuery": "Target UID is null, try querying for available target UID"
         },
         "webhook": {

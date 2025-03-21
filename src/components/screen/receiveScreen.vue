@@ -47,7 +47,6 @@ const isLoadingQuery = ref(false);
 const videoIsFitscreen = ref(false);
 const WebhookStore = useWebhook();
 const screenVideo = ref(null as HTMLVideoElement | null);
-const heartbeatChecker = ref(null as null | NodeJS.Timeout);
 const peerDataConnection = ref(null as DataConnection | null);
 
 const receiveModeOptions = () => [
@@ -78,7 +77,7 @@ watch(receiveMode, (value) => {
 
 watch(
     () => PeerStore.targetUID,
-    (curr, old) => {
+    (_, old) => {
         router.push({ query: { uid: PeerStore.targetUID } });
         isLoadingQuery.value = false;
         if (old) clearPeer();
@@ -139,14 +138,20 @@ function videoFitscreen() {
     if (app) app.style.display = videoIsFitscreen.value ? "none" : "block";
 }
 
-function createReceivePeerConn() {
+function createReceivePeerConnection() {
     peerInstance.value = createPeerInstanceByMode(
-        PeerStore.customUID ? PeerStore.customUID : undefined
+        PeerStore.customUID ? PeerStore.customUID : undefined,
+        resolveQueryUID(route.query.peer)
     );
 
     peerInstance.value.on("error", (err) => {
         toastErr("⚠️ " + String(err));
         clearPeer();
+
+        if (PeerStore.enableAutoRefetch || route.query.refetch !== undefined) {
+            receiveStream();
+            setTimeout(() => toastTip(t("toast.tryRefetchAfterError")), 1500);
+        }
     });
 
     peerInstance.value.on("open", () => {
@@ -234,7 +239,7 @@ function receiveStream() {
         historyItem.value.uid = PeerStore.targetUID;
         historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
 
-        createReceivePeerConn();
+        createReceivePeerConnection();
 
         WebhookStore.sendRequest(
             "success",
@@ -325,6 +330,7 @@ const { clearAutoReceive, restartAutoReceive } = useAutoReceive(
 
 onMounted(() => {
     clearAutoReceive();
+
     if (
         PeerStore.targetUID &&
         PeerStore.targetUID.length > 0 &&
@@ -376,7 +382,10 @@ onMounted(() => {
                                 style="height: 34px"
                                 round
                                 :loading="isLoadingQuery"
-                                v-if="WebhookStore.getURL.length > 0"
+                                v-if="
+                                    WebhookStore.getURL.length > 0 ||
+                                    WebhookStore.uniURL.length > 0
+                                "
                                 class="flex-none ml-2"
                                 icon="autorenew"
                             />

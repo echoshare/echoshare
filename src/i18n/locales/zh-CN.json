@@ -136,6 +136,7 @@
             "notHttpsClipboard": "非 localhost 环境请使用 HTTPS 协议，以启用 Clipboard API",
             "noClipboard": "此设备不支持 Clipboard API",
             "tryRefetch": "视频流中断, 尝试重新获取",
+            "tryRefetchAfterError": "拉取失败, 尝试重新获取",
             "noQuery": "目标 UID 为空，可尝试查询可用目标 UID",
             "emptyUID": "目标 UID 为空",
             "loadingErr": "当前页面未加载完成",
@@ -148,9 +149,9 @@
             "findConnect": "发现连接",
             "loseConnect": "失去连接",
             "findMsg": "收到消息",
-            "heartbeatcheck": "[TOAST_IN_CONSOLE]心跳检测 💓",
-            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]心跳检测（来自发送端）💓",
-            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]心跳检测（来自接收端）💓",
+            "heartbeatcheck": "[TOAST_IN_CONSOLE]💓心跳检测 💓",
+            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]💓心跳检测💓（来自发送端）",
+            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]💓心跳检测💓（来自接收端）",
             "noUIDAndQuery": "目标 UID 为空，可尝试查询可用目标 UID"
         },
         "webhook": {

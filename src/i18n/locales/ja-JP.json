@@ -136,6 +136,7 @@
             "notHttpsClipboard": "localhost 環境以外では、HTTPSプロトコルを使用して Clipboard API を有効にしてください",
             "noClipboard": "このデバイスは Clipboard API をサポートしていません",
             "tryRefetch": "ビデオストリームが中断されました。再取得を試みます",
+            "tryRefetchAfterError": "メディアの取得に失敗しました、再取得を試みます",
             "noQuery": "ターゲット UID が空です。利用可能なターゲット UID の照会を試みてください",
             "emptyUID": "ターゲット UID が空です",
             "loadingErr": "現在のページは読み込みが完了していません",
@@ -149,9 +150,9 @@
             "findConnect": "接続を発見",
             "loseConnect": "接続を喪失",
             "findMsg": "メッセージを受信",
-            "heartbeatcheck": "[TOAST_IN_CONSOLE]ハートビートチェック ",
-            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]ハートビートチェック（送信側から）",
-            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]ハートビートチェック（受信側から）"
+            "heartbeatcheck": "[TOAST_IN_CONSOLE]💓ハートビートチェック💓",
+            "senderheartbeatcheck": "[TOAST_IN_CONSOLE]💓ハートビートチェック💓（送信側から）",
+            "receiverheartbeatcheck": "[TOAST_IN_CONSOLE]💓ハートビートチェック💓（受信側から）"
         },
         "webhook": {
             "title": "Webhookパネル",

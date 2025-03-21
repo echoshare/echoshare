@@ -10,10 +10,11 @@ import {
 } from "../../utils/webrtc/connect";
 import { useRouteChange } from "../../router/automatch";
 import { useAutoPlay } from "../../utils/hooks/useAutoPlay";
-import { toastErr } from "../../utils/toast";
+import { toastErr, toastTip } from "../../utils/toast";
 import { consoleError, debug, log } from "../../utils/console";
 import { useAutoReceive } from "../../utils/hooks/useAutoReceive";
 import { useI18n } from "vue-i18n";
+import { resolveQueryUID } from "../../utils";
 const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
@@ -49,8 +50,22 @@ function clearPeer() {
     }
 }
 
-function createReceivePeerConn() {
-    peerInstance.value = createPeerInstanceByMode();
+function createReceivePeerConnection() {
+    peerInstance.value = createPeerInstanceByMode(
+        undefined,
+        resolveQueryUID(route.query.peer)
+    );
+
+    peerInstance.value.on("error", (err) => {
+        toastErr("⚠️ " + String(err));
+        clearPeer();
+
+        if (PeerStore.enableAutoRefetch || route.query.refetch !== undefined) {
+            receiveStream();
+            setTimeout(() => toastTip(t("toast.tryRefetchAfterError")), 1500);
+        }
+    });
+
     peerInstance.value.on("open", () => {
         log.success("Peer instance has been created", peerInstance.value?.id);
         const fakeStream = createMediaStreamFake(0);
@@ -91,7 +106,7 @@ function receiveStream() {
 
     try {
         isLoadingStream.value = true;
-        createReceivePeerConn();
+        createReceivePeerConnection();
     } catch (e) {
         isLoadingStream.value = false;
         isFindStream.value = false;
