@@ -59,6 +59,7 @@ watch(
     () => peerUID.value,
     (value) => {
         router.push({ query: { uid: value } });
+        safeClosePeer();
     }
 );
 
@@ -66,12 +67,13 @@ watch(
     () => route.query.uid,
     (value) => {
         peerUID.value = value as string;
+        safeClosePeer();
     }
 );
 
-function safeClosePeer() {
+function safeClosePeer(force = false) {
     isFindStream.value = false;
-    if (peerInstance.value) {
+    if (peerInstance.value || force) {
         log.warning("Peer instance will be cleaned", finalID.value);
         closePeer(peerInstance, currentPeer, localStream);
     }
@@ -138,10 +140,10 @@ async function findScreenStream() {
     }
     safeClosePeer();
     clearConnectionTimer();
-    const stream = await createStreamNew();
 
     try {
         // find stream
+        const stream = await createStreamNew();
         isFindStream.value = true;
         localStream.value = stream;
         log.success("Media stream created", stream.id);
@@ -206,21 +208,21 @@ async function findScreenStream() {
             }
         );
     } catch (e: any) {
-        consoleError(e);
+        safeClosePeer(true);
+        consoleError([
+            "sharing error",
+            e,
+            dayjs().format("YYYY-MM-DD HH:mm:ss"),
+        ]);
         if (e.name === "NotAllowedError") {
             toastErr(t("toast.NotAllowedError"));
-            return;
-        }
-
-        if (e.toString().includes("not a function")) {
+        } else if (e.toString().includes("not a function")) {
             toastErr(t("toast.NoMethodError"));
-            return;
-        }
-        if (e.toString().includes("At least one")) {
+        } else if (e.toString().includes("At least one")) {
             toastErr(t("toast.NoSelectedError"));
-            return;
+        } else {
+            toastErr(t("toast.mediaErr"));
         }
-        toastErr(t("toast.mediaErr"));
         WebhookStore.sendRequest(
             "fail",
             {
@@ -269,6 +271,12 @@ function changeMediaMode() {
     safeClosePeer();
     isFindStream.value = false;
 }
+
+function clearPeerUID() {
+    peerUID.value = "";
+    PeerStore.targetUID = "";
+    router.push({ query: { uid: "" } });
+}
 </script>
 
 <template>
@@ -284,17 +292,16 @@ function changeMediaMode() {
                         class="grow w-24 md:w-auto"
                         v-model="peerUID"
                         :placeholder="$t('share.placeholder')"
-                        @clear="
-                            (peerUID = ''), $router.push({ query: { uid: '' } })
-                        "
+                        @clear="clearPeerUID"
                     />
-                    <div class="flex grow-0 flex-row justify-end ml-4">
+                    <div class="flex grow-0 flex-row justify-end ml-2">
                         <VaButton
                             @click="copyUID"
                             style="height: 34px"
                             round
                             class="grow-0"
                             icon="share"
+                            v-if="isFindStream"
                         />
                         <VaButton
                             @click="findScreenStream"
@@ -302,7 +309,7 @@ function changeMediaMode() {
                             round
                             class="grow-0 ml-2"
                             icon="preview"
-                            :disabled="isFindStream"
+                            v-else
                         />
                     </div>
                 </div>

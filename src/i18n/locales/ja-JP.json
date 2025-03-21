@@ -33,6 +33,8 @@
             "videoDeviceIdLabel": "利用可能なカメラデバイス",
             "videoDeviceIdPlaceholder": "利用可能なカメラデバイスを選択してください",
             "audioDeviceIdLabel": "利用可能なマイクデバイス",
+            "novideoDeviceIdLabel": "使用可能なカメラデバイスがありません 😱",
+            "noAudioDeviceIdLabel": "使用可能なマイクデバイスがありません 😱",
             "audioDeviceIdPlaceholder": "利用可能なマイクデバイスを選択してください"
         },
         "mediaModeOptions": {
@@ -48,6 +50,8 @@
         "receive": {
             "title": "メディア受信パネル",
             "inputLabel": "ターゲット UID",
+            "customLabel": "受信者 UID（オプション）",
+            "customPlaceholder": "受信者の UID を入力してください（しないと自動的に生成されます）",
             "queryPlaceholder": "クリックして利用可能なターゲット UID を照会",
             "noqueryPlaceholder": "ターゲット UID を入力してください",
             "selectLabel": "メディア受信モード",
@@ -84,7 +88,7 @@
             "stunInputExamplePlaceholder": "例 \"turn:example.com^username:password\"",
             "peerMode0": "公開 Peer ノードを使用",
             "peerMode1": "カスタム Peer ノードを使用",
-            "iceServerTextAreaPlaceholder": "STUN/TURNサーバーの JSON またはリモート URL を入力してください",
+            "iceServerTextAreaPlaceholder": "STUN/TURNサーバーの JSON またはリモート URL を入力してください（オプション）",
             "iceServerTextBtnTextForJSON": "JSON を解析",
             "iceServerTextBtnTextForURL": "JSON を取得",
             "iceServerFetchErr": "JSON の取得に失敗しました",

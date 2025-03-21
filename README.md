@@ -28,6 +28,7 @@ The document is available at [https://docs.echoshare.site](https://docs.echoshar
 ## ✨ Enhanced Features
 
 * ⏳ **Local History Records**: Easily review shared content history for quick access.
+* 💓 **Heartbeat detection**: real-time detection of connection status.
 * 🔗 **Custom Webhooks**: Flexibly integrate with other systems to enable automated workflows.
 * 🔄 **Auto Recovery After Interruption**: Automatically reconnect after network interruptions to ensure continuous sharing.
 * 📱 **PWA Support**: Use it like a native app for a smoother experience.

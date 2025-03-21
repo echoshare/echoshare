@@ -4,6 +4,7 @@ export const usePeer = defineStore("peer", {
     state() {
         return {
             targetUID: "",
+            customUID: "",
             peerModeIndex: 0,
             audioDeviceId: "",
             videoDeviceId: "",

@@ -33,6 +33,8 @@
             "videoDeviceIdLabel": "可用摄像头设备",
             "videoDeviceIdPlaceholder": "请选择可用摄像头设备",
             "audioDeviceIdLabel": "可用麦克风设备",
+            "novideoDeviceIdLabel": "没有可用的摄像头设备 😱",
+            "noAudioDeviceIdLabel": "没有可用的麦克风设备 😱",
             "audioDeviceIdPlaceholder": "请选择可用麦克风设备"
         },
         "mediaModeOptions": {
@@ -48,6 +50,8 @@
         "receive": {
             "title": "媒体接收面板",
             "inputLabel": "目标 UID",
+            "customLabel": "接收方 UID （可选）",
+            "customPlaceholder": "请输入接收方 UID （否则自动生成）",
             "queryPlaceholder": "点击查询可用目标 UID",
             "noqueryPlaceholder": "请输入目标 UID",
             "selectLabel": "媒体接收模式",
@@ -84,7 +88,7 @@
             "stunInputExamplePlaceholder": "示例 \"turn:example.com^username:password\"",
             "peerMode0": "使用公共 Peer 节点",
             "peerMode1": "使用自定义 Peer 节点",
-            "iceServerTextAreaPlaceholder": "请输入 STUN/TURN 服务器的 JSON 或远程 URL",
+            "iceServerTextAreaPlaceholder": "请输入 STUN/TURN 服务器的 JSON 或远程 URL （可选）",
             "iceServerTextBtnTextForJSON": "解析 JSON",
             "iceServerTextBtnTextForURL": "获取 JSON",
             "iceServerFetchErr": "获取 JSON 失败",

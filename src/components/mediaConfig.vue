@@ -3,14 +3,23 @@
 
     <div class="mt-6 sm:mt-4 max-sm:mb-4 flex flex-wrap w-full xl:w-1/2">
         <div class="basis-1/2 sm:basis-1/4 grow">
-            <VaCheckbox v-model="PeerStore.mediaMode.useScreen" :label="$t('media.screen')" />
+            <VaCheckbox
+                v-model="PeerStore.mediaMode.useScreen"
+                :label="$t('media.screen')"
+            />
         </div>
         <div class="basis-1/2 sm:basis-1/4 grow">
-            <VaCheckbox v-model="PeerStore.mediaMode.useCamera" :label="$t('media.camera')" />
+            <VaCheckbox
+                v-model="PeerStore.mediaMode.useCamera"
+                :label="$t('media.camera')"
+            />
         </div>
 
         <div class="basis-1/2 sm:basis-1/4 grow max-sm:mt-4">
-            <VaCheckbox v-model="PeerStore.mediaMode.useAudio" :label="$t('media.audio')" />
+            <VaCheckbox
+                v-model="PeerStore.mediaMode.useAudio"
+                :label="$t('media.audio')"
+            />
         </div>
         <div class="basis-1/2 sm:basis-1/4 grow max-sm:mt-4">
             <VaCheckbox
@@ -28,35 +37,63 @@
         :placeholder="$t('media.mediaModePlaceholder')"
     />
 
-    <VaSelect
-        text-by="label"
-        v-if="PeerStore.mediaMode.useCamera"
-        v-model="PeerStore.videoDeviceId"
-        value-by="deviceId"
-        class="w-full mt-4"
-        :label="$t('media.videoDeviceIdLabel')"
-        :options="PeerStore.videoDevices"
-        :placeholder="$t('media.videoDeviceIdPlaceholder')"
-    />
+    <template v-if="PeerStore.mediaMode.useCamera">
+        <VaSelect
+            text-by="label"
+            v-if="PeerStore.videoDevices.length"
+            v-model="PeerStore.videoDeviceId"
+            value-by="deviceId"
+            class="w-full mt-4"
+            :label="$t('media.videoDeviceIdLabel')"
+            :options="PeerStore.videoDevices"
+            :placeholder="$t('media.videoDeviceIdPlaceholder')"
+            requiredMark
+        />
 
-    <VaSelect
-        text-by="label"
-        v-if="PeerStore.mediaMode.useMircophone"
-        v-model="PeerStore.audioDeviceId"
-        value-by="deviceId"
-        class="w-full mt-4"
-        :label="$t('media.audioDeviceIdLabel')"
-        :options="PeerStore.audioDevices"
-        :placeholder="$t('media.audioDeviceIdPlaceholder')"
-    />
+        <VaSelect
+            text-by="label"
+            v-else
+            v-model="PeerStore.videoDeviceId"
+            value-by="deviceId"
+            class="w-full mt-4"
+            :label="$t('media.videoDeviceIdLabel')"
+            :options="PeerStore.videoDevices"
+            :placeholder="$t('media.novideoDeviceIdLabel')"
+            requiredMark
+        />
+    </template>
 
-   
+    <template v-if="PeerStore.mediaMode.useMircophone">
+        <VaSelect
+            v-if="PeerStore.audioDevices.length"
+            text-by="label"
+            v-model="PeerStore.audioDeviceId"
+            value-by="deviceId"
+            class="w-full mt-4"
+            :label="$t('media.audioDeviceIdLabel')"
+            :options="PeerStore.audioDevices"
+            :placeholder="$t('media.audioDeviceIdPlaceholder')"
+            requiredMark
+        />
+
+        <VaSelect
+            v-else
+            text-by="label"
+            v-model="PeerStore.audioDeviceId"
+            value-by="deviceId"
+            class="w-full mt-4"
+            :label="$t('media.audioDeviceIdLabel')"
+            :options="PeerStore.audioDevices"
+            :placeholder="$t('media.noAudioDeviceIdLabel')"
+            requiredMark
+        />
+    </template>
 </template>
 
 <script lang="ts" setup>
 import { watch, defineEmits } from "vue";
 import { usePeer } from "../store/peer";
-import { useI18n } from "vue-i18n"
+import { useI18n } from "vue-i18n";
 
 const { t, locale } = useI18n();
 const PeerStore = usePeer();
@@ -169,7 +206,7 @@ watch(
         () => PeerStore.audioDeviceId,
         () => PeerStore.videoDeviceId,
         () => PeerStore.audioutDeviceId,
-        () => locale.value
+        () => locale.value,
     ],
     () => {
         PeerStore.mediaMode.text = findSelectedOption()?.text ?? "";

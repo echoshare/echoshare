@@ -33,6 +33,8 @@
             "videoDeviceIdLabel": "Available Camera Devices",
             "videoDeviceIdPlaceholder": "Please select an available camera device",
             "audioDeviceIdLabel": "Available Microphone Devices",
+            "novideoDeviceIdLabel": "No Available Camera Devices 😱",
+            "noAudioDeviceIdLabel": "No Available Microphone Devices 😱",
             "audioDeviceIdPlaceholder": "Please select an available microphone device"
         },
         "mediaModeOptions": {
@@ -48,6 +50,8 @@
         "receive": {
             "title": "Receive Panel",
             "inputLabel": "Target UID",
+            "customLabel": "Receiver UID (OPTIONAL)",
+            "customPlaceholder": "Please enter the receiver UID or it will be generated automatically",
             "queryPlaceholder": "Click to check available target UID",
             "noqueryPlaceholder": "Please enter the target UID",
             "selectLabel": "Media Reception Mode",
@@ -84,7 +88,7 @@
             "stunInputExamplePlaceholder": "Example \"turn:example.com^username:password\"",
             "peerMode0": "Using Public Peer Node",
             "peerMode1": "Using Custom Peer Node",
-            "iceServerTextAreaPlaceholder": "Please input the STUN/TURN servers json or remote url",
+            "iceServerTextAreaPlaceholder": "Please input the STUN/TURN servers json or remote url (OPTIONAL)",
             "iceServerTextBtnTextForJSON": "Parse the json",
             "iceServerTextBtnTextForURL": "Fetch the json",
             "iceServerFetchErr": "Failed to fetch the json",

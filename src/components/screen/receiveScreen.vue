@@ -75,14 +75,16 @@ watch(receiveMode, (value) => {
     PeerStore.receiveModeIndex = value.value;
 });
 
-watch(
-    () => PeerStore.targetUID,
-    (value) => {
-        router.push({ query: { uid: value } });
-        isLoadingQuery.value = false;
-        clearPeer();
-    }
-);
+watch([() => PeerStore.targetUID], (value) => {
+    router.push({ query: { uid: PeerStore.targetUID } });
+    isLoadingQuery.value = false;
+    clearPeer();
+});
+
+watch([() => PeerStore.customUID], (value) => {
+    isLoadingQuery.value = false;
+    clearPeer();
+});
 
 function queryUID() {
     isLoadingQuery.value = true;
@@ -102,7 +104,7 @@ function queryUID() {
         },
         (response) => {
             toastTip(t("webhook.getURLWebhookSuccess"));
-            PeerStore.targetUID = response.data?.uid || "";
+            PeerStore.targetUID = String(response.data?.uid || "");
             isLoadingQuery.value = false;
         },
         () => {
@@ -130,8 +132,14 @@ function videoFitscreen() {
 }
 
 function createReceivePeerConn() {
-    peerInstance.value = createPeerInstanceByMode();
+    peerInstance.value = createPeerInstanceByMode(
+        PeerStore.customUID ? PeerStore.customUID : undefined
+    );
+
     peerInstance.value.on("open", () => {
+        if (!PeerStore.customUID) {
+            PeerStore.customUID = peerInstance.value?.id || "";
+        }
         log.success("Peer instance is created", peerInstance.value?.id);
         const fakeStream = createMediaStreamFake(receiveMode.value.value);
 
@@ -279,7 +287,14 @@ function readPaste() {
 
 function matchUID() {
     if (route.query.uid) {
-        PeerStore.targetUID = route.query.uid as string;
+        const queryUID = route.query.uid;
+        if (typeof queryUID === "string") {
+            PeerStore.targetUID = queryUID;
+        } else if (Array.isArray(queryUID)) {
+            PeerStore.targetUID = String(queryUID[0]);
+        } else {
+            PeerStore.targetUID = String(queryUID);
+        }
         return;
     }
 
@@ -327,7 +342,7 @@ onMounted(() => {
                     {{ $t("receive.title") }}
                 </VaCardTitle>
                 <VaCardContent>
-                    <div class="flex flex-1 items-end flex-wrap">
+                    <div class="flex flex-1 items-end flex-wrap mb-4">
                         <VaInput
                             :label="$t('receive.inputLabel')"
                             class="grow w-24 md:w-auto"
@@ -365,6 +380,16 @@ onMounted(() => {
                                 icon="connected_tv"
                             />
                         </div>
+                    </div>
+
+                    <div class="flex flex-1 items-end flex-wrap">
+                        <VaInput
+                            :label="$t('receive.customLabel')"
+                            class="grow w-24 md:w-auto"
+                            v-model="PeerStore.customUID"
+                            clearable
+                            :placeholder="$t('receive.customPlaceholder')"
+                        />
                     </div>
 
                     <VaSelect
