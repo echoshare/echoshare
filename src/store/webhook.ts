@@ -5,6 +5,7 @@ import { debug } from "../utils/console";
 export const useWebhook = defineStore("webhook", {
     state() {
         return {
+            uniURL: "",
             getURL: "",
             postURL: "",
             successURL: "",
@@ -21,7 +22,7 @@ export const useWebhook = defineStore("webhook", {
             onfail: (error: any) => void,
             onfinally?: () => void
         ) {
-            let url = "",
+            let url = this.uniURL,
                 method = "POST";
 
             const customPlayload = Object.fromEntries(
@@ -32,16 +33,17 @@ export const useWebhook = defineStore("webhook", {
             );
 
             const body = { ...data, custom: customPlayload };
-            if (hook === "get") {
+            if (hook === "get" && this.getURL) {
                 method = "GET";
                 url = this.getURL;
-            } else if (hook === "post") {
+            } else if (hook === "post" && this.postURL) {
                 url = this.postURL;
-            } else if (hook === "success") {
+            } else if (hook === "success" && this.successURL) {
                 url = this.successURL;
-            } else if (hook === "fail") {
+            } else if (hook === "fail" && this.failURL) {
                 url = this.failURL;
             }
+
             if (url === "") {
                 return;
             }

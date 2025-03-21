@@ -155,6 +155,8 @@
         },
         "webhook": {
             "title": "Webhook Panel",
+            "CommonAPILabel": "Common API",
+            "CommonAPIPlaceholder": "Please input the Common API",
             "customPlayloadLabel": "Custom Payload",
             "customPlayloadPlaceholder": "KEY1=VALUE1\nKEY2=VALUE2\nKEY3=VALUE3",
             "getURLLabel": "api to get query uid",

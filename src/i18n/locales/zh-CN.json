@@ -155,6 +155,8 @@
         },
         "webhook": {
             "title": "Webhook 面板",
+            "CommonAPILabel": "通用 API",
+            "CommonAPIPlaceholder": "请输入通用 API",
             "customPlayloadLabel": "自定义数据",
             "customPlayloadPlaceholder": "KEY1=VALUE1\nKEY2=VALUE2\nKEY3=VALUE3",
             "getURLLabel": "用于获取查询 UID 的 API",

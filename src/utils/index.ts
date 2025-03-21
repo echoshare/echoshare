@@ -1,12 +1,13 @@
 import { LocationQueryValue } from "vue-router";
 
 export function resolveQueryUID(
-    queryUID: LocationQueryValue | LocationQueryValue[]
+    queryUID?: LocationQueryValue | LocationQueryValue[]
 ) {
+    if (!queryUID) return "";
     if (typeof queryUID === "string") {
         return queryUID;
     } else if (Array.isArray(queryUID)) {
-        return String(queryUID[0]);
+        return String(queryUID[0] ?? "");
     } else {
         return String(queryUID);
     }
