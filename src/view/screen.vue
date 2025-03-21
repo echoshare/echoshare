@@ -20,6 +20,7 @@ import { useHistoryStore } from "../store/history";
 import { useWebhook } from "../store/webhook";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { resolveQueryUID } from "../utils";
 
 const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
@@ -38,10 +39,11 @@ const historyItem = ref({
     action: "share" as "share" | "receive",
 });
 
-const peerUID = ref((route.query.uid as string) || "");
+const peerUID: Ref<string> = ref(resolveQueryUID(route.query.uid) || "");
 const PeerStore = usePeer();
 const finalID = ref("");
 const isFindStream = ref(false);
+const changeByStream = ref(false);
 const videoIsFitscreen = ref(false);
 const screenVideo = ref(null as HTMLVideoElement | null);
 const connectTimer = ref(null as null | NodeJS.Timeout);
@@ -57,17 +59,22 @@ function clearConnectionTimer() {
 
 watch(
     () => peerUID.value,
-    (value) => {
-        router.push({ query: { uid: value } });
-        safeClosePeer();
+    (curr, old) => {
+        router.push({ query: { uid: curr } });
+        if (old) {
+            safeClosePeer();
+        }
     }
 );
 
 watch(
     () => route.query.uid,
-    (value) => {
-        peerUID.value = value as string;
-        safeClosePeer();
+
+    (curr, _) => {
+        const newPeerUID = resolveQueryUID(curr);
+        if (peerUID.value !== newPeerUID) {
+            peerUID.value = newPeerUID;
+        }
     }
 );
 
@@ -94,11 +101,16 @@ function createPeerConnection(stream: MediaStream, isFirstTime = true) {
         finalID.value = peerUID.value || stream.id;
         peerInstance.value = createPeerInstanceByMode(finalID.value);
 
+        peerInstance.value!.on("error", (err) => {
+            toastErr("⚠️ " + String(err));
+            safeClosePeer();
+        });
+
         peerInstance.value!.on("call", (call) => {
             call.answer(stream);
             currentPeer.value = call;
             log.info("Acceptad requests", call.peer);
-            toastSuccess(t("toast.findConnect") + "<br />" + call.peer);
+            toastSuccess(t("toast.findConnect") + " " + call.peer);
         });
 
         peerInstance.value!.on("connection", (conn) => {
@@ -143,8 +155,9 @@ async function findScreenStream() {
 
     try {
         // find stream
+        isFindStream.value = false;
+        changeByStream.value = true;
         const stream = await createStreamNew();
-        isFindStream.value = true;
         localStream.value = stream;
         log.success("Media stream created", stream.id);
         debug(["Please check the media information", stream]);
@@ -161,6 +174,7 @@ async function findScreenStream() {
 
         // set peer UID
         peerUID.value = peerInstance.value!.id;
+        isFindStream.value = true;
         historyItem.value.uid = peerUID.value;
         historyItem.value.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
 
@@ -169,6 +183,7 @@ async function findScreenStream() {
             screenVideo.value.srcObject = stream;
             screenVideo.value.play();
             screenVideo.value.muted = true;
+            changeByStream.value = false;
         }
 
         WebhookStore.sendRequest(
@@ -277,6 +292,10 @@ function clearPeerUID() {
     PeerStore.targetUID = "";
     router.push({ query: { uid: "" } });
 }
+
+function changePeerUID(args) {
+    console.log("changePeerUID");
+}
 </script>
 
 <template>
@@ -293,8 +312,11 @@ function clearPeerUID() {
                         v-model="peerUID"
                         :placeholder="$t('share.placeholder')"
                         @clear="clearPeerUID"
+                        @change="changePeerUID"
                     />
-                    <div class="flex grow-0 flex-row justify-end ml-2">
+                    <div
+                        class="flex grow-0 flex-row justify-end max-sm:ml-4 sm:ml-2"
+                    >
                         <VaButton
                             @click="copyUID"
                             style="height: 34px"
@@ -307,7 +329,7 @@ function clearPeerUID() {
                             @click="findScreenStream"
                             style="height: 34px"
                             round
-                            class="grow-0 ml-2"
+                            class="grow-0"
                             icon="preview"
                             v-else
                         />

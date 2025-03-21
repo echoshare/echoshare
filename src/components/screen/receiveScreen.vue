@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 
 import { useI18n } from "vue-i18n";
 import { useWebhook } from "../../store/webhook";
+import { resolveQueryUID } from "../../utils";
 const { t, locale } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
@@ -75,16 +76,23 @@ watch(receiveMode, (value) => {
     PeerStore.receiveModeIndex = value.value;
 });
 
-watch([() => PeerStore.targetUID], (value) => {
-    router.push({ query: { uid: PeerStore.targetUID } });
-    isLoadingQuery.value = false;
-    clearPeer();
-});
+watch(
+    () => PeerStore.targetUID,
+    (curr, old) => {
+        router.push({ query: { uid: PeerStore.targetUID } });
+        isLoadingQuery.value = false;
+        if (old) clearPeer();
+    }
+);
 
-watch([() => PeerStore.customUID], (value) => {
-    isLoadingQuery.value = false;
-    clearPeer();
-});
+watch(
+    () => PeerStore.customUID,
+    (curr, old) => {
+        console.log({ curr, old });
+        isLoadingQuery.value = false;
+        if (old) clearPeer();
+    }
+);
 
 function queryUID() {
     isLoadingQuery.value = true;
@@ -136,6 +144,11 @@ function createReceivePeerConn() {
         PeerStore.customUID ? PeerStore.customUID : undefined
     );
 
+    peerInstance.value.on("error", (err) => {
+        toastErr("⚠️ " + String(err));
+        clearPeer();
+    });
+
     peerInstance.value.on("open", () => {
         if (!PeerStore.customUID) {
             PeerStore.customUID = peerInstance.value?.id || "";
@@ -164,7 +177,7 @@ function createReceivePeerConn() {
             ) {
                 debug(["toast-in-console", data.slice(18)]);
             } else {
-                toastSuccess(t("toast.findMsg") + "<br />" + data);
+                toastSuccess(t("toast.findMsg") + " " + data);
             }
             if (peerDataConnection.value) {
                 peerDataConnection.value.send(
@@ -288,13 +301,7 @@ function readPaste() {
 function matchUID() {
     if (route.query.uid) {
         const queryUID = route.query.uid;
-        if (typeof queryUID === "string") {
-            PeerStore.targetUID = queryUID;
-        } else if (Array.isArray(queryUID)) {
-            PeerStore.targetUID = String(queryUID[0]);
-        } else {
-            PeerStore.targetUID = String(queryUID);
-        }
+        PeerStore.targetUID = resolveQueryUID(queryUID);
         return;
     }
 
