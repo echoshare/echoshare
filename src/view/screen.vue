@@ -47,7 +47,7 @@ const changeByStream = ref(false);
 const videoIsFitscreen = ref(false);
 const screenVideo = ref(null as HTMLVideoElement | null);
 const connectTimer = ref(null as null | NodeJS.Timeout);
-const heartbeatChecker = ref(null as null | NodeJS.Timeout);
+const heartbeatChecker = ref({} as Record<string, NodeJS.Timeout | null>);
 
 function clearConnectionTimer() {
     if (connectTimer.value !== null) {
@@ -117,7 +117,7 @@ function createPeerConnection(stream: MediaStream, isFirstTime = true) {
             setInterval(() => {
                 conn.send(
                     t("toast.senderheartbeatcheck") +
-                        "<br />" +
+                        "@" + finalID.value + ": " +
                         dayjs().format("YYYY-MM-DD HH:mm:ss")
                 );
             }, 2000);
@@ -129,16 +129,16 @@ function createPeerConnection(stream: MediaStream, isFirstTime = true) {
                 ) {
                     debug(["toast-in-console", data.slice(18)]);
                 } else {
-                    toastSuccess(t("toast.findMsg") + "<br />" + data);
+                    toastSuccess(t("toast.findMsg") + "@" + conn.peer + ": " + data);
                 }
-                if (heartbeatChecker.value) {
-                    clearTimeout(heartbeatChecker.value);
-                    heartbeatChecker.value = null;
+                if (heartbeatChecker.value[conn.peer]) {
+                    clearTimeout(heartbeatChecker.value[conn.peer] as NodeJS.Timeout);
+                    heartbeatChecker.value[conn.peer] = null;
                 }
 
-                heartbeatChecker.value = setTimeout(() => {
+                heartbeatChecker.value[conn.peer] = setTimeout(() => {
                     toastBigError(
-                        t("toast.loseConnect") + "<br />" + conn.peer
+                        t("toast.loseConnect") + " " + conn.peer
                     );
                 }, 4000);
             });

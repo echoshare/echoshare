@@ -182,7 +182,9 @@ function createReceivePeerConn() {
             if (peerDataConnection.value) {
                 peerDataConnection.value.send(
                     t("toast.receiverheartbeatcheck") +
-                        "<br />" +
+                        "@" +
+                        PeerStore.customUID +
+                        ": " +
                         dayjs().format("YYYY-MM-DD HH:mm:ss")
                 );
             }
