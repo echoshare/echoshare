@@ -3,7 +3,7 @@
 [中文说明](./README_CN.md)
 
 <p align="center">
-  <img src="https://i.postimg.cc/d0M9TjZW/echoshare-mobile-left.png" width="200" alt="just-logo">
+  <img src="https://i.postimg.cc/vBCQ1WZx/echoshare-mobile-left.png" width="200" alt="just-logo">
 </p>
 
 Echoshare is an out-of-the-box, highly customizable online media sharing application.
