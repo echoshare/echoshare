@@ -1,7 +1,7 @@
 # EchoShare
 
 <p align="center">
-  <img src="https://i.postimg.cc/d0M9TjZW/echoshare-mobile-left.png" width="200" alt="just-logo">
+  <img src="https://i.postimg.cc/vBCQ1WZx/echoshare-mobile-left.png" width="200" alt="just-logo">
 </p>
 
 Echoshare 是一款开箱即用且支持高度自定义配置的在线媒体共享应用。
