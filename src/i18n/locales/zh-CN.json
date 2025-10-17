@@ -94,7 +94,10 @@
             "iceServerFetchErr": "获取 JSON 失败",
             "iceServerParseErr": "解析 JSON 失败",
             "iceServerReset": "重置 STUN/TURN 服务器",
-            "iceServerParseSuccess": "成功解析 STUN/TURN 服务器"
+            "iceServerParseSuccess": "成功解析 STUN/TURN 服务器",
+            "decodeSelect": "解码器配置",
+            "decodeSelectTip": "请选择解码器配置",
+            "decodeDefaultName": "自动"
         },
         "history": {
             "titleAlwaysShow": "历史记录",

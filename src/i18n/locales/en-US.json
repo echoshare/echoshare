@@ -94,7 +94,10 @@
             "iceServerFetchErr": "Failed to fetch the json",
             "iceServerParseErr": "Failed to parse the json",
             "iceServerReset": "Reset STUN/TURN servers",
-            "iceServerParseSuccess": "Parse the STUN/TURN servers successfully"
+            "iceServerParseSuccess": "Parse the STUN/TURN servers successfully",
+            "decodeSelect": "Decoder configuration",
+            "decodeSelectTip": "Please choose a decoder",
+            "decodeDefaultName": "auto"
         },
         "history": {
             "titleAlwaysShow": "History",

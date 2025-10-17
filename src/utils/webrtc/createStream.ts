@@ -8,15 +8,15 @@ const t = i18n.global.t;
 function createConstraints(allowUsingDevice: boolean, deviceId: string) {
     return allowUsingDevice && deviceId && deviceId.length > 0
         ? {
-              deviceId: { exact: deviceId },
-          }
+            deviceId: { exact: deviceId },
+        }
         : false;
 }
 
 export async function requestDevicePermissions(sendMsg = true) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         toastErr(t("toast.noDevicesAccess"));
-        
+
         return false;
     }
 
@@ -62,7 +62,11 @@ async function createScreenStream(mediaMode: {
 }) {
     const PeerStore = usePeer();
     const videoStream = await window.navigator.mediaDevices.getDisplayMedia({
-        video: mediaMode.useScreen,
+        video: mediaMode.useScreen && {
+            width: { ideal: window.screen.width },
+            height: { ideal: window.screen.height },
+            frameRate: { ideal: 120 }
+        },
         audio: mediaMode.useAudio, //createConstraints(mediaMode.useAudio, PeerStore.audioutDeviceId),
     });
 

@@ -21,11 +21,19 @@ import { useWebhook } from "../store/webhook";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { resolveQueryUID } from "../utils";
+import { WebRTCAnalysis } from "../utils/webrtc/analysis";
+import { sdpEdit } from "../utils/webrtc/H265";
 
 const { t } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
 let currentPeer: Ref<null | MediaConnection> = ref(null);
+window.webRTCAnalysis = new WebRTCAnalysis('send');
+setInterval(() => {
+    window.webRTCAnalysis.run(currentPeer.value?.peerConnection);
+    performanceData.value = window.webRTCAnalysis.inspectTable;
+}, 1000);
+
 const route = useRoute();
 const router = useRouter();
 const WebhookStore = useWebhook();
@@ -83,11 +91,20 @@ function safeClosePeer(force = false) {
     if (peerInstance.value || force) {
         log.warning("Peer instance will be cleaned", finalID.value);
         closePeer(peerInstance, currentPeer, localStream);
+        peerInstance.value = null;
     }
 }
 
 useAutoPlay(screenVideo, "Sender");
 
+function sdpTransform(sdp: string) {
+    console.log("sender:sdp", sdp)
+    if (PeerStore.videoFormat) {
+        console.log("use format", PeerStore.videoFormat);
+        return sdpEdit(sdp, PeerStore.videoFormat);
+    }
+    return sdp;
+}
 function createPeerConnection(stream: MediaStream, isFirstTime = true) {
     if (!stream.active) {
         debug(["share media check:", "stream is not active"]);
@@ -107,7 +124,7 @@ function createPeerConnection(stream: MediaStream, isFirstTime = true) {
         });
 
         peerInstance.value!.on("call", (call) => {
-            call.answer(stream);
+            call.answer(stream, { sdpTransform });
             currentPeer.value = call;
             log.info("Acceptad requests", call.peer);
             toastSuccess(t("toast.findConnect") + " " + call.peer);
@@ -117,8 +134,8 @@ function createPeerConnection(stream: MediaStream, isFirstTime = true) {
             setInterval(() => {
                 conn.send(
                     t("toast.senderheartbeatcheck") +
-                        "@" + finalID.value + ": " +
-                        dayjs().format("YYYY-MM-DD HH:mm:ss")
+                    "@" + finalID.value + ": " +
+                    dayjs().format("YYYY-MM-DD HH:mm:ss")
                 );
             }, 2000);
 
@@ -140,11 +157,13 @@ function createPeerConnection(stream: MediaStream, isFirstTime = true) {
                     toastBigError(
                         t("toast.loseConnect") + " " + conn.peer
                     );
+                    // safeClosePeer();
                 }, 4000);
             });
         });
     }
 }
+
 
 async function findScreenStream() {
     if (!supportWebRTC()) {
@@ -293,62 +312,50 @@ function clearPeerUID() {
     router.push({ query: { uid: "" } });
 }
 
+const showPerformanceModal = ref(false);
+const performanceData = ref([] as {
+    key: string;
+    value: any;
+}[]);
+
+function inspectPerformance() {
+    showPerformanceModal.value = true;
+}
 
 </script>
 
 <template>
+    <VaModal v-model="showPerformanceModal" close-button>
+        <h3 class="va-h3">
+            WebRTC Inspection
+        </h3>
+        <VaDataTable :items="performanceData" />
+    </VaModal>
     <div class="mt-4">
         <VaCard class="m-auto flex flex-col w-5/6 mb-4">
             <VaCardTitle class="text-lg">{{ $t("share.title") }}</VaCardTitle>
 
             <VaCardContent>
                 <div class="flex items-end">
-                    <VaInput
-                        clearable
-                        :label="$t('share.input')"
-                        class="grow w-24 md:w-auto"
-                        v-model="peerUID"
-                        :placeholder="$t('share.placeholder')"
-                        @clear="clearPeerUID"
-                    />
-                    <div
-                        class="flex grow-0 flex-row justify-end max-sm:ml-4 sm:ml-2"
-                    >
-                        <VaButton
-                            @click="copyUID"
-                            style="height: 34px"
-                            round
-                            class="grow-0"
-                            icon="share"
-                            v-if="isFindStream"
-                        />
-                        <VaButton
-                            @click="findScreenStream"
-                            style="height: 34px"
-                            round
-                            class="grow-0"
-                            icon="preview"
-                            v-else
-                        />
+                    <VaInput clearable :label="$t('share.input')" class="grow w-24 md:w-auto" v-model="peerUID"
+                        :placeholder="$t('share.placeholder')" @clear="clearPeerUID" />
+                    <div class="flex grow-0 flex-row justify-end max-sm:ml-4 sm:ml-2">
+                        <VaButton @click="copyUID" style="height: 34px" round class="grow-0" icon="share"
+                            v-if="isFindStream" />
+                        <VaButton @click="findScreenStream" style="height: 34px" round class="grow-0" icon="preview"
+                            v-else />
+                        <!-- <VaButton @click="inspectPerformance" v-if="currentPeer?.peerConnection"
+                            style="margin-left: 4px;height: 34px" round class="grow-0" icon="query_stats" /> -->
                     </div>
                 </div>
-                <MediaConfig
-                    :show-title="false"
-                    @changeMediaMode="changeMediaMode"
-                ></MediaConfig>
+                <MediaConfig :show-title="false" @changeMediaMode="changeMediaMode"></MediaConfig>
             </VaCardContent>
         </VaCard>
 
         <Teleport to="body" :disabled="!videoIsFitscreen">
             <div class="relative">
-                <video
-                    v-show="isFindStream"
-                    class="w-5/6 m-auto shadow-md"
-                    :class="{ 'video-fit-screen': videoIsFitscreen }"
-                    ref="screenVideo"
-                    autoplay
-                    controls
-                ></video>
+                <video v-show="isFindStream" class="w-5/6 m-auto shadow-md"
+                    :class="{ 'video-fit-screen': videoIsFitscreen }" ref="screenVideo" autoplay controls></video>
             </div>
         </Teleport>
     </div>

@@ -22,10 +22,19 @@ import dayjs from "dayjs";
 import { useI18n } from "vue-i18n";
 import { useWebhook } from "../../store/webhook";
 import { resolveQueryUID } from "../../utils";
+import { WebRTCAnalysis } from "../../utils/webrtc/analysis";
+import { sdpEdit } from "../../utils/webrtc/H265";
+import { translate } from "../../utils/webrtc/stat";
 const { t, locale } = useI18n();
 let peerInstance: Ref<null | Peer> = ref(null);
 let localStream: Ref<null | MediaStream> = ref(null);
 let currentPeer: Ref<null | MediaConnection> = ref(null);
+
+window.webRTCAnalysis = new WebRTCAnalysis('receive');
+setInterval(() => {
+    window.webRTCAnalysis.run(currentPeer.value?.peerConnection);
+    performanceData.value = window.webRTCAnalysis.inspectTable.map(item => ( { ...item, key: translate(item.key)}));
+}, 1000);
 
 const HistoryStore = useHistoryStore();
 
@@ -126,6 +135,7 @@ function clearPeer() {
     if (peerInstance.value && peerInstance.value.id) {
         log.warning("Cleaning up Peer instance soon", peerInstance.value.id);
         closePeer(peerInstance, currentPeer, localStream);
+        peerInstance.value = null;
     }
     isFindStream.value = false;
     isLoadingStream.value = false;
@@ -138,13 +148,22 @@ function videoFitscreen() {
     if (app) app.style.display = videoIsFitscreen.value ? "none" : "block";
 }
 
+function sdpTransform(sdp: string) {
+    console.log("receiver:sdp", sdp)
+    if (PeerStore.videoFormat) {
+        console.log("use format", PeerStore.videoFormat);
+        return sdpEdit(sdp, PeerStore.videoFormat);
+    }
+    return sdp;
+}
+
 function createReceivePeerConnection() {
     peerInstance.value = createPeerInstanceByMode(
         PeerStore.customUID ? PeerStore.customUID : undefined,
         resolveQueryUID(route.query.peer)
     );
 
-    peerInstance.value.on("error", (err) => {
+    peerInstance.value?.on("error", (err) => {
         toastErr("⚠️ " + String(err));
         clearPeer();
 
@@ -154,7 +173,7 @@ function createReceivePeerConnection() {
         }
     });
 
-    peerInstance.value.on("open", () => {
+    peerInstance.value?.on("open", () => {
         if (!PeerStore.customUID) {
             PeerStore.customUID = peerInstance.value?.id || "";
         }
@@ -163,7 +182,8 @@ function createReceivePeerConnection() {
 
         currentPeer.value = peerInstance.value!.call(
             PeerStore.targetUID,
-            fakeStream
+            fakeStream,
+            { sdpTransform }
         );
 
         if (null === currentPeer.value) {
@@ -175,7 +195,7 @@ function createReceivePeerConnection() {
             PeerStore.targetUID
         );
 
-        peerDataConnection.value.on("data", (data) => {
+        peerDataConnection.value?.on("data", (data) => {
             if (
                 typeof data === "string" &&
                 data.startsWith("[TOAST_IN_CONSOLE]")
@@ -187,16 +207,15 @@ function createReceivePeerConnection() {
             if (peerDataConnection.value) {
                 peerDataConnection.value.send(
                     t("toast.receiverheartbeatcheck") +
-                        "@" +
-                        PeerStore.customUID +
-                        ": " +
-                        dayjs().format("YYYY-MM-DD HH:mm:ss")
+                    "@" +
+                    PeerStore.customUID +
+                    ": " +
+                    dayjs().format("YYYY-MM-DD HH:mm:ss")
                 );
             }
         });
 
-        currentPeer.value.on("stream", (stream) => {
-            debug(["find stream", stream]);
+        currentPeer.value?.on("stream", (stream) => {
             if (isFindStream.value) {
                 log.success(
                     "Media stream loading complete",
@@ -212,10 +231,11 @@ function createReceivePeerConnection() {
             historyItem.value.result = "success";
 
             restartAutoReceive();
+            debug(["find stream", stream, currentPeer.value?.peerConnection]);
+
         });
     });
 }
-
 function receiveStream() {
     clearPeer();
     isFindStream.value = false;
@@ -347,9 +367,31 @@ onMounted(() => {
         receiveStream();
     }
 });
+
+const showPerformanceModal = ref(false);
+const performanceData = ref([] as {
+    key: string;
+    value: any;
+}[]);
+
+function inspectPerformance() {
+    showPerformanceModal.value = true;
+}
+
+function downloadLogs() {
+    window.webRTCAnalysis.downloadLogs(PeerStore.customUID);
+}
+
 </script>
 
 <template>
+    <VaModal v-model="showPerformanceModal" hide-default-actions close-button>
+        <h3 class="va-h3 flex flex-row items-center">
+            <p class="flex-1">WebRTC Inspection</p>
+            <VaButton class="flex-none" @click="downloadLogs">Download Logs</VaButton>
+        </h3>
+        <VaDataTable :items="performanceData" />
+    </VaModal>
     <div>
         <div class="mt-4">
             <VaCard class="m-auto flex flex-col w-5/6 mb-4">
@@ -358,91 +400,46 @@ onMounted(() => {
                 </VaCardTitle>
                 <VaCardContent>
                     <div class="flex flex-1 items-end flex-wrap mb-4">
-                        <VaInput
-                            :label="$t('receive.inputLabel')"
-                            class="grow w-24 md:w-auto"
-                            v-model="PeerStore.targetUID"
-                            clearable
-                            :placeholder="
-                                WebhookStore.getURL.length > 0
-                                    ? $t('receive.queryPlaceholder')
-                                    : $t('receive.noqueryPlaceholder')
-                            "
-                        />
+                        <VaInput :label="$t('receive.inputLabel')" class="grow w-24 md:w-auto"
+                            v-model="PeerStore.targetUID" clearable :placeholder="WebhookStore.getURL.length > 0
+                                ? $t('receive.queryPlaceholder')
+                                : $t('receive.noqueryPlaceholder')
+                                " />
                         <div class="flex flex-none flex-row justify-end ml-4">
-                            <VaButton
-                                @click="readPaste"
-                                style="height: 34px"
-                                round
-                                class="flex-none"
-                                icon="content_paste"
-                            />
-                            <VaButton
-                                @click="queryUID"
-                                style="height: 34px"
-                                round
-                                :loading="isLoadingQuery"
-                                v-if="
-                                    WebhookStore.getURL.length > 0 ||
-                                    WebhookStore.uniURL.length > 0
-                                "
-                                class="flex-none ml-2"
-                                icon="autorenew"
-                            />
-                            <VaButton
-                                @click="receiveStream"
-                                style="height: 34px"
-                                round
-                                :loading="isLoadingStream"
-                                class="flex-none ml-2"
-                                icon="connected_tv"
-                            />
+                            <VaButton @click="readPaste" style="height: 34px" round class="flex-none"
+                                icon="content_paste" />
+                            <VaButton @click="queryUID" style="height: 34px" round :loading="isLoadingQuery" v-if="
+                                WebhookStore.getURL.length > 0 ||
+                                WebhookStore.uniURL.length > 0
+                            " class="flex-none ml-2" icon="autorenew" />
+                            <VaButton @click="receiveStream" style="height: 34px" round :loading="isLoadingStream"
+                                class="flex-none ml-2" icon="connected_tv" />
+                            <VaButton @click="inspectPerformance" v-if="currentPeer?.peerConnection"
+                                style="margin-left: 4px;height: 34px" round class="grow-0" icon="query_stats" />
                         </div>
                     </div>
 
                     <div class="flex flex-1 items-end flex-wrap">
-                        <VaInput
-                            :label="$t('receive.customLabel')"
-                            class="grow w-24 md:w-auto"
-                            v-model="PeerStore.customUID"
-                            clearable
-                            :placeholder="$t('receive.customPlaceholder')"
-                        />
+                        <VaInput :label="$t('receive.customLabel')" class="grow w-24 md:w-auto"
+                            v-model="PeerStore.customUID" clearable :placeholder="$t('receive.customPlaceholder')" />
                     </div>
 
-                    <VaSelect
-                        text-by="text"
-                        v-model="receiveMode"
-                        class="w-full mt-4 mb-3"
-                        :label="$t('receive.selectLabel')"
-                        :options="receiveModeOptions()"
-                        :placeholder="$t('receive.selectPlaceholder')"
-                    />
+                    <VaSelect text-by="text" v-model="receiveMode" class="w-full mt-4 mb-3"
+                        :label="$t('receive.selectLabel')" :options="receiveModeOptions()"
+                        :placeholder="$t('receive.selectPlaceholder')" />
                 </VaCardContent>
             </VaCard>
         </div>
         <Teleport to="body" :disabled="!videoIsFitscreen">
             <div class="relative">
-                <video
-                    v-show="isFindStream"
-                    class="w-5/6 m-auto shadow-md"
-                    :class="{ 'video-fit-screen': videoIsFitscreen }"
-                    ref="screenVideo"
-                    autoplay
-                    controls
-                ></video>
-                <VaButton
-                    v-show="isFindStream && width > 768"
-                    round
-                    class="ml-3 absolute opacity-20 hover:opacity-100 top-[0.5em]"
-                    :style="{
+                <video v-show="isFindStream" class="w-5/6 m-auto shadow-md"
+                    :class="{ 'video-fit-screen': videoIsFitscreen }" ref="screenVideo" autoplay controls></video>
+                <VaButton v-show="isFindStream && width > 768" round
+                    class="ml-3 absolute opacity-20 hover:opacity-100 top-[0.5em]" :style="{
                         right: videoIsFitscreen
                             ? '0.5em'
                             : 'calc(8.33333% + 0.5em)',
-                    }"
-                    @click="videoFitscreen"
-                    icon="fit_screen"
-                />
+                    }" @click="videoFitscreen" icon="fit_screen" />
             </div>
         </Teleport>
     </div>

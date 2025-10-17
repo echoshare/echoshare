@@ -34,6 +34,7 @@ export const usePeer = defineStore("peer", {
             serverURL: "0.peerjs.com:443",
             iceServers: [] as string[], // "stun:stun.l.google.com:19302", "turn:homeo@turn.bistri.com:80^homeo",
             iceServerConf: [],
+            videoFormat: "H264",
         };
     },
     actions: {

@@ -70,6 +70,8 @@
             "autoRefetchDisable": "切断後に再接続を無効にする",
             "autoTryPlayEnable": "定期的な再生チェックを有効にする",
             "autoTryPlayDisable": "定期的な再生チェックを無効にする",
+            "tryH265": "H265 デコーダーを有効にする",
+            "noTryH265": "H265 デコーダが有効になっていない",
             "queryEnable": "ウェブフック機能の有効化",
             "queryDisable": "ウェブフック機能を無効にする",
             "remoteDatabaseTest": "リモートデータベースをテスト",
@@ -94,7 +96,10 @@
             "iceServerFetchErr": "JSON の取得に失敗しました",
             "iceServerParseErr": "JSON の解析に失敗しました",
             "iceServerReset": "STUN/TURN サーバーをリセット",
-            "iceServerParseSuccess": "STUN/TURN サーバーの解析に成功しました"
+            "iceServerParseSuccess": "STUN/TURN サーバーの解析に成功しました",
+            "decodeSelect": "デコーダー設定",
+            "decodeSelectTip": "デコーダー構成を選択してください",
+            "decodeDefaultName": "自動"
         },
         "history": {
             "titleAlwaysShow": "履歴",

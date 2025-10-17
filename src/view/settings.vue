@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import StunConf2 from "../components/settings/stunConf2.vue";
+import videoFormat from "../components/settings/videoFormat.vue";
 import CheckboxConf from "../components/settings/checkboxConf.vue";
 import PeerServerConf from "../components/settings/peerServerConf.vue";
 </script>
@@ -10,6 +11,7 @@ import PeerServerConf from "../components/settings/peerServerConf.vue";
             <VaCardTitle class="text-lg"> {{ $t("settings.title") }} </VaCardTitle>
             <VaCardContent>
                 <CheckboxConf></CheckboxConf>
+                <videoFormat></videoFormat>
                 <PeerServerConf></PeerServerConf>
                 <StunConf2></StunConf2>
             </VaCardContent>

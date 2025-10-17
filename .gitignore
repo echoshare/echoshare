@@ -15,6 +15,7 @@ __*
 
 # Editor directories and files
 .vscode/*
+index/*
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -25,3 +26,4 @@ __*
 *.sw?
 dev-dist
 .vercel
+log.txt

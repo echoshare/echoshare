@@ -40,3 +40,7 @@ export function isDeviceMobile() {
         navigator.userAgent
     );
 }
+
+export function isIOS() {
+    return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
