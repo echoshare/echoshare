@@ -20,28 +20,31 @@ The document is available at [https://docs.echoshare.site](https://docs.echoshar
 
 ## Core Features
 
-* 🖥️ **Screen Sharing**: Share your screen in real-time for more intuitive communication.
-* 📹 **Camera Sharing**: Enable face-to-face interaction to enhance the sense of presence in remote collaboration.
-* 🔊 **Audio Sharing**: Deliver system audio clearly to ensure a complete audio experience.
-* 🎙️ **Microphone Sharing**: Communicate seamlessly with real-time voice sharing.
+-   🖥️ **Screen Sharing**: Share your screen in real-time for more intuitive communication.
+-   📹 **Camera Sharing**: Enable face-to-face interaction to enhance the sense of presence in remote collaboration.
+-   🔊 **Audio Sharing**: Deliver system audio clearly to ensure a complete audio experience.
+-   🎙️ **Microphone Sharing**: Communicate seamlessly with real-time voice sharing.
 
 ## ✨ Enhanced Features
 
-* ⏳ **Local History Records**: Easily review shared content history for quick access.
-* 💓 **Heartbeat detection**: real-time detection of connection status.
-* 🔗 **Custom Webhooks**: Flexibly integrate with other systems to enable automated workflows.
-* 🔄 **Auto Recovery After Interruption**: Automatically reconnect after network interruptions to ensure continuous sharing.
-* 📱 **PWA Support**: Use it like a native app for a smoother experience.
-* 🌍 **Multi-language Support**: Cater to global users with seamless communication across languages.
-* 📐 **Responsive Design**: Adapt to various devices, enabling efficient work anytime, anywhere.
+-   ⏳ **Local History Records**: Easily review shared content history for quick access.
+-   💓 **Heartbeat detection**: real-time detection of connection status.
+-   🔗 **Custom Webhooks**: Flexibly integrate with other systems to enable automated workflows.
+-   🔄 **Auto Recovery After Interruption**: Automatically reconnect after network interruptions to ensure continuous sharing.
+-   📱 **PWA Support**: Use it like a native app for a smoother experience.
+-   🌍 **Multi-language Support**: Cater to global users with seamless communication across languages.
+-   📐 **Responsive Design**: Adapt to various devices, enabling efficient work anytime, anywhere.
+-   👁️‍🗨️ **Inspector**: Allow inspect the Webrtc status when running the application.
 
 # Tech Stack
-- Vue 3
-- TypeScript
-- Vite
-- WebRTC
-- Vuestic UI
-- Tailwind CSS
+
+-   Vue 3
+-   TypeScript
+-   Vite
+-   WebRTC
+-   Vuestic UI
+-   Tailwind CSS
 
 # License
+
 MIT License
