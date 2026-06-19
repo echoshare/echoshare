@@ -1,0 +1,32 @@
+{
+  "name": "server",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run dist/index.js"
+  },
+  "dependencies": {
+    "@echoshare-v2/api": "workspace:*",
+    "@echoshare-v2/env": "workspace:*",
+    "@hono/trpc-server": "^0.4.2",
+    "@trpc/server": "catalog:",
+    "dotenv": "catalog:",
+    "hono": "catalog:",
+    "i18next": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@echoshare-v2/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitest/ui": "catalog:",
+    "jsdom": "catalog:",
+    "tsdown": "^0.22.2",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
