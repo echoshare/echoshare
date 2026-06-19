@@ -3,11 +3,12 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsdown",
-    "check-types": "tsc -b",
+    "build": "bun build ./src/index.ts --outdir dist --target bun",
+    "check-types": "tsc --noEmit",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.js"
+    "start": "bun run dist/index.js",
+    "test": "vitest run"
   },
   "dependencies": {
     "@echoshare-v2/api": "workspace:*",

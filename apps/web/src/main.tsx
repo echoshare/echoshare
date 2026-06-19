@@ -3,6 +3,8 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 
 import Loader from "./components/loader";
+import "./i18n/config";
+import { I18nProvider } from "./i18n/provider";
 import { routeTree } from "./routeTree.gen";
 import { queryClient, trpc } from "./utils/trpc";
 
@@ -12,7 +14,11 @@ const router = createRouter({
   defaultPendingComponent: () => <Loader />,
   context: { trpc, queryClient },
   Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
-    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+    return (
+      <I18nProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </I18nProvider>
+    );
   },
 });
 

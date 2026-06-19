@@ -6,7 +6,10 @@ type ImportMetaEnvRecord = Record<string, string | boolean | undefined>;
 export const env = createEnv({
   clientPrefix: "VITE_",
   client: {
+    /** Base URL of the tRPC/HTTP API. */
     VITE_SERVER_URL: z.url().default("http://localhost:3000"),
+    /** Base URL of the PeerJS signaling server (parsed into host/port/path). */
+    VITE_SIGNALING_URL: z.url().default("http://localhost:3000/"),
   },
   runtimeEnv: (import.meta as ImportMeta & { env: ImportMetaEnvRecord }).env,
   emptyStringAsUndefined: true,
