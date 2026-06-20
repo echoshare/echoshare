@@ -13,6 +13,7 @@ import { isIOS, isSecureWebRTCContext } from "@/webrtc/device";
 import { createMediaStreamFake } from "@/webrtc/fake-stream";
 import { sdpEdit } from "@/webrtc/h265";
 import { parseIceServers, PUBLIC_PEER_SERVER, resolvePeerServerURL } from "@/webrtc/peer-config";
+import { RECEIVE_QUALITY, tuneSdpQuality } from "@/webrtc/quality";
 import type { StatSnapshot } from "@/webrtc/stat";
 
 export type ReceiveStatus = "idle" | "connecting" | "playing";
@@ -31,6 +32,8 @@ export interface ReceiveSession {
   start: (target?: string) => void;
   stop: () => void;
   play: () => void;
+  muted: boolean;
+  unmute: () => void;
 }
 
 export function useReceive(options?: ReceiveOptions): ReceiveSession {
@@ -40,6 +43,7 @@ export function useReceive(options?: ReceiveOptions): ReceiveSession {
   const [status, setStatus] = useState<ReceiveStatus>("idle");
   const [targetId, setTargetId] = useState("");
   const [stats, setStats] = useState<StatSnapshot | null>(null);
+  const [muted, setMuted] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const peerRef = useRef<Peer | null>(null);
@@ -63,11 +67,34 @@ export function useReceive(options?: ReceiveOptions): ReceiveSession {
     if (videoRef.current) videoRef.current.srcObject = null;
     analysis.reset();
     setStats(null);
+    setMuted(false);
     setStatus("idle");
   }, [analysis]);
 
+  const attemptPlay = useCallback(async (video: HTMLVideoElement) => {
+    video.muted = false;
+    try {
+      await video.play();
+      setMuted(false);
+    } catch {
+      // Browsers block unmuted autoplay without a user gesture. Fall back to muted
+      // playback so the picture is visible, and surface an unmute control.
+      video.muted = true;
+      setMuted(true);
+      await video.play().catch(() => undefined);
+    }
+  }, []);
+
   const play = useCallback(() => {
-    void videoRef.current?.play().catch(() => undefined);
+    if (videoRef.current) void attemptPlay(videoRef.current);
+  }, [attemptPlay]);
+
+  const unmute = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
+    setMuted(false);
+    void video.play().catch(() => undefined);
   }, []);
 
   const start = useCallback(
@@ -91,7 +118,7 @@ export function useReceive(options?: ReceiveOptions): ReceiveSession {
       const primary = resolvePeerServerURL(settings.serverURL);
       const servers = primary.host === PUBLIC_PEER_SERVER.host ? [primary] : [primary, PUBLIC_PEER_SERVER];
 
-      const transform = (sdp: string) => sdpEdit(sdp, settings.videoFormat, isIOS());
+      const transform = (sdp: string) => tuneSdpQuality(sdpEdit(sdp, settings.videoFormat, isIOS()), RECEIVE_QUALITY);
 
       const dial = () => {
         const active = peerRef.current;
@@ -101,11 +128,11 @@ export function useReceive(options?: ReceiveOptions): ReceiveSession {
         callRef.current = call;
         call.on("stream", (remote) => {
           streamRef.current = remote;
-          if (videoRef.current) videoRef.current.srcObject = remote;
-          setStatus("playing");
-          if (autoplayDefault || usePeerStore.getState().autoTryPlay) {
-            void videoRef.current?.play().catch(() => undefined);
+          if (videoRef.current) {
+            videoRef.current.srcObject = remote;
+            void attemptPlay(videoRef.current);
           }
+          setStatus("playing");
           useHistoryStore.getState().add({ uid: targetRef.current, timestamp: Date.now(), action: "receive", result: "success" });
           void sendWebhook(useWebhookStore.getState(), "success", { action: "receive", uid: targetRef.current });
           toast.success(t("toast.streamReceived"));
@@ -142,10 +169,10 @@ export function useReceive(options?: ReceiveOptions): ReceiveSession {
         }
       }, 1000);
     },
-    [t, stop, analysis, autoplayDefault],
+    [t, stop, analysis, autoplayDefault, attemptPlay],
   );
 
   useEffect(() => () => stop(), [stop]);
 
-  return { status, targetId, videoRef, analysis, stats, start, stop, play };
+  return { status, targetId, videoRef, analysis, stats, start, stop, play, muted, unmute };
 }

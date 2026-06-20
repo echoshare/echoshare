@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { createFileRoute } from "@tanstack/react-router";
-import { Maximize, Play } from "lucide-react";
+import { Maximize, Play, VolumeX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { StatInspector } from "@/components/stat-inspector";
@@ -35,7 +35,7 @@ const RECEIVE_MODES: { value: ReceiveMode; label: string }[] = [
 function ReceiveComponent() {
   const { t } = useTranslation();
   const search = Route.useSearch();
-  const { status, videoRef, analysis, stats, start, stop, play } = useReceive({ autoplayDefault: search.autoplay });
+  const { status, videoRef, analysis, stats, start, stop, play, muted, unmute } = useReceive({ autoplayDefault: search.autoplay });
   const targetUID = usePeerStore((s) => s.targetUID);
   const receiveMode = usePeerStore((s) => s.receiveMode);
   const patch = usePeerStore((s) => s.patch);
@@ -51,8 +51,8 @@ function ReceiveComponent() {
   const active = status !== "idle";
 
   return (
-    <div className="container mx-auto max-w-3xl space-y-4 px-4 py-6">
-      <h1 className="text-xl font-semibold">{t("receive.title")}</h1>
+    <div className="mx-auto max-w-3xl space-y-5 px-4 py-8">
+      <h1 className="text-2xl font-semibold tracking-tight">{t("receive.title")}</h1>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-1.5">
@@ -99,8 +99,15 @@ function ReceiveComponent() {
         <span className="text-muted-foreground text-xs">{t(`receive.${status}`)}</span>
       </div>
 
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <video ref={videoRef} className="aspect-video w-full rounded-none bg-black" playsInline controls />
+      <div className="relative">
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video ref={videoRef} className="aspect-video w-full rounded-xl border bg-black" playsInline controls />
+        {muted ? (
+          <Button size="sm" className="absolute bottom-3 left-3 shadow-md" onClick={unmute}>
+            <VolumeX /> {t("receive.unmute")}
+          </Button>
+        ) : null}
+      </div>
 
       <StatInspector snapshot={stats} analysis={analysis} />
     </div>

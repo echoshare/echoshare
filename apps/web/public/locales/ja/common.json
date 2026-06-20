@@ -21,7 +21,8 @@
     "none": "なし",
     "on": "オン",
     "off": "オフ",
-    "back": "戻る"
+    "back": "戻る",
+    "menu": "メニュー"
   },
   "home": {
     "heroTitle": "今すぐ画面を共有",
@@ -68,6 +69,7 @@
     "connecting": "接続中…",
     "playing": "再生中",
     "play": "再生",
+    "unmute": "ミュート解除",
     "fullscreen": "全画面",
     "reconnect": "再接続",
     "modes": { "videoAudio": "映像 + 音声", "videoOnly": "映像のみ", "audioOnly": "音声のみ" }

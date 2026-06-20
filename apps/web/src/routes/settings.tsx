@@ -41,10 +41,10 @@ function SettingsComponent() {
   }, []);
 
   return (
-    <div className="container mx-auto max-w-xl space-y-4 px-4 py-6">
-      <h1 className="text-xl font-semibold">{t("settings.title")}</h1>
+    <div className="mx-auto max-w-xl space-y-5 px-4 py-8">
+      <h1 className="text-2xl font-semibold tracking-tight">{t("settings.title")}</h1>
 
-      <Card className="rounded-none">
+      <Card>
         <CardHeader>
           <CardTitle className="text-sm">{t("settings.serverSection")}</CardTitle>
         </CardHeader>
@@ -59,7 +59,7 @@ function SettingsComponent() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-none">
+      <Card>
         <CardHeader>
           <CardTitle className="text-sm">{t("settings.iceSection")}</CardTitle>
         </CardHeader>
@@ -76,7 +76,7 @@ function SettingsComponent() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-none">
+      <Card>
         <CardHeader>
           <CardTitle className="text-sm">{t("settings.videoSection")}</CardTitle>
         </CardHeader>
@@ -96,7 +96,7 @@ function SettingsComponent() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-none">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-sm">{t("settings.deviceSection")}</CardTitle>
           <Button variant="outline" size="xs" onClick={() => void refreshDevices()}>
@@ -137,7 +137,7 @@ function SettingsComponent() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-none">
+      <Card>
         <CardHeader>
           <CardTitle className="text-sm">{t("settings.featureSection")}</CardTitle>
         </CardHeader>

@@ -21,7 +21,8 @@
     "none": "None",
     "on": "On",
     "off": "Off",
-    "back": "Back"
+    "back": "Back",
+    "menu": "Menu"
   },
   "home": {
     "heroTitle": "Share your screen, instantly",
@@ -68,6 +69,7 @@
     "connecting": "Connecting…",
     "playing": "Playing",
     "play": "Play",
+    "unmute": "Unmute",
     "fullscreen": "Fullscreen",
     "reconnect": "Reconnect",
     "modes": { "videoAudio": "Video + audio", "videoOnly": "Video only", "audioOnly": "Audio only" }

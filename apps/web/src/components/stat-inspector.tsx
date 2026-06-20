@@ -15,7 +15,7 @@ export function StatInspector({
   const rows = snapshotRows(snapshot);
 
   return (
-    <div className="rounded-none border p-3 text-xs">
+    <div className="rounded-xl border p-4 text-sm">
       <div className="mb-2 flex items-center justify-between">
         <span className="font-medium">{t("stat.title")}</span>
         <Button variant="outline" size="xs" onClick={() => analysis.downloadLogs("echoshare-stats")}>

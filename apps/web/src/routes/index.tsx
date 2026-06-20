@@ -23,32 +23,36 @@ function HomeComponent() {
   const online = stats.isSuccess;
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">{t("home.heroTitle")}</h1>
-      <p className="text-muted-foreground mt-2 max-w-prose text-sm">{t("home.heroSubtitle")}</p>
+    <div className="mx-auto flex min-h-full max-w-3xl flex-col items-center justify-center px-4 py-12 text-center sm:py-16">
+      <span className="bg-muted text-muted-foreground mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium">
+        <span className={`size-1.5 rounded-full ${online ? "bg-green-500" : "bg-red-500"}`} />
+        {stats.isLoading ? "…" : online ? t("home.online") : t("home.offline")}
+        {stats.data ? (
+          <span className="text-muted-foreground/70">· {t("home.peersOnline", { count: stats.data.peers })}</span>
+        ) : null}
+      </span>
 
-      <div className="mt-6 flex flex-wrap gap-3">
-        <Button render={<Link to="/share" />}>{t("home.startShare")}</Button>
-        <Button variant="outline" render={<Link to="/receive" />}>
+      <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
+        {t("home.heroTitle")}
+      </h1>
+      <p className="text-muted-foreground mt-4 max-w-prose text-pretty sm:text-lg">
+        {t("home.heroSubtitle")}
+      </p>
+
+      <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+        <Button size="lg" className="w-full sm:w-auto" render={<Link to="/share" />}>
+          {t("home.startShare")}
+        </Button>
+        <Button size="lg" variant="outline" className="w-full sm:w-auto" render={<Link to="/receive" />}>
           {t("home.startReceive")}
         </Button>
       </div>
 
-      <section className="mt-8 rounded-none border p-4 text-sm">
-        <div className="flex items-center gap-2">
-          <span className={`h-2 w-2 rounded-full ${online ? "bg-green-500" : "bg-red-500"}`} />
-          <span className="font-medium">{t("home.serverStatus")}</span>
-          <span className="text-muted-foreground">
-            {stats.isLoading ? "…" : online ? t("home.online") : t("home.offline")}
-          </span>
-        </div>
-        {stats.data ? (
-          <div className="text-muted-foreground mt-2 flex flex-wrap gap-4 text-xs">
-            <span>{t("home.peersOnline", { count: stats.data.peers })}</span>
-            <span>{t("home.uptime", { value: formatUptime(stats.data.uptimeMs) })}</span>
-          </div>
-        ) : null}
-      </section>
+      {stats.data ? (
+        <p className="text-muted-foreground mt-8 text-xs">
+          {t("home.serverStatus")} · {t("home.uptime", { value: formatUptime(stats.data.uptimeMs) })}
+        </p>
+      ) : null}
     </div>
   );
 }

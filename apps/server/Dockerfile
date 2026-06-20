@@ -2,7 +2,7 @@
 # Self-hosted PeerJS signaling + tRPC server.
 # Build context is the MONOREPO ROOT:
 #   docker build -f apps/server/Dockerfile -t echoshare-signal .
-#   docker run -p 3000:3000 -e CORS_ORIGIN=https://your-web.vercel.app echoshare-signal
+#   docker run -p 5300:5300 -e CORS_ORIGIN=https://your-web.vercel.app echoshare-signal
 
 FROM oven/bun:1 AS build
 WORKDIR /app
@@ -15,9 +15,9 @@ WORKDIR /app
 COPY --from=build /app/apps/server/dist/index.js ./index.js
 # CORS_ORIGIN MUST be overridden with your web app's origin in production.
 ENV NODE_ENV=production \
-    PORT=3000 \
-    CORS_ORIGIN=http://localhost:3001 \
+    PORT=5300 \
+    CORS_ORIGIN=http://localhost:5301 \
     PEER_KEY=peerjs \
     ALLOW_DISCOVERY=false
-EXPOSE 3000
+EXPOSE 5300
 CMD ["bun", "run", "index.js"]

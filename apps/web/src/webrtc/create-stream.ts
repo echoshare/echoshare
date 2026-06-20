@@ -1,5 +1,6 @@
 import { combineAudioStream } from "./combine";
 import type { MediaMode } from "./types";
+import { qualityProfileFor } from "./quality";
 
 export type CaptureFailureReason = "denied" | "notfound" | "inuse" | "constraints" | "unsupported" | "unknown";
 
@@ -65,7 +66,7 @@ async function createScreenStream(opts: StreamOptions): Promise<MediaStream> {
     video: mediaMode.useScreen && {
       width: { ideal: window.screen.width },
       height: { ideal: window.screen.height },
-      frameRate: { ideal: 120 },
+      frameRate: { ideal: 60 },
     },
     audio: mediaMode.useAudio,
   });
@@ -79,11 +80,22 @@ async function createScreenStream(opts: StreamOptions): Promise<MediaStream> {
   return new MediaStream([...videoStream.getVideoTracks(), ...mixed.getAudioTracks()]);
 }
 
+/** Baseline camera capture: request 1080p30; the browser clamps to the device's best fit. */
+const CAMERA_VIDEO: MediaTrackConstraints = {
+  width: { ideal: 1920 },
+  height: { ideal: 1080 },
+  frameRate: { ideal: 30 },
+};
+
 async function createCameraStream(opts: StreamOptions): Promise<MediaStream> {
   const { mediaMode, audioDeviceId, videoDeviceId } = opts;
+  let video: MediaTrackConstraints | false = false;
+  if (mediaMode.useCamera) {
+    video = videoDeviceId ? { ...CAMERA_VIDEO, deviceId: { exact: videoDeviceId } } : CAMERA_VIDEO;
+  }
   const cameraStream = await navigator.mediaDevices.getUserMedia({
     audio: deviceConstraint(mediaMode.useMicrophone, audioDeviceId),
-    video: deviceConstraint(mediaMode.useCamera, videoDeviceId),
+    video,
   });
 
   if (!mediaMode.useAudio) return cameraStream;
@@ -93,7 +105,10 @@ async function createCameraStream(opts: StreamOptions): Promise<MediaStream> {
   return new MediaStream([...cameraStream.getVideoTracks(), ...mixed.getAudioTracks()]);
 }
 
-/** Capture a media stream per the selected mode (screen vs camera, with optional audio mixing). */
-export function createStream(opts: StreamOptions): Promise<MediaStream> {
-  return opts.mediaMode.useScreen ? createScreenStream(opts) : createCameraStream(opts);
+/** Capture a media stream per the selected mode, then stamp the encoder content hint. */
+export async function createStream(opts: StreamOptions): Promise<MediaStream> {
+  const stream = await (opts.mediaMode.useScreen ? createScreenStream(opts) : createCameraStream(opts));
+  const [videoTrack] = stream.getVideoTracks();
+  if (videoTrack) videoTrack.contentHint = qualityProfileFor(opts.mediaMode).contentHint;
+  return stream;
 }

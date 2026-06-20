@@ -21,7 +21,8 @@
     "none": "无",
     "on": "开",
     "off": "关",
-    "back": "返回"
+    "back": "返回",
+    "menu": "菜单"
   },
   "home": {
     "heroTitle": "即刻共享你的屏幕",
@@ -68,6 +69,7 @@
     "connecting": "连接中…",
     "playing": "播放中",
     "play": "播放",
+    "unmute": "取消静音",
     "fullscreen": "全屏",
     "reconnect": "重新连接",
     "modes": { "videoAudio": "视频 + 音频", "videoOnly": "仅视频", "audioOnly": "仅音频" }

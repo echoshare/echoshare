@@ -24,7 +24,7 @@ brokers the WebRTC handshake.
 bun install
 cp apps/server/.env.example apps/server/.env
 cp apps/web/.env.example apps/web/.env
-bun run dev          # web → http://localhost:3001, server → http://localhost:3000
+bun run dev          # web → http://localhost:5301, server → http://localhost:5300
 ```
 
 ## Test / typecheck / build
@@ -48,7 +48,7 @@ bun --filter web test      # webrtc core unit tests (sdp / ice / stats)
 **Server**:
 
 - `CORS_ORIGIN` (**required**) — web origin allowed on the tRPC + `/peerjs/*` HTTP routes.
-- `PORT` (default `3000`), `PEER_KEY` (default `peerjs`).
+- `PORT` (default `5300`), `PEER_KEY` (default `peerjs`).
 - `ALLOW_DISCOVERY` (default `false`) — expose `GET /peerjs/peers`.
 - `ICE_SERVERS` — JSON array of STUN/TURN servers advertised to clients.
 
@@ -81,7 +81,7 @@ secure context.
 
 ```bash
 docker build -f apps/server/Dockerfile -t echoshare-signal .
-docker run -p 3000:3000 -e CORS_ORIGIN=https://your-web.vercel.app echoshare-signal
+docker run -p 5300:5300 -e CORS_ORIGIN=https://your-web.vercel.app echoshare-signal
 ```
 
 Configure `ICE_SERVERS` with a TURN server for clients behind restrictive NATs. A

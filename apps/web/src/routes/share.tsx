@@ -35,8 +35,8 @@ function ShareComponent() {
   }
 
   return (
-    <div className="container mx-auto max-w-xl space-y-4 px-4 py-6">
-      <h1 className="text-xl font-semibold">{t("share.title")}</h1>
+    <div className="mx-auto max-w-xl space-y-5 px-4 py-8">
+      <h1 className="text-2xl font-semibold tracking-tight">{t("share.title")}</h1>
 
       <div className="space-y-1.5">
         <Label htmlFor="customId">{t("share.customId")}</Label>
@@ -79,7 +79,7 @@ function ShareComponent() {
       </div>
 
       {live ? (
-        <div className="space-y-2 rounded-none border p-3 text-sm">
+        <div className="space-y-3 rounded-xl border p-4 text-sm">
           <div className="flex items-center justify-between gap-2">
             <span className="text-muted-foreground">{t("share.roomId")}</span>
             <span className="font-mono break-all">{roomId}</span>

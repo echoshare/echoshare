@@ -30,9 +30,9 @@ function WebhookComponent() {
   }
 
   return (
-    <div className="container mx-auto max-w-xl space-y-4 px-4 py-6">
+    <div className="mx-auto max-w-xl space-y-5 px-4 py-8">
       <div>
-        <h1 className="text-xl font-semibold">{t("webhook.title")}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("webhook.title")}</h1>
         <p className="text-muted-foreground mt-1 text-xs">{t("webhook.hint")}</p>
       </div>
 

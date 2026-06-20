@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { createFileRoute } from "@tanstack/react-router";
+import { VolumeX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/view")({
 function ViewComponent() {
   const { t } = useTranslation();
   const search = Route.useSearch();
-  const { status, videoRef, start, play } = useReceive({ autoplayDefault: true });
+  const { status, videoRef, start, play, muted, unmute } = useReceive({ autoplayDefault: true });
   const targetUID = usePeerStore((s) => s.targetUID);
   const patch = usePeerStore((s) => s.patch);
 
@@ -52,6 +53,11 @@ function ViewComponent() {
           </div>
           <span className="text-xs opacity-70">{t(`receive.${status}`)}</span>
         </div>
+      ) : null}
+      {status === "playing" && muted ? (
+        <Button className="absolute bottom-4 left-4 shadow-md" onClick={unmute}>
+          <VolumeX /> {t("receive.unmute")}
+        </Button>
       ) : null}
     </div>
   );

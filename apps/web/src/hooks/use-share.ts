@@ -12,6 +12,7 @@ import { classifyCaptureError, createStream } from "@/webrtc/create-stream";
 import { isIOS, isSecureWebRTCContext } from "@/webrtc/device";
 import { sdpEdit } from "@/webrtc/h265";
 import { parseIceServers, PUBLIC_PEER_SERVER, resolvePeerServerURL } from "@/webrtc/peer-config";
+import { applySenderQuality, qualityProfileFor, tuneSdpQuality, type SdpQualityOptions } from "@/webrtc/quality";
 
 export type ShareStatus = "idle" | "requesting" | "live";
 
@@ -51,12 +52,13 @@ export function useShare(): ShareSession {
     }
 
     const settings = usePeerStore.getState();
+    const mediaMode = getMediaMode(settings.mediaModeValue);
     setStatus("requesting");
 
     let stream: MediaStream;
     try {
       stream = await createStream({
-        mediaMode: getMediaMode(settings.mediaModeValue),
+        mediaMode,
         audioDeviceId: settings.audioDeviceId,
         videoDeviceId: settings.videoDeviceId,
       });
@@ -73,7 +75,13 @@ export function useShare(): ShareSession {
     const primary = resolvePeerServerURL(settings.serverURL);
     const servers = primary.host === PUBLIC_PEER_SERVER.host ? [primary] : [primary, PUBLIC_PEER_SERVER];
     const uid = settings.customUID.trim() || stream.id;
-    const transform = (sdp: string) => sdpEdit(sdp, settings.videoFormat, isIOS());
+    const profile = qualityProfileFor(mediaMode);
+    const sdpQuality: SdpQualityOptions = {
+      videoBitrateKbps: Math.round(profile.videoBitrateBps / 1000),
+      audioBitrateBps: profile.audioBitrateBps,
+      stereo: true,
+    };
+    const transform = (sdp: string) => tuneSdpQuality(sdpEdit(sdp, settings.videoFormat, isIOS()), sdpQuality);
 
     const bind = (peer: Peer) => {
       peerRef.current = peer;
@@ -88,6 +96,7 @@ export function useShare(): ShareSession {
       // Sender answers every incoming viewer with the same stream.
       peer.on("call", (call) => {
         call.answer(stream, { sdpTransform: transform });
+        void applySenderQuality(call.peerConnection, profile);
         callsRef.current.add(call);
         setViewers(callsRef.current.size);
         const drop = () => {
